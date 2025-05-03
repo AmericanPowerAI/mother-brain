@@ -3,26 +3,28 @@ import json, lzma, re
 class Mother:
     def __init__(self):
         try:
-            self.knowledge = json.loads(lzma.decompress(open('knowledge.zst','rb').read())
+            with lzma.open('knowledge.zst', 'rb') as f:
+                self.knowledge = json.load(f)
         except:
             self.knowledge = {"_meta": {"name": "mother-brain"}}
     
     def learn(self, text):
-        facts = re.findall(r'\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+\b|\d{4}', text)  # Simple pattern
-        for fact in facts[:5]:  # Limit to 5 facts per learning
-            self.knowledge[fact] = text[:500]  # Trim long texts
+        facts = re.findall(r'\b[A-Z]\w+(?:\s+[A-Z]\w+)+', text)  # Better pattern
+        for fact in set(facts):  # Deduplicate
+            self.knowledge[fact] = text[:500]  # Store snippet
         self._save()
     
     def _save(self):
-        open('knowledge.zst','wb').write(lzma.compress(json.dumps(self.knowledge).encode()))
+        with lzma.open('knowledge.zst', 'wb') as f:
+            json.dump(self.knowledge, f)
     
     def answer(self, query):
-        return next((v for k,v in self.knowledge.items() if k.lower() in query.lower()), 
-                   "I'm still learning")
+        query = query.lower()
+        return next((v for k,v in self.knowledge.items() 
+                   if query in k.lower()), "Learning mode active")
 
 if __name__ == "__main__":
     m = Mother()
-    print("Mother Brain v0.1 (Ctrl+C to exit)")
     while True:
         m.learn(input("Teach me > "))
         print(m.answer(input("Ask me > ")))
