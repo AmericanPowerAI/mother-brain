@@ -1,0 +1,25 @@
+name: Daily Learning
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3AM UTC daily
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Learn from RSS
+        run: |
+          python3 -c "
+          import requests, lzma, json;
+          news = requests.get('https://news.ycombinator.com/rss').text;
+          data = json.loads(lzma.open('knowledge.zst').read());
+          data.update({f'HN:{len(data)}': news[:500]});
+          lzma.open('knowledge.zst', 'wb').write(json.dumps(data).encode())
+          "
+      - name: Commit Knowledge
+        run: |
+          git config --global user.name "Mother Brain"
+          git config --global user.email "mother@brain.ai"
+          git add knowledge.zst
+          git commit -m "Auto-learn: $(date +'%Y-%m-%d')"
+          git push
