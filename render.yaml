@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mother-brain
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python mother.py
+    envVars:
+      - key: HACKING_MODE
+        value: "advanced"
