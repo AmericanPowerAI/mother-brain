@@ -67,6 +67,20 @@ class MotherBrain:
                 "LEGAL:GDPR": "Article 17: Right to erasure"
             }, f)
 
+    def load(self):
+        """Load knowledge from compressed file"""
+        try:
+            with lzma.open('knowledge.zst', 'rb') as f:
+                self.knowledge = json.load(f)
+        except (lzma.LZMAError, json.JSONDecodeError, FileNotFoundError):
+            # Initialize empty knowledge if loading fails
+            self.knowledge = {"_meta": {"error": "Load failed - initialized empty"}}
+
+    def _save(self):
+        """Save knowledge to compressed file"""
+        with lzma.open('knowledge.zst', 'wb') as f:
+            json.dump(self.knowledge, f, ensure_ascii=False)
+
     def learn_all(self):
         """Omnidirectional learning across all domains"""
         for domain, sources in self.DOMAINS.items():
