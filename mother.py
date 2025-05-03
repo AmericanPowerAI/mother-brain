@@ -151,6 +151,77 @@ class MotherBrain:
             "signature": hashlib.md5(base.encode()).hexdigest()
         }
 
+    def process_hacking_command(self, command):
+        """Process AI hacking commands with cyber-intelligence context"""
+        cmd_parts = command.lower().split()
+        if not cmd_parts:
+            return {"error": "Empty command"}
+        
+        base_cmd = cmd_parts[0]
+        target = " ".join(cmd_parts[1:]) if len(cmd_parts) > 1 else None
+        
+        # Enhanced with knowledge base integration
+        if base_cmd == "exploit":
+            if not target:
+                return {"error": "No target specified"}
+            
+            # Check for known CVEs in target
+            cve_matches = re.findall(r'CVE-\d{4}-\d+', target)
+            exploit_data = {}
+            if cve_matches:
+                exploit_data = self.generate_exploit(cve_matches[0])
+            
+            return {
+                "action": "exploit",
+                "target": target,
+                "recommendation": self.knowledge.get(f"0DAY:{target}", "No specific exploit known"),
+                "exploit_data": exploit_data,
+                "signature": hashlib.md5(target.encode()).hexdigest()[:8]
+            }
+            
+        elif base_cmd == "scan":
+            scan_types = {
+                "network": ["nmap -sV", "masscan -p1-65535"],
+                "web": ["nikto -h", "wpscan --url"],
+                "ai": ["llm_scan --model=gpt-4"]
+            }
+            
+            scan_type = "network"  # default
+            if target and any(t in target for t in scan_types.keys()):
+                scan_type = next(t for t in scan_types.keys() if t in target)
+            
+            return {
+                "action": "scan",
+                "type": scan_type,
+                "commands": scan_types[scan_type],
+                "knowledge": [k for k in self.knowledge if "0DAY" in k][:3]  # sample vulns
+            }
+            
+        elif base_cmd == "decrypt":
+            if not target:
+                return {"error": "No hash provided"}
+            
+            # Check knowledge for similar hashes
+            similar = [k for k in self.knowledge 
+                      if "HASH:" in k and target[:4] in k]
+            
+            return {
+                "action": "decrypt",
+                "hash": target,
+                "attempts": [
+                    f"rainbow_table --hash={target}",
+                    f"john --format=raw-md5 {target}"
+                ],
+                "similar_known": similar[:3]
+            }
+            
+        else:
+            return {
+                "error": "Unknown command",
+                "available_commands": ["exploit", "scan", "decrypt"],
+                "tip": "Try with a target, e.g. 'exploit CVE-2023-1234'"
+            }
+
 mother = MotherBrain()
 
 @app.route('/learn', methods=['POST'])
@@ -166,6 +237,18 @@ def ask():
 @app.route('/exploit/<cve>', methods=['GET'])
 def exploit(cve):
     return jsonify(mother.generate_exploit(cve))
+
+@app.route('/hacking', methods=['POST'])
+def hacking():
+    command = request.json.get('command', '')
+    if not command:
+        return jsonify({"error": "No command provided"}), 400
+    
+    try:
+        result = mother.process_hacking_command(command)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
