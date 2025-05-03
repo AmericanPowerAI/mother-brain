@@ -1,29 +1,31 @@
-name: Autonomous Learning
+name: Omni-Learning
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Allows manual triggers
+    - cron: '0 */4 * * *'  # Every 4 hours
+  workflow_dispatch:
 
 jobs:
   learn:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-      - name: Learn from Web
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Execute learning
+        env:
+          RENDER_URL: ${{ secrets.RENDER_URL }}
         run: |
           python3 -c "
-          import requests, json;
-          res = requests.post('https://your-render-url.onrender.com/auto-learn');
-          print('Learned:', res.json())
+          import requests;
+          res = requests.post('$RENDER_URL/learn');
+          print('Learning result:', res.json())
           "
-      - name: Commit Knowledge Updates
+      - name: Commit knowledge
         run: |
           git config --global user.name "Mother Brain"
-          git config --global user.email "mother@brain.ai"
-          git add .
-          git commit -m "Auto-learn update" || echo "No changes"
+          git add knowledge.zst
+          git commit -m "Auto-learn: $(date +'%Y-%m-%d %H:%M')"
           git push
