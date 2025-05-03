@@ -1,25 +1,29 @@
-name: Daily Learning
+name: Autonomous Learning
 on:
   schedule:
-    - cron: '0 3 * * *'  # 3AM UTC daily
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Allows manual triggers
+
 jobs:
   learn:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Learn from RSS
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Learn from Web
         run: |
           python3 -c "
-          import requests, lzma, json;
-          news = requests.get('https://news.ycombinator.com/rss').text;
-          data = json.loads(lzma.open('knowledge.zst').read());
-          data.update({f'HN:{len(data)}': news[:500]});
-          lzma.open('knowledge.zst', 'wb').write(json.dumps(data).encode())
+          import requests, json;
+          res = requests.post('https://your-render-url.onrender.com/auto-learn');
+          print('Learned:', res.json())
           "
-      - name: Commit Knowledge
+      - name: Commit Knowledge Updates
         run: |
           git config --global user.name "Mother Brain"
           git config --global user.email "mother@brain.ai"
-          git add knowledge.zst
-          git commit -m "Auto-learn: $(date +'%Y-%m-%d')"
+          git add .
+          git commit -m "Auto-learn update" || echo "No changes"
           git push
