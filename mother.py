@@ -1,11 +1,30 @@
-import json, lzma, re, os, requests, random, hashlib, base64
+import json
+import lzma
+import re
+import os
+import requests
+import random
+import hashlib
 from flask import Flask, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_talisman import Talisman
 
 app = Flask(__name__)
 
+# Security middleware
+Talisman(app)
+
+# Rate limiting
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
+
 class MotherBrain:
     DOMAINS = {
-        # CYBER-INTELLIGENCE CORE (Expanded per your requirements)
+        # CYBER-INTELLIGENCE CORE
         'cyber': {
             '0day': [
                 'https://github.com/rapid7/metasploit-framework/commits/master',
@@ -60,7 +79,6 @@ class MotherBrain:
                     "name": "mother-brain",
                     "version": "0day-enabled"
                 },
-                # Pre-seed elite knowledge
                 "0DAY:CVE-2023-1234": "Linux kernel RCE via buffer overflow",
                 "AI_EVASION:antifuzzing": "xor eax, eax; jz $+2; nop",
                 "BUSINESS:AAPL": "Market cap $2.8T (2023)",
@@ -68,27 +86,23 @@ class MotherBrain:
             }, f)
 
     def load(self):
-        """Load knowledge from compressed file"""
         try:
             with lzma.open('knowledge.zst', 'rb') as f:
                 self.knowledge = json.load(f)
         except (lzma.LZMAError, json.JSONDecodeError, FileNotFoundError):
-            # Initialize empty knowledge if loading fails
             self.knowledge = {"_meta": {"error": "Load failed - initialized empty"}}
 
     def _save(self):
-        """Save knowledge to compressed file"""
         with lzma.open('knowledge.zst', 'wb') as f:
             json.dump(self.knowledge, f, ensure_ascii=False)
 
     def learn_all(self):
-        """Omnidirectional learning across all domains"""
         for domain, sources in self.DOMAINS.items():
-            if isinstance(sources, dict):  # Cyber subdomains
+            if isinstance(sources, dict):
                 for subdomain, urls in sources.items():
                     for url in urls:
                         self._learn_url(url, f"cyber:{subdomain}")
-            else:  # Other domains
+            else:
                 for url in sources:
                     self._learn_url(url, domain)
         self._save()
@@ -99,7 +113,7 @@ class MotherBrain:
                 data = requests.get(url).json()
                 text = str(data)[:10000]
             elif url.endswith(('.csv', '.tar.gz')):
-                text = requests.get(url).text[:5000]  # Limit large files
+                text = requests.get(url).text[:5000]
             else:
                 text = requests.get(url).text[:8000]
             
@@ -108,7 +122,6 @@ class MotherBrain:
             print(f"Failed {url}: {str(e)}")
 
     def _process(self, domain, text):
-        # Cyber-intelligence processing
         if domain.startswith("cyber:"):
             subdomain = domain.split(":")[1]
             if subdomain == "0day":
@@ -120,8 +133,6 @@ class MotherBrain:
             elif subdomain == "creative":
                 for payload in re.findall(r'(?:(?:ssh|ftp)://\S+|<\w+>[^<]+</\w+>)', text):
                     self.knowledge[f"CREATIVE:{payload}"] = "WARNING: Verify payloads"
-        
-        # Other domains (business, legal, productivity)
         else:
             patterns = {
                 "business": [r'\$[A-Z]+|\d{4} Q[1-4]'],
@@ -134,7 +145,6 @@ class MotherBrain:
                     self.knowledge[f"{domain.upper()}:{match}"] = text[:500]
 
     def generate_exploit(self, cve):
-        """0day exploit generation with mutation"""
         base = self.knowledge.get(f"0DAY:{cve}", "")
         if not base:
             return {"error": "Exploit not known"}
@@ -152,7 +162,6 @@ class MotherBrain:
         }
 
     def process_hacking_command(self, command):
-        """Process AI hacking commands with cyber-intelligence context"""
         cmd_parts = command.lower().split()
         if not cmd_parts:
             return {"error": "Empty command"}
@@ -160,12 +169,10 @@ class MotherBrain:
         base_cmd = cmd_parts[0]
         target = " ".join(cmd_parts[1:]) if len(cmd_parts) > 1 else None
         
-        # Enhanced with knowledge base integration
         if base_cmd == "exploit":
             if not target:
                 return {"error": "No target specified"}
             
-            # Check for known CVEs in target
             cve_matches = re.findall(r'CVE-\d{4}-\d+', target)
             exploit_data = {}
             if cve_matches:
@@ -186,7 +193,7 @@ class MotherBrain:
                 "ai": ["llm_scan --model=gpt-4"]
             }
             
-            scan_type = "network"  # default
+            scan_type = "network"
             if target and any(t in target for t in scan_types.keys()):
                 scan_type = next(t for t in scan_types.keys() if t in target)
             
@@ -194,14 +201,13 @@ class MotherBrain:
                 "action": "scan",
                 "type": scan_type,
                 "commands": scan_types[scan_type],
-                "knowledge": [k for k in self.knowledge if "0DAY" in k][:3]  # sample vulns
+                "knowledge": [k for k in self.knowledge if "0DAY" in k][:3]
             }
             
         elif base_cmd == "decrypt":
             if not target:
                 return {"error": "No hash provided"}
             
-            # Check knowledge for similar hashes
             similar = [k for k in self.knowledge 
                       if "HASH:" in k and target[:4] in k]
             
@@ -224,7 +230,31 @@ class MotherBrain:
 
 mother = MotherBrain()
 
+@app.route('/')
+def home():
+    return jsonify({
+        "status": "Mother Brain operational",
+        "endpoints": {
+            "/learn": "POST - Update knowledge base",
+            "/ask?q=<query>": "GET - Query knowledge",
+            "/exploit/<cve>": "GET - Generate exploit for CVE",
+            "/hacking": "POST - Process hacking commands",
+            "/health": "GET - System health check"
+        },
+        "version": mother.knowledge.get("_meta", {}).get("version", "unknown")
+    })
+
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "knowledge_items": len(mother.knowledge),
+        "memory_usage": f"{os.getpid()}",
+        "uptime": "active"
+    })
+
 @app.route('/learn', methods=['POST'])
+@limiter.limit("5 per minute")
 def learn():
     mother.learn_all()
     return jsonify({"status": "Knowledge updated across all domains"})
@@ -232,13 +262,17 @@ def learn():
 @app.route('/ask', methods=['GET'])
 def ask():
     query = request.args.get('q', '')
-    return jsonify(mother.knowledge.get(query, "Learning..."))
+    if not query:
+        return jsonify({"error": "Missing query parameter"}), 400
+    return jsonify(mother.knowledge.get(query, "No knowledge on this topic"))
 
 @app.route('/exploit/<cve>', methods=['GET'])
+@limiter.limit("10 per minute")
 def exploit(cve):
     return jsonify(mother.generate_exploit(cve))
 
 @app.route('/hacking', methods=['POST'])
+@limiter.limit("15 per minute")
 def hacking():
     command = request.json.get('command', '')
     if not command:
