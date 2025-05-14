@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
+from github import Github, Auth, InputGitAuthor
 
 app = Flask(__name__)
 
@@ -68,33 +69,96 @@ class MotherBrain:
     }
 
     def __init__(self):
-        if not os.path.exists('knowledge.zst'):
-            self._init_knowledge()
-        self.load()
+        self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
+        if not self.gh_token:
+            raise RuntimeError("GitHub token not configured")
+        
+        self.repo_name = "AmericanPowerAI/mother-brain"
+        self.knowledge = {}
+        self._init_knowledge()
 
     def _init_knowledge(self):
-        with lzma.open('knowledge.zst', 'wb') as f:
-            json.dump({
+        """Initialize knowledge from GitHub or fallback"""
+        try:
+            g = Github(auth=Auth.Token(self.gh_token))
+            repo = g.get_repo(self.repo_name)
+            
+            try:
+                content = repo.get_contents("knowledge.zst")
+                self.knowledge = json.loads(lzma.decompress(content.decoded_content))
+                print("Loaded knowledge from GitHub")
+            except:
+                # Fallback to default if file doesn't exist
+                self.knowledge = {
+                    "_meta": {
+                        "name": "mother-brain",
+                        "version": "github-v1",
+                        "storage": "github"
+                    },
+                    "0DAY:CVE-2023-1234": "Linux kernel RCE via buffer overflow",
+                    "AI_EVASION:antifuzzing": "xor eax, eax; jz $+2; nop",
+                    "BUSINESS:AAPL": "Market cap $2.8T (2023)",
+                    "LEGAL:GDPR": "Article 17: Right to erasure"
+                }
+                self._save_to_github()
+        except Exception as e:
+            print(f"GitHub init failed: {e}")
+            # Emergency in-memory fallback
+            self.knowledge = {
                 "_meta": {
                     "name": "mother-brain",
-                    "version": "0day-enabled"
-                },
-                "0DAY:CVE-2023-1234": "Linux kernel RCE via buffer overflow",
-                "AI_EVASION:antifuzzing": "xor eax, eax; jz $+2; nop",
-                "BUSINESS:AAPL": "Market cap $2.8T (2023)",
-                "LEGAL:GDPR": "Article 17: Right to erasure"
-            }, f)
+                    "version": "volatile",
+                    "error": str(e)
+                }
+            }
+
+    def _save_to_github(self):
+        """Securely save to GitHub with minimal permissions"""
+        try:
+            g = Github(auth=Auth.Token(self.gh_token))
+            repo = g.get_repo(self.repo_name)
+            
+            # Compress and encode
+            compressed = lzma.compress(json.dumps(self.knowledge, ensure_ascii=False).encode())
+            
+            # Check if file exists to determine update vs create
+            try:
+                contents = repo.get_contents("knowledge.zst")
+                repo.update_file(
+                    path="knowledge.zst",
+                    message="Auto-update knowledge base",
+                    content=compressed,
+                    sha=contents.sha,
+                    branch="main",
+                    author=InputGitAuthor(
+                        name="Mother Brain",
+                        email="mother-brain@americanpowerai.com"
+                    )
+                )
+            except:
+                repo.create_file(
+                    path="knowledge.zst",
+                    message="Initial knowledge base",
+                    content=compressed,
+                    branch="main",
+                    author=InputGitAuthor(
+                        name="Mother Brain",
+                        email="mother-brain@americanpowerai.com"
+                    )
+                )
+            return True
+        except Exception as e:
+            print(f"GitHub save failed: {e}")
+            return False
 
     def load(self):
-        try:
-            with lzma.open('knowledge.zst', 'rb') as f:
-                self.knowledge = json.load(f)
-        except (lzma.LZMAError, json.JSONDecodeError, FileNotFoundError):
-            self.knowledge = {"_meta": {"error": "Load failed - initialized empty"}}
+        """Maintained for compatibility"""
+        pass
 
     def _save(self):
-        with lzma.open('knowledge.zst', 'wb') as f:
-            json.dump(self.knowledge, f, ensure_ascii=False)
+        """Replacement for filesystem save"""
+        if not self._save_to_github():
+            raise RuntimeError("Failed to persist knowledge to GitHub")
 
     def learn_all(self):
         for domain, sources in self.DOMAINS.items():
