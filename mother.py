@@ -348,5 +348,10 @@ def hacking():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/dump', methods=['GET'])
+def dump_knowledge():
+    return jsonify(list(mother.knowledge.keys()))
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
