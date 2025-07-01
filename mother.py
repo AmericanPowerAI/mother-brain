@@ -352,6 +352,10 @@ def hacking():
 def dump_knowledge():
     return jsonify(list(mother.knowledge.keys()))
 
+@limiter.limit("10 per hour")  # Prevent abuse
+@app.route('/dump_full', methods=['GET'])
+def dump_full_knowledge():
+    return jsonify(mother.knowledge)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
