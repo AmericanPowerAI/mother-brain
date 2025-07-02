@@ -602,5 +602,15 @@ def self_improve():
         "timestamp": datetime.utcnow().isoformat()
     })
 
+@app.route('/dump', methods=['GET'])
+def dump():
+    """Return first 500 knowledge entries"""
+    return jsonify(dict(list(mother.knowledge.items())[:500]))
+
+@app.route('/dump_full', methods=['GET'])
+def dump_full():
+    """Return complete unfiltered knowledge dump"""
+    return jsonify(mother.knowledge)
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=10000)
