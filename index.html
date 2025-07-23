@@ -3,279 +3,566 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTHER BRAIN | American Power Global</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap" rel="stylesheet">
+    <title>MOTHER AI | American Power Global</title>
     <style>
+        /* ===== BRAND COLORS ===== */
         :root {
-            --neon-blue: #0ff0fc;
-            --neon-purple: #ff00ff;
-            --dark-bg: #0a0a12;
-            --grid-color: rgba(0, 255, 255, 0.05);
+            /* American Power Global */
+            --apg-red: #e63946;
+            --apg-yellow: #ffd60a;
+            
+            /* Mother AI */
+            --mother-blue: #48cae4;
+            --mother-deep-blue: #0096c7;
+            --mother-light: #caf0f8;
+            
+            /* Neutrals */
+            --dark: #1d3557;
+            --darker: #0a192f;
+            --white: #ffffff;
         }
 
+        /* ===== BASE STYLES ===== */
         body {
             margin: 0;
-            background: var(--dark-bg);
-            color: white;
-            font-family: 'Rajdhani', sans-serif;
+            padding: 0;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--white);
             overflow-x: hidden;
             background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
+                linear-gradient(rgba(72, 202, 228, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(72, 202, 228, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
-        .cyber-overlay {
+        /* ===== CYBERPUNK ELEMENTS ===== */
+        .cyber-glows {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at center, transparent 60%, rgba(0, 255, 255, 0.03));
             pointer-events: none;
             z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 214, 10, 0.03) 0%, transparent 30%),
+                radial-gradient(circle at 80% 70%, rgba(72, 202, 228, 0.05) 0%, transparent 30%);
         }
 
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        /* ===== HEADER ===== */
         header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--neon-blue);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(13, 27, 42, 0.8);
+            border-bottom: 1px solid var(--mother-blue);
         }
 
-        .logo {
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .apg-logo {
+            height: 40px;
+            filter: drop-shadow(0 0 5px var(--apg-red));
+        }
+
+        .mother-logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.8rem;
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            background: linear-gradient(90deg, var(--mother-blue), var(--mother-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            letter-spacing: 1px;
         }
 
-        .main-container {
+        .ai-status {
             display: flex;
-            min-height: 80vh;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .status-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        /* ===== MAIN APP LAYOUT ===== */
+        .app-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
         }
 
         /* AI Avatar Panel */
         .avatar-panel {
             width: 300px;
-            border-right: 1px solid rgba(0, 255, 255, 0.3);
             padding: 2rem;
+            border-right: 1px solid rgba(72, 202, 228, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .avatar-container {
             position: relative;
+            width: 200px;
+            height: 200px;
         }
 
         .avatar {
             width: 100%;
-            height: 300px;
-            background: url('https://i.imgur.com/encrypted_robot.png') center/contain no-repeat;
-            position: relative;
-        }
-
-        .avatar-talk {
-            animation: pulse 0.5s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from { transform: translateY(0); }
-            to { transform: translateY(-5px); }
-        }
-
-        .chat-panel {
-            flex: 1;
-            padding: 2rem;
-            position: relative;
-        }
-
-        .message-box {
-            background: rgba(10, 20, 30, 0.7);
-            border: 1px solid var(--neon-blue);
-            border-radius: 8px;
-            padding: 1rem;
-            height: 400px;
-            overflow-y: auto;
-            margin-bottom: 1rem;
-        }
-
-        .user-message {
-            color: var(--neon-blue);
-            margin: 0.5rem 0;
-        }
-
-        .ai-message {
-            color: white;
-            margin: 0.5rem 0;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--neon-blue);
-            color: white;
-            padding: 0.8rem;
-            border-radius: 4px;
-        }
-
-        button {
-            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-            color: black;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 3px solid var(--mother-blue);
+            box-shadow: 0 0 20px var(--mother-blue);
             transition: all 0.3s;
         }
 
-        button:hover {
-            transform: scale(1.05);
+        .avatar.talking {
+            box-shadow: 0 0 30px var(--mother-blue);
+            transform: scale(1.03);
         }
 
-        footer {
+        .hologram-effect {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: radial-gradient(circle at center, transparent 40%, var(--mother-blue) 150%);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .ai-name {
+            font-size: 1.5rem;
+            color: var(--mother-light);
+            margin-top: 1rem;
+        }
+
+        .ai-title {
+            color: var(--mother-blue);
+            font-size: 0.9rem;
             text-align: center;
-            padding: 1rem;
-            border-top: 1px solid rgba(0, 255, 255, 0.3);
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
         }
 
-        /* Particle effects */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
+        /* Chat Panel */
+        .chat-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-box {
+            flex: 1;
+            background: rgba(10, 25, 47, 0.6);
+            border: 1px solid rgba(72, 202, 228, 0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 1rem;
+            border-radius: 12px;
+            line-height: 1.5;
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px solid var(--apg-red);
+            color: var(--white);
+            border-bottom-right-radius: 0;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background: rgba(72, 202, 228, 0.15);
+            border: 1px solid var(--mother-blue);
+            color: var(--mother-light);
+            border-bottom-left-radius: 0;
+        }
+
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .user-message .message-sender {
+            color: var(--apg-yellow);
+        }
+
+        .ai-message .message-sender {
+            color: var(--mother-blue);
+        }
+
+        /* Input Area */
+        .input-area {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .input-field {
+            flex: 1;
+            background: rgba(10, 25, 47, 0.8);
+            border: 1px solid var(--mother-blue);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--white);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--mother-light);
+            box-shadow: 0 0 10px var(--mother-blue);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, var(--mother-blue), var(--mother-deep-blue));
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 0 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 202, 228, 0.4);
+        }
+
+        .send-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0) 45%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 55%
+            );
+            transform: rotate(30deg);
+            transition: all 0.3s;
+        }
+
+        .send-button:hover::after {
+            left: 100%;
+        }
+
+        /* Quick Commands */
+        .quick-commands {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .command-button {
+            background: rgba(72, 202, 228, 0.1);
+            border: 1px solid var(--mother-blue);
+            color: var(--mother-light);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .command-button:hover {
+            background: rgba(72, 202, 228, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 25, 47, 0.9);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid rgba(72, 202, 228, 0.3);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .legal-text {
+            margin-bottom: 0.5rem;
+        }
+
+        .copyright {
+            color: var(--apg-yellow);
+            font-weight: bold;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .avatar-panel {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(72, 202, 228, 0.3);
+                padding: 1.5rem;
+            }
+            
+            .avatar-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="cyber-overlay"></div>
-    <div class="particles" id="particles-js"></div>
+    <!-- Cyberpunk Effects -->
+    <div class="cyber-glows"></div>
+    <div class="scanlines"></div>
 
+    <!-- Header -->
     <header>
-        <div class="logo">MOTHER BRAIN</div>
-        <div>Nero-Lea AI Assistant v2.0</div>
+        <div class="logo-group">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgNTAiPjxwYXRoIGZpbGw9IiNlNjM5NDYiIGQ9Ik0xODAgMTBjLTEwIDAtMTUgNS0yMCAxNWwtMjAgMzAtMjAtMzBjLTUtMTAtMTAtMTUtMjAtMTUtMTAgMC0xNSA1LTIwIDE1bC0yMCAzMC0yMC0zMGMtNS0xMC0xMC0xNS0yMC0xNUgwdjMwYzEwIDAgMTUtNSAyMC0xNWwyMCAzMCAyMC0zMGM1LTEwIDEwLTE1IDIwLTE1czE1IDUgMjAgMTVsMjAgMzAgMjAtMzBjNS0xMCAxMC0xNSAyMC0xNXYtMzBoLTIweiIvPjwvc3ZnPg==" alt="APG Logo" class="apg-logo">
+            <div class="mother-logo">MOTHER AI</div>
+        </div>
+        <div class="ai-status">
+            <div class="status-light"></div>
+            <span>SYSTEMS ONLINE</span>
+        </div>
     </header>
 
-    <div class="main-container">
+    <!-- Main App -->
+    <div class="app-container">
+        <!-- AI Avatar Section -->
         <div class="avatar-panel">
-            <div class="avatar" id="avatar"></div>
-            <h3>NERO-LEA</h3>
-            <p>Your AI Guardian for Mother Brain systems. Ask me anything.</p>
-            <button onclick="startTutorial()">Teach Me</button>
+            <div class="avatar-container">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjkwIiBmaWxsPSIjMDA5NmM3Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI3MCIgZmlsbD0iIzQ4Y2FlNCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjgwIiByPSIxNSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCAxMjBjMC0xMCA0MC0xMCA0MCAwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNSIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==" alt="Nero-Lea AI" class="avatar" id="avatar">
+                <div class="hologram-effect"></div>
+            </div>
+            <div class="ai-name">NERO-LEA</div>
+            <div class="ai-title">Mother AI Interface System v2.3</div>
+            <button class="send-button" onclick="startTutorial()" style="margin-top: 1rem;">
+                INITIATE TUTORIAL
+            </button>
         </div>
 
+        <!-- Chat Interface -->
         <div class="chat-panel">
             <div class="message-box" id="message-box">
-                <div class="ai-message">Nero-Lea: Initializing Mother Brain interface... Systems nominal. How can I assist you today?</div>
+                <div class="message ai-message">
+                    <span class="message-sender">NERO-LEA</span>
+                    <span class="message-text">Mother AI systems engaged. Query authorization: GRANTED. How shall we proceed?</span>
+                </div>
             </div>
-            <div class="input-group">
-                <input type="text" id="user-input" placeholder="Ask about exploits, finance, laws..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()">Send</button>
+            
+            <div class="input-area">
+                <input type="text" class="input-field" id="user-input" placeholder="Type your command or question...">
+                <button class="send-button" id="send-button" onclick="sendMessage()">
+                    SEND
+                </button>
+            </div>
+            
+            <div class="quick-commands">
+                <div class="command-button" onclick="insertCommand('scan network')">NETWORK SCAN</div>
+                <div class="command-button" onclick="insertCommand('exploit CVE-')">CVE LOOKUP</div>
+                <div class="command-button" onclick="insertCommand('analyze finances')">FINANCIAL ANALYSIS</div>
+                <div class="command-button" onclick="insertCommand('legal research')">LEGAL RESEARCH</div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer>
-        MOTHER-AI and its agent Nero-Lea are proprietary technologies of <br>
-        © 2024 American Power Global Corporation. All rights reserved.
+        <div class="legal-text">
+            MOTHER-AI and its agent Nero-Lea are proprietary technologies of
+        </div>
+        <div class="copyright">
+            AMERICAN POWER GLOBAL CORPORATION
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        // Animated particles background
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: "#0ff0fc" },
-                line_linked: { enable: true, distance: 150, color: "#0ff0fc", opacity: 0.4, width: 1 }
-            }
-        });
-
-        // Avatar animation
+        // ===== CORE FUNCTIONALITY =====
+        const API_ENDPOINT = "https://mother-brain.onrender.com";
         const avatar = document.getElementById('avatar');
-        let isTalking = false;
-
-        function animateAvatar() {
-            if (isTalking) {
-                avatar.classList.add('avatar-talk');
-            } else {
-                avatar.classList.remove('avatar-talk');
+        const messageBox = document.getElementById('message-box');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        
+        // Speech synthesis (for AI voice)
+        const synth = window.speechSynthesis;
+        
+        // ===== MESSAGE HANDLING =====
+        function addMessage(sender, text) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `
+                <span class="message-sender">${sender === 'user' ? 'YOU' : 'NERO-LEA'}</span>
+                <span class="message-text">${text}</span>
+            `;
+            messageBox.appendChild(messageDiv);
+            messageBox.scrollTop = messageBox.scrollHeight;
+            
+            // Speak AI messages
+            if (sender === 'ai') {
+                speak(text);
             }
         }
-
-        // Chat functions
-        function sendMessage() {
-            const input = document.getElementById('user-input');
-            const messageBox = document.getElementById('message-box');
+        
+        function speak(text) {
+            if (synth.speaking) synth.cancel();
             
-            if (input.value.trim() === '') return;
-
-            // Add user message
-            messageBox.innerHTML += `<div class="user-message">You: ${input.value}</div>`;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.9;
+            utterance.pitch = 0.8;
+            utterance.voice = synth.getVoices().find(v => v.name.includes('Zira') || v.name.includes('David'));
             
-            // Simulate AI response (replace with actual API call)
-            isTalking = true;
-            animateAvatar();
+            // Animate avatar while speaking
+            avatar.classList.add('talking');
+            utterance.onend = () => {
+                avatar.classList.remove('talking');
+            };
             
-            setTimeout(() => {
-                messageBox.innerHTML += `<div class="ai-message">Nero-Lea: Processing your query about "${input.value}"... (Connected to Mother Brain API)</div>`;
-                messageBox.scrollTop = messageBox.scrollHeight;
-                isTalking = false;
-                animateAvatar();
-            }, 1000);
-            
-            input.value = '';
+            synth.speak(utterance);
         }
-
+        
+        // ===== API INTEGRATION =====
+        function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            
+            addMessage('user', text);
+            userInput.value = '';
+            
+            // Show thinking indicator
+            const thinkingMsg = addMessage('ai', "Processing...");
+            
+            // Call Mother Brain API
+            fetch(`${API_ENDPOINT}/ask?q=${encodeURIComponent(text)}`)
+                .then(response => response.json())
+                .then(data => {
+                    messageBox.removeChild(thinkingMsg);
+                    addMessage('ai', typeof data === 'string' ? data : formatApiResponse(data));
+                })
+                .catch(error => {
+                    messageBox.removeChild(thinkingMsg);
+                    addMessage('ai', `SYSTEM ERROR: ${error.message}`);
+                });
+        }
+        
+        function formatApiResponse(data) {
+            if (typeof data === 'string') return data;
+            
+            // Format JSON responses nicely
+            if (data.error) {
+                return `ERROR: ${data.error}`;
+            } else if (data.action) {
+                return `ACTION: ${data.action}\n${JSON.stringify(data, null, 2)}`;
+            }
+            return JSON.stringify(data, null, 2);
+        }
+        
+        // ===== UI HELPERS =====
+        function insertCommand(command) {
+            userInput.value = command;
+            userInput.focus();
+        }
+        
         function handleKeyPress(e) {
             if (e.key === 'Enter') sendMessage();
         }
-
-        // Tutorial mode
+        
+        // ===== TUTORIAL =====
         function startTutorial() {
-            const messageBox = document.getElementById('message-box');
             const steps = [
-                "Nero-Lea: Welcome to Mother Brain. I'm your guide.",
-                "Nero-Lea: This tool can analyze security threats, financial data, and legal documents.",
-                "Nero-Lea: Try asking: 'How do I scan for Linux vulnerabilities?'",
-                "Nero-Lea: Or: 'Explain GDPR Article 17 in simple terms'",
-                "Nero-Lea: For cybersecurity, use commands like: 'exploit CVE-2023-1234'"
+                "Welcome to MOTHER AI - American Power Global's advanced intelligence system.",
+                "I am Nero-Lea, your AI interface assistant.",
+                "You can use me to:",
+                "1. Analyze cybersecurity threats (e.g., 'scan network', 'exploit CVE-2023-1234')",
+                "2. Process financial data (e.g., 'analyze stock AAPL')",
+                "3. Conduct legal research (e.g., 'GDPR compliance requirements')",
+                "Try a command or ask for help at any time."
             ];
-
-            messageBox.innerHTML = '';
-            let delay = 0;
             
-            steps.forEach(step => {
+            // Clear chat
+            messageBox.innerHTML = '';
+            
+            // Add tutorial steps with delays
+            steps.forEach((step, i) => {
                 setTimeout(() => {
-                    isTalking = true;
-                    animateAvatar();
-                    messageBox.innerHTML += `<div class="ai-message">${step}</div>`;
-                    messageBox.scrollTop = messageBox.scrollHeight;
-                    
-                    setTimeout(() => {
-                        isTalking = false;
-                        animateAvatar();
-                    }, 1500);
-                }, delay);
-                
-                delay += 2500;
+                    addMessage('ai', step);
+                }, i * 2500);
             });
         }
-
-        // TODO: Integrate with your Render API
-        async function callMotherBrainAPI(query) {
-            const response = await fetch(`https://mother-brain.onrender.com/ask?q=${encodeURIComponent(query)}`);
-            return await response.json();
-        }
+        
+        // Initialize
+        userInput.addEventListener('keypress', handleKeyPress);
     </script>
 </body>
 </html>
