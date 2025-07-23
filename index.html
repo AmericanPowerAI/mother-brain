@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTHER BRAIN | American Power Global</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-purple: #ff00ff;
+            --dark-bg: #0a0a12;
+            --grid-color: rgba(0, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            background: var(--dark-bg);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .cyber-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 60%, rgba(0, 255, 255, 0.03));
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--neon-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 80vh;
+        }
+
+        /* AI Avatar Panel */
+        .avatar-panel {
+            width: 300px;
+            border-right: 1px solid rgba(0, 255, 255, 0.3);
+            padding: 2rem;
+            position: relative;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 300px;
+            background: url('https://i.imgur.com/encrypted_robot.png') center/contain no-repeat;
+            position: relative;
+        }
+
+        .avatar-talk {
+            animation: pulse 0.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: translateY(0); }
+            to { transform: translateY(-5px); }
+        }
+
+        .chat-panel {
+            flex: 1;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .message-box {
+            background: rgba(10, 20, 30, 0.7);
+            border: 1px solid var(--neon-blue);
+            border-radius: 8px;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .user-message {
+            color: var(--neon-blue);
+            margin: 0.5rem 0;
+        }
+
+        .ai-message {
+            color: white;
+            margin: 0.5rem 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            padding: 0.8rem;
+            border-radius: 4px;
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            color: black;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.3);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Particle effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+    </style>
+</head>
+<body>
+    <div class="cyber-overlay"></div>
+    <div class="particles" id="particles-js"></div>
+
+    <header>
+        <div class="logo">MOTHER BRAIN</div>
+        <div>Nero-Lea AI Assistant v2.0</div>
+    </header>
+
+    <div class="main-container">
+        <div class="avatar-panel">
+            <div class="avatar" id="avatar"></div>
+            <h3>NERO-LEA</h3>
+            <p>Your AI Guardian for Mother Brain systems. Ask me anything.</p>
+            <button onclick="startTutorial()">Teach Me</button>
+        </div>
+
+        <div class="chat-panel">
+            <div class="message-box" id="message-box">
+                <div class="ai-message">Nero-Lea: Initializing Mother Brain interface... Systems nominal. How can I assist you today?</div>
+            </div>
+            <div class="input-group">
+                <input type="text" id="user-input" placeholder="Ask about exploits, finance, laws..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        MOTHER-AI and its agent Nero-Lea are proprietary technologies of <br>
+        © 2024 American Power Global Corporation. All rights reserved.
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Animated particles background
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#0ff0fc" },
+                line_linked: { enable: true, distance: 150, color: "#0ff0fc", opacity: 0.4, width: 1 }
+            }
+        });
+
+        // Avatar animation
+        const avatar = document.getElementById('avatar');
+        let isTalking = false;
+
+        function animateAvatar() {
+            if (isTalking) {
+                avatar.classList.add('avatar-talk');
+            } else {
+                avatar.classList.remove('avatar-talk');
+            }
+        }
+
+        // Chat functions
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const messageBox = document.getElementById('message-box');
+            
+            if (input.value.trim() === '') return;
+
+            // Add user message
+            messageBox.innerHTML += `<div class="user-message">You: ${input.value}</div>`;
+            
+            // Simulate AI response (replace with actual API call)
+            isTalking = true;
+            animateAvatar();
+            
+            setTimeout(() => {
+                messageBox.innerHTML += `<div class="ai-message">Nero-Lea: Processing your query about "${input.value}"... (Connected to Mother Brain API)</div>`;
+                messageBox.scrollTop = messageBox.scrollHeight;
+                isTalking = false;
+                animateAvatar();
+            }, 1000);
+            
+            input.value = '';
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        // Tutorial mode
+        function startTutorial() {
+            const messageBox = document.getElementById('message-box');
+            const steps = [
+                "Nero-Lea: Welcome to Mother Brain. I'm your guide.",
+                "Nero-Lea: This tool can analyze security threats, financial data, and legal documents.",
+                "Nero-Lea: Try asking: 'How do I scan for Linux vulnerabilities?'",
+                "Nero-Lea: Or: 'Explain GDPR Article 17 in simple terms'",
+                "Nero-Lea: For cybersecurity, use commands like: 'exploit CVE-2023-1234'"
+            ];
+
+            messageBox.innerHTML = '';
+            let delay = 0;
+            
+            steps.forEach(step => {
+                setTimeout(() => {
+                    isTalking = true;
+                    animateAvatar();
+                    messageBox.innerHTML += `<div class="ai-message">${step}</div>`;
+                    messageBox.scrollTop = messageBox.scrollHeight;
+                    
+                    setTimeout(() => {
+                        isTalking = false;
+                        animateAvatar();
+                    }, 1500);
+                }, delay);
+                
+                delay += 2500;
+            });
+        }
+
+        // TODO: Integrate with your Render API
+        async function callMotherBrainAPI(query) {
+            const response = await fetch(`https://mother-brain.onrender.com/ask?q=${encodeURIComponent(query)}`);
+            return await response.json();
+        }
+    </script>
+</body>
+</html>
