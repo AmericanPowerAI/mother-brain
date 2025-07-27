@@ -1,24 +1,27 @@
-# Web Framework and Server
-flask>=2.3.0
-flask-limiter==3.5.0
-flask-talisman==1.1.0
-gunicorn==21.2.0
+# ===== WEB FRAMEWORK & SERVER =====
+flask>=2.3.0          # Core web server for API endpoints (mother.py routes)
+flask-limiter==3.5.0  # Rate limiting for API security (DDoS protection)
+flask-talisman==1.1.0 # HTTPS enforcement & security headers (mother.py app init)
+gunicorn==21.2.0      # Production WSGI server (render.yaml web service)
 
-# API and Network
-requests>=2.31.0
-PyGithub==2.3.0
-scapy==2.5.0
+# ===== API & NETWORK =====
+requests>=2.31.0      # HTTP requests for CVE feeds and external APIs
+PyGithub==2.3.0       # GitHub API integration (knowledge storage)
+scapy==2.5.0          # Network packet manipulation (pentest scanning)
 
-# Security and Crypto
-pycryptodome==3.20.0
+# ===== SECURITY =====
+pycryptodome==3.20.0  # Cryptographic functions (exploit generation/validation)
 
-# System Monitoring
-psutil==5.9.8
+# ===== SYSTEM MONITORING =====
+psutil==5.9.8         # System resource tracking (health monitoring thread)
 
-# AI/ML Components (only if using heart.py)
-# Uncomment these if you need AI functionality
-# sentence-transformers>=2.2.2
-# transformers>=4.36.2
-# torch>=2.2.1
-# numpy>=1.26.4
-# tqdm>=4.66.2
+# ===== AI/ML CORE =====
+sentence-transformers>=2.2.2  # Text embeddings (knowledge_compressor.py)
+transformers>=4.36.2          # NLP models (heart.py neural core)
+torch>=2.2.1                  # Deep learning framework (heart.py training)
+numpy>=1.26.4                 # Numerical computing (all ML operations)
+tqdm>=4.66.2                  # Progress bars (model training visuals)
+
+# ===== OPTIMIZED TORCH INSTALL =====
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.2.1+cpu              # Lighter CPU-only PyTorch build
