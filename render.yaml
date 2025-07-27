@@ -2,7 +2,10 @@ services:
   - type: web
     name: mother-brain
     runtime: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: |
+      pip install --upgrade pip
+      pip install numpy==1.26.4  # Explicit install first
+      pip install -r requirements.txt --force-reinstall
     startCommand: python mother.py
     envVars:
       - key: HACKING_MODE
