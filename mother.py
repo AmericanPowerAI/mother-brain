@@ -273,7 +273,6 @@ class MotherBrain:
             'https://www.bleepingcomputer.com/feed/'
         ]
     }
-    }
 
     def __init__(self):
         self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
