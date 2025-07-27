@@ -1,29 +1,24 @@
 # Web Framework and Server
-flask>=2.3.0          # Core web framework (mother.py, index.html backend)
-flask-limiter==3.5.0  # Rate limiting endpoints (mother.py)
-flask-talisman==1.1.0 # Security headers middleware (mother.py)
-gunicorn==21.2.0      # Production WSGI server (render.yaml)
+flask>=2.3.0
+flask-limiter==3.5.0
+flask-talisman==1.1.0
+gunicorn==21.2.0
 
 # API and Network
-requests>=2.31.0      # HTTP requests (mother.py API calls)
-PyGithub==2.3.0       # GitHub API integration (mother.py knowledge storage)
-scapy==2.5.0          # Network analysis (mother.py scanning features)
+requests>=2.31.0
+PyGithub==2.3.0
+scapy==2.5.0
 
 # Security and Crypto
-pycryptodome==3.20.0  # Cryptographic operations (mother.py security features)
+pycryptodome==3.20.0
 
 # System Monitoring
-psutil==5.9.8         # System resource monitoring (mother.py health checks)
-
-# Data Processing
-lzma                  # Compression for knowledge storage (mother.py _save_to_github)
+psutil==5.9.8
 
 # AI/ML Components (only if using heart.py)
-sentence-transformers>=2.2.2  # Semantic embeddings (knowledge_compressor.py)
-transformers>=4.36.2          # NLP models (heart.py if used)
-torch>=2.2.1                  # ML framework (heart.py if used)
-numpy>=1.26.4                 # Numerical computing (heart.py/knowledge_compressor.py)
-tqdm>=4.66.2                  # Progress bars (knowledge_compressor.py)
-
-# Utilities
-python-dotenv>=1.0.0  # Environment variables (recommended for config)
+# Uncomment these if you need AI functionality
+# sentence-transformers>=2.2.2
+# transformers>=4.36.2
+# torch>=2.2.1
+# numpy>=1.26.4
+# tqdm>=4.66.2
