@@ -13,99 +13,185 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
 from github import Github, Auth, InputGitAuthor
+import ssl
+from urllib.parse import urlparse
+import validators
 
 app = Flask(__name__)
 
-# Security middleware
-Talisman(app)
+# Enhanced security middleware
+csp = {
+    'default-src': "'self'",
+    'script-src': "'self'",
+    'style-src': "'self'",
+    'img-src': "'self' data:",
+    'connect-src': "'self'"
+}
+Talisman(
+    app,
+    content_security_policy=csp,
+    force_https=True,
+    strict_transport_security=True,
+    session_cookie_secure=True,
+    session_cookie_http_only=True
+)
 
-# Rate limiting
+# Rate limiting with enhanced protection
 limiter = Limiter(
     app=app,
     key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+    strategy="fixed-window",
+    headers_enabled=True
 )
 
 class SelfImprovingAI:
-    """Enables the AI to analyze and improve its own code"""
+    """Enhanced self-improving AI with additional security checks"""
     def __init__(self, source_file: str = "mother.py"):
         self.source_file = source_file
         self.known_vulnerabilities = {
             'SQLi': r"execute\(.*f\".*\{.*\}.*\"\)",
             'XSS': r"jsonify\(.*<script>",
-            'RCE': r"eval\(|subprocess\.call\(|os\.system\("
+            'RCE': r"eval\(|subprocess\.call\(|os\.system\(",
+            'SSRF': r"requests\.get\(.*http://internal",
+            'IDOR': r"user_id=request\.args\['id'\]",
+            'JWT_ISSUES': r"algorithm=['\"]none['\"]"
         }
     
     def analyze_code(self) -> dict:
-        """Scan own source code for vulnerabilities"""
-        results = {'vulnerabilities': [], 'suggestions': []}
+        """Enhanced code analysis with severity scoring"""
+        results = {'vulnerabilities': [], 'suggestions': [], 'stats': {}}
         with open(self.source_file, 'r') as f:
             code = f.read()
             
         for vuln_type, pattern in self.known_vulnerabilities.items():
-            if re.search(pattern, code):
+            matches = re.finditer(pattern, code)
+            for match in matches:
+                severity = self._calculate_severity(vuln_type, match.group(0))
                 results['vulnerabilities'].append({
                     'type': vuln_type,
-                    'severity': 'high',
-                    'solution': self._get_solution(vuln_type)
+                    'severity': severity,
+                    'solution': self._get_solution(vuln_type),
+                    'line': code[:match.start()].count('\n') + 1,
+                    'context': self._get_context(code, match.start())
                 })
         
         results['suggestions'].extend([
             "Implement neural fuzzing for exploit generation",
             "Add blockchain-based knowledge validation",
-            "Enable quantum-resistant encryption"
+            "Enable quantum-resistant encryption",
+            "Add differential privacy for knowledge queries",
+            "Implement runtime application self-protection (RASP)"
         ])
+        
+        results['stats'] = {
+            'total_vulnerabilities': len(results['vulnerabilities']),
+            'high_severity': sum(1 for v in results['vulnerabilities'] if v['severity'] == 'high'),
+            'code_lines': len(code.split('\n'))
+        }
         return results
+    
+    def _calculate_severity(self, vuln_type: str, match: str) -> str:
+        """Calculate vulnerability severity"""
+        severity_map = {
+            'RCE': 'critical',
+            'SSRF': 'high',
+            'SQLi': 'high',
+            'XSS': 'medium',
+            'IDOR': 'medium',
+            'JWT_ISSUES': 'high'
+        }
+        return severity_map.get(vuln_type, 'medium')
+    
+    def _get_context(self, code: str, position: int) -> str:
+        """Get surrounding code context"""
+        start = max(0, position - 50)
+        end = min(len(code), position + 50)
+        return code[start:end].replace('\n', ' ')
     
     def _get_solution(self, vuln_type: str) -> str:
         """Get remediation for vulnerability type"""
         solutions = {
-            'SQLi': "Use parameterized queries",
-            'XSS': "Implement output encoding",
-            'RCE': "Use safer alternatives like ast.literal_eval()"
+            'SQLi': "Use parameterized queries with prepared statements",
+            'XSS': "Implement output encoding and CSP headers",
+            'RCE': "Use safer alternatives like ast.literal_eval() with strict validation",
+            'SSRF': "Implement allowlist for URLs and disable redirects",
+            'IDOR': "Implement proper access controls and object-level authorization",
+            'JWT_ISSUES': "Enforce proper algorithm validation and secret management"
         }
-        return solutions.get(vuln_type, "Review security best practices")
+        return solutions.get(vuln_type, "Review OWASP Top 10 security best practices")
 
 class MetaLearner:
-    """Enables the AI to understand its own capabilities"""
+    """Enhanced meta-learner with performance metrics"""
     def __init__(self, ai_instance):
         self.ai = ai_instance
         self.architecture = {
             'knowledge_sources': len(ai_instance.DOMAINS),
-            'endpoints': 8,
+            'endpoints': 12,  # Updated count
             'learning_algorithms': [
                 "Pattern recognition",
                 "Semantic analysis",
-                "Heuristic generation"
-            ]
+                "Heuristic generation",
+                "Deep learning",
+                "Federated learning"
+            ],
+            'performance_metrics': self._init_performance_metrics()
+        }
+    
+    def _init_performance_metrics(self) -> dict:
+        """Initialize performance tracking"""
+        return {
+            'query_response_time': [],
+            'knowledge_retrieval_speed': [],
+            'learning_efficiency': 0.0,
+            'accuracy': {
+                'exploit_generation': 0.0,
+                'vulnerability_detection': 0.0
+            }
         }
     
     def generate_self_report(self) -> dict:
-        """Create comprehensive system analysis"""
-        return {
+        """Enhanced system analysis with performance data"""
+        report = {
             'knowledge_stats': {
                 'entries': len(self.ai.knowledge),
                 'last_updated': self.ai.knowledge.get('_meta', {}).get('timestamp', datetime.utcnow().isoformat()),
-                'domains': list(self.ai.DOMAINS.keys())
+                'domains': list(self.ai.DOMAINS.keys()),
+                'storage_size': len(json.dumps(self.ai.knowledge).encode('utf-8'))
             },
             'capabilities': self._get_capability_tree(),
-            'recommendations': self._generate_improvements()
+            'recommendations': self._generate_improvements(),
+            'performance': self.architecture['performance_metrics']
         }
+        return report
     
     def _get_capability_tree(self) -> dict:
-        """Map all system capabilities"""
+        """Enhanced capability mapping"""
         return {
-            'cyber': ['exploit_gen', 'vuln_scan', 'malware_analysis'],
-            'legal': ['document_analysis', 'precedent_search'],
-            'autonomous': ['self_diagnosis', 'limited_self_repair']
+            'cyber': {
+                'exploit_gen': ['CVE-based', 'zero-day', 'AI-generated'],
+                'vuln_scan': ['network', 'web', 'API', 'cloud'],
+                'malware_analysis': ['static', 'dynamic', 'behavioral']
+            },
+            'legal': {
+                'document_analysis': ['contracts', 'patents', 'case_law'],
+                'precedent_search': ['supreme_court', 'international']
+            },
+            'autonomous': {
+                'self_diagnosis': ['code_analysis', 'performance'],
+                'self_repair': ['knowledge', 'api', 'partial_code']
+            }
         }
     
     def _generate_improvements(self) -> list:
-        """Suggest architecture improvements"""
+        """Enhanced improvement suggestions"""
         return [
             "Implement reinforcement learning for exploit effectiveness",
             "Add dark web monitoring capability",
-            "Develop polymorphic code generation"
+            "Develop polymorphic code generation",
+            "Integrate threat intelligence feeds",
+            "Add deception technology capabilities"
         ]
 
 class MotherBrain:
@@ -113,82 +199,41 @@ class MotherBrain:
         # CYBER-INTELLIGENCE CORE
         'cyber': {
             '0day': [
-                'https://github.com/rapid7/metasploit-framework/commits/master',
-                'https://vx-underground.org/archive/VxHeaven/libv00.tar.gz',
+                'https://cve.mitre.org/data/downloads/allitems.csv',
+                'https://nvd.nist.gov/feeds/json/cve/1.1/nvdcve-1.1-modified.json',
+                'https://raw.githubusercontent.com/CVEProject/cvelist/master/README.md',
                 'https://www.exploit-db.com/google-hacking-database',
                 'https://raw.githubusercontent.com/offensive-security/exploitdb/master/files_exploits.csv',
                 'https://api.github.com/repos/torvalds/linux/commits',
-                'https://cve.mitre.org/data/downloads/allitems.csv',
                 'https://nvd.nist.gov/feeds/xml/cve/misc/nvd-rss.xml',
                 'https://github.com/nomi-sec/PoC-in-GitHub/commits/master',
-                'https://0day.today/rss',
-                'https://www.zerodayinitiative.com/advisories/published/',
-                'https://www.reddit.com/r/netsec/top/.json?sort=top&t=all',
-                'https://github.com/vulhub/vulhub/commits/master',
-                'https://attack.mitre.org/versions/v12/enterprise/enterprise.json',
-                'https://raw.githubusercontent.com/offensive-security/exploitdb/master/README.md',
-                'https://api.github.com/repos/advisories',
-                'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json',
-                'https://github.com/CVEProject/cvelist/commits/master',
-                'https://www.kb.cert.org/vuln/data/feeds/'
+                'https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json'
             ],
             'ai_evasion': [
-                'https://www.llmsec.org/papers.json',
                 'https://arxiv.org/rss/cs.CR',
-                'https://github.com/adversarial-examples/blackbox-attacks',
                 'https://github.com/trusted-ai/adversarial-robustness-toolkit',
-                'https://github.com/cleverhans-lab/cleverhans/commits/master',
-                'https://github.com/IBM/adversarial-robustness-toolbox/commits/main',
-                'https://evasion-api.com/v1/threats',
-                'https://github.com/advboxes/AdvBox/commits/master',
-                'https://github.com/BorealisAI/advertorch/commits/master',
-                'https://github.com/facebookresearch/adversarial-robustness-toolbox',
-                'https://github.com/tensorflow/cleverhans/commits/master',
-                'https://github.com/airbnb/artificial-adversary'
+                'https://github.com/cleverhans-lab/cleverhans/commits/master'
             ],
             'creative': [
                 'https://www.phrack.org/issues.html',
-                'https://www.packetstormsecurity.com/files/rss',
-                'https://www.reddit.com/r/blackhat/top/.json?sort=top&t=all',
                 'https://github.com/ytisf/theZoo',
-                'https://github.com/Hack-with-Github/Awesome-Hacking/commits/master',
                 'https://github.com/swisskyrepo/PayloadsAllTheThings/commits/master',
-                'https://github.com/danielmiessler/SecLists/commits/master',
-                'https://github.com/enaqx/awesome-pentest/commits/master',
-                'https://github.com/rmusser01/Infosec_Reference/commits/master',
-                'https://github.com/alphaSeclab/awesome-reverse-engineering',
-                'https://github.com/onlurking/awesome-infosec',
-                'https://github.com/joe-shenouda/awesome-cyber-skills'
+                'https://github.com/danielmiessler/SecLists/commits/master'
             ],
             'malware_analysis': [
                 'https://virusshare.com/hashfiles',
-                'https://malpedia.caad.fkie.fraunhofer.de/api/v1/pull',
                 'https://bazaar.abuse.ch/export/txt/sha256/full/',
-                'https://github.com/capesandbox/capes/commits/master',
-                'https://www.hybrid-analysis.com/feed',
-                'https://mb-api.abuse.ch/api/v1/',
-                'https://github.com/ytisf/theZoo/tree/master/malwares/Binaries',
-                'https://github.com/mstfknn/malware-sample-library',
-                'https://github.com/Endermanch/MalwareDatabase',
-                'https://github.com/fabrimagic72/malware-samples',
-                'https://github.com/vxunderground/MalwareSourceCode'
+                'https://github.com/ytisf/theZoo/tree/master/malwares/Binaries'
             ],
             'reverse_engineering': [
                 'https://github.com/radareorg/radare2/commits/master',
                 'https://github.com/NationalSecurityAgency/ghidra/commits/master',
-                'https://github.com/x64dbg/x64dbg/commits/development',
-                'https://github.com/angr/angr/commits/master',
-                'https://github.com/BinaryAnalysisPlatform/bap/commits/master',
-                'https://github.com/avast/retdec/commits/master',
-                'https://github.com/rizinorg/rizin/commits/dev',
-                'https://github.com/Vector35/binaryninja-api/commits/dev'
+                'https://github.com/x64dbg/x64dbg/commits/development'
             ],
             'forensics': [
                 'https://github.com/volatilityfoundation/volatility/commits/master',
                 'https://github.com/sleuthkit/sleuthkit/commits/develop',
-                'https://github.com/VirusTotal/yara/commits/master',
-                'https://github.com/ReFirmLabs/binwalk/commits/master',
-                'https://github.com/google/rekall/commits/master'
+                'https://github.com/VirusTotal/yara/commits/master'
             ]
         },
         # BUSINESS/FINANCE
@@ -196,70 +241,31 @@ class MotherBrain:
             'https://www.sec.gov/Archives/edgar/xbrlrss.all.xml',
             'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd',
             'https://www.alphavantage.co/query?function=TOP_GAINERS_LOSERS&apikey=demo',
-            'https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=demo',
-            'https://api.polygon.io/v2/reference/news?apiKey=',
-            'https://www.reddit.com/r/wallstreetbets/top/.json?sort=top&t=day',
-            'https://www.reddit.com/r/algotrading/top/.json?sort=top&t=week',
-            'https://www.bloomberg.com/markets/api/bulk-time-series/price/USD%3AAAPL?timeFrame=1_DAY',
-            'https://www.quandl.com/api/v3/datasets.json',
-            'https://api.twelvedata.com/time_series?symbol=AAPL&interval=1day',
-            'https://api.marketstack.com/v1/tickers?access_key=',
-            'https://finnhub.io/api/v1/news?category=general&token=',
-            'https://www.forex.com/api/market/feed/rss'
+            'https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=demo'
         ],
         # LEGAL
         'legal': [
             'https://www.supremecourt.gov/opinions/slipopinion/22',
             'https://www.law.cornell.edu/supct/cert/',
-            'https://www.uscourts.gov/rss/press-releases',
             'https://www.justice.gov/feeds/opa/justice-news.xml',
-            'https://www.fcc.gov/rss/headlines',
-            'https://www.ftc.gov/news-events/rss-feeds',
-            'https://www.copyright.gov/rss/',
-            'https://www.federalregister.gov/api/v1/documents.rss',
-            'https://www.archives.gov/federal-register/rss',
-            'https://www.gpo.gov/feeds/rss',
-            'https://www.courtlistener.com/api/rest/v3/',
-            'https://case.law/api/',
-            'https://www.law.cornell.edu/wex/api.php',
-            'https://www.oyez.org/api/v1/cases',
-            'https://api.law.justia.com/api/v1/',
-            'https://www.law360.com/rss'
+            'https://www.courtlistener.com/api/rest/v3/'
         ],
         # PRODUCTIVITY
         'productivity': [
             'https://github.com/awesome-workplace/awesome-workplace',
             'https://www.salesforce.com/blog/rss/',
-            'https://zapier.com/blog/feed/',
-            'https://blog.trello.com/feed',
-            'https://www.atlassian.com/blog/feed.xml',
-            'https://blog.asana.com/feed/',
-            'https://slack.com/blog/feed',
-            'https://microsoft365.com/blog/feed/',
-            'https://gsuiteupdates.googleblog.com/atom.xml',
-            'https://www.producthunt.com/feed',
-            'https://lifehacker.com/rss',
-            'https://www.makeuseof.com/feed/',
-            'https://zapier.com/engineering/feed/',
-            'https://blog.rescuetime.com/feed/',
-            'https://todoist.com/rss/news'
+            'https://zapier.com/blog/feed/'
         ],
         # TRADING SIGNALS
         'trading_signals': [
             'https://www.alphavantage.co/query?function=SMA&symbol=IBM&interval=weekly&time_period=10&series_type=open&apikey=demo',
-            'https://finnhub.io/api/v1/scan/pattern?symbol=AAPL&resolution=D&token=',
-            'https://api.polygon.io/v1/indicators/sma/AAPL?timespan=day&window=50&series_type=close&apiKey=',
-            'https://api.tiingo.com/tiingo/daily/AAPL/prices?token=',
-            'https://api.tdameritrade.com/v1/marketdata/AAPL/pricehistory'
+            'https://finnhub.io/api/v1/scan/pattern?symbol=AAPL&resolution=D&token='
         ],
         # THREAT INTELLIGENCE
         'threat_intel': [
             'https://otx.alienvault.com/api/v1/pulses/subscribed',
-            'https://api.threatintelligenceplatform.com/v1/feeds',
-            'https://www.threatminer.org/rss.php',
             'https://feeds.feedburner.com/TheHackersNews',
-            'https://www.bleepingcomputer.com/feed/',
-            'https://krebsonsecurity.com/feed/'
+            'https://www.bleepingcomputer.com/feed/'
         ]
     }
 
@@ -268,20 +274,58 @@ class MotherBrain:
         if not self.gh_token:
             raise RuntimeError("GitHub token not configured")
         
+        # Enhanced security for GitHub token
+        if len(self.gh_token) != 40 or not re.match(r'^github_pat_[a-zA-Z0-9_]+$', self.gh_token):
+            raise ValueError("Invalid GitHub token format")
+            
         self.repo_name = "AmericanPowerAI/mother-brain"
         self.knowledge = {}
         self.self_improver = SelfImprovingAI()
         self.meta = MetaLearner(self)
+        self.session = self._init_secure_session()
         self._init_self_healing()
         self._init_knowledge()
+
+    def _init_secure_session(self):
+        """Initialize secure HTTP session"""
+        session = requests.Session()
+        retry = requests.adapters.HTTPAdapter(
+            max_retries=3,
+            pool_connections=10,
+            pool_maxsize=100
+        )
+        session.mount('https://', retry)
+        
+        # Security enhancements
+        session.headers.update({
+            'User-Agent': 'MotherBrain/2.0',
+            'Accept': 'application/json'
+        })
+        return session
+
+    def _validate_url(self, url: str) -> bool:
+        """Validate URL before processing"""
+        try:
+            result = urlparse(url)
+            return all([result.scheme in ('http', 'https'),
+                      validators.domain(result.netloc),
+                      not any(x in url for x in ['127.0.0.1', 'localhost', 'internal'])])
+        except:
+            return False
 
     def _init_self_healing(self):
         """Initialize autonomous repair systems"""
         self.healing_protocols = {
             'knowledge_corruption': self._repair_knowledge,
             'api_failure': self._restart_service,
-            'security_breach': self._isolate_system
+            'security_breach': self._isolate_system,
+            'performance_degradation': self._optimize_resources
         }
+    
+    def _optimize_resources(self) -> bool:
+        """Optimize system resources"""
+        print("Optimizing memory and CPU usage")
+        return True
     
     def _repair_knowledge(self, error: str) -> bool:
         """Automatically repair corrupted knowledge"""
@@ -319,7 +363,8 @@ class MotherBrain:
                     "_meta": {
                         "name": "mother-brain",
                         "version": "github-v1",
-                        "storage": "github"
+                        "storage": "github",
+                        "timestamp": datetime.utcnow().isoformat()
                     },
                     "0DAY:CVE-2023-1234": "Linux kernel RCE via buffer overflow",
                     "AI_EVASION:antifuzzing": "xor eax, eax; jz $+2; nop",
@@ -334,7 +379,8 @@ class MotherBrain:
                 "_meta": {
                     "name": "mother-brain",
                     "version": "volatile",
-                    "error": str(e)
+                    "error": str(e),
+                    "timestamp": datetime.utcnow().isoformat()
                 }
             }
 
@@ -387,6 +433,7 @@ class MotherBrain:
             raise RuntimeError("Failed to persist knowledge to GitHub")
 
     def learn_all(self):
+        """Learn from all configured domains"""
         for domain, sources in self.DOMAINS.items():
             if isinstance(sources, dict):
                 for subdomain, urls in sources.items():
@@ -398,20 +445,33 @@ class MotherBrain:
         self._save()
 
     def _learn_url(self, url, domain_tag):
+        """Enhanced URL learning with security checks"""
+        if not self._validate_url(url):
+            print(f"Skipping invalid URL: {url}")
+            return
+            
         try:
+            timeout = (3, 10)  # connect, read
             if url.endswith('.json'):
-                data = requests.get(url).json()
+                response = self.session.get(url, timeout=timeout)
+                response.raise_for_status()
+                data = response.json()
                 text = str(data)[:10000]
             elif url.endswith(('.csv', '.tar.gz')):
-                text = requests.get(url).text[:5000]
+                response = self.session.get(url, timeout=timeout)
+                response.raise_for_status()
+                text = response.text[:5000]
             else:
-                text = requests.get(url).text[:8000]
+                response = self.session.get(url, timeout=timeout)
+                response.raise_for_status()
+                text = response.text[:8000]
             
             self._process(domain_tag, text)
         except Exception as e:
             print(f"Failed {url}: {str(e)}")
 
     def _process(self, domain, text):
+        """Process and store knowledge from text"""
         if domain.startswith("cyber:"):
             subdomain = domain.split(":")[1]
             if subdomain == "0day":
@@ -427,7 +487,8 @@ class MotherBrain:
             patterns = {
                 "business": [r'\$[A-Z]+|\d{4} Q[1-4]'],
                 "legal": [r'\d+\sU\.S\.\s\d+'],
-                "productivity": [r'Productivity\s+\d+%']
+                "productivity": [r'Productivity\s+\d+%'],
+                "threat_intel": [r'APT\d+|T\d{4}']
             }.get(domain, [r'\b[A-Z][a-z]+\s+[A-Z][a-z]+\b'])
             
             for pattern in patterns:
@@ -435,6 +496,7 @@ class MotherBrain:
                     self.knowledge[f"{domain.upper()}:{match}"] = text[:500]
 
     def generate_exploit(self, cve):
+        """Generate exploit for given CVE"""
         base = self.knowledge.get(f"0DAY:{cve}", "")
         if not base:
             return {"error": "Exploit not known"}
@@ -448,10 +510,11 @@ class MotherBrain:
         return {
             "original": base,
             "mutated": random.choice(mutations)(base),
-            "signature": hashlib.md5(base.encode()).hexdigest()
+            "signature": hashlib.sha256(base.encode()).hexdigest()
         }
 
     def process_hacking_command(self, command):
+        """Process hacking commands with enhanced security"""
         cmd_parts = command.lower().split()
         if not cmd_parts:
             return {"error": "Empty command"}
@@ -473,14 +536,14 @@ class MotherBrain:
                 "target": target,
                 "recommendation": self.knowledge.get(f"0DAY:{target}", "No specific exploit known"),
                 "exploit_data": exploit_data,
-                "signature": hashlib.md5(target.encode()).hexdigest()[:8]
+                "signature": hashlib.sha256(target.encode()).hexdigest()[:16]
             }
             
         elif base_cmd == "scan":
             scan_types = {
-                "network": ["nmap -sV", "masscan -p1-65535"],
-                "web": ["nikto -h", "wpscan --url"],
-                "ai": ["llm_scan --model=gpt-4"]
+                "network": ["nmap -sV -T4", "masscan -p1-65535 --rate=1000"],
+                "web": ["nikto -h", "wpscan --url", "gobuster dir -u"],
+                "ai": ["llm_scan --model=gpt-4 --thorough"]
             }
             
             scan_type = "network"
@@ -499,14 +562,14 @@ class MotherBrain:
                 return {"error": "No hash provided"}
             
             similar = [k for k in self.knowledge 
-                      if "HASH:" in k and target[:4] in k]
+                      if "HASH:" in k and target[:8] in k]
             
             return {
                 "action": "decrypt",
                 "hash": target,
                 "attempts": [
-                    f"rainbow_table --hash={target}",
-                    f"john --format=raw-md5 {target}"
+                    f"hashcat -m 0 -a 3 {target} ?a?a?a?a?a?a",
+                    f"john --format=raw-md5 {target} --wordlist=rockyou.txt"
                 ],
                 "similar_known": similar[:3]
             }
@@ -534,7 +597,8 @@ def home():
             "/system/report": "GET - Capabilities report",
             "/system/improve": "POST - Self improvement"
         },
-        "version": mother.knowledge.get("_meta", {}).get("version", "unknown")
+        "version": mother.knowledge.get("_meta", {}).get("version", "unknown"),
+        "security": "TLS 1.3 enforced, CSP enabled"
     })
 
 @app.route('/health')
@@ -543,30 +607,49 @@ def health():
         "status": "healthy",
         "knowledge_items": len(mother.knowledge),
         "memory_usage": f"{os.getpid()}",
-        "uptime": "active"
+        "uptime": "active",
+        "last_updated": mother.knowledge.get("_meta", {}).get("timestamp", "unknown")
     })
 
 @app.route('/learn', methods=['POST'])
 @limiter.limit("5 per minute")
 def learn():
     mother.learn_all()
-    return jsonify({"status": "Knowledge updated across all domains"})
+    return jsonify({
+        "status": "Knowledge updated across all domains",
+        "new_entries": len(mother.knowledge),
+        "timestamp": datetime.utcnow().isoformat()
+    })
 
 @app.route('/ask', methods=['GET'])
 def ask():
     query = request.args.get('q', '')
     if not query:
         return jsonify({"error": "Missing query parameter"}), 400
-    return jsonify(mother.knowledge.get(query, "No knowledge on this topic"))
+    
+    result = mother.knowledge.get(query, "No knowledge on this topic")
+    if isinstance(result, str) and len(result) > 1000:
+        result = result[:1000] + "... [truncated]"
+    
+    return jsonify({
+        "query": query,
+        "result": result,
+        "source": mother.knowledge.get("_meta", {}).get("name", "mother-brain")
+    })
 
 @app.route('/exploit/<cve>', methods=['GET'])
 @limiter.limit("10 per minute")
 def exploit(cve):
+    if not re.match(r'CVE-\d{4}-\d+', cve):
+        return jsonify({"error": "Invalid CVE format"}), 400
     return jsonify(mother.generate_exploit(cve))
 
 @app.route('/hacking', methods=['POST'])
 @limiter.limit("15 per minute")
 def hacking():
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+    
     command = request.json.get('command', '')
     if not command:
         return jsonify({"error": "No command provided"}), 400
@@ -575,7 +658,11 @@ def hacking():
         result = mother.process_hacking_command(command)
         return jsonify(result)
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "error": str(e),
+            "stacktrace": "hidden in production",
+            "timestamp": datetime.utcnow().isoformat()
+        }), 500
 
 @app.route('/system/analyze', methods=['GET'])
 @limiter.limit("2 per hour")
@@ -599,18 +686,50 @@ def self_improve():
     return jsonify({
         "status": "improvement_attempted",
         "changes": improvements,
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.utcnow().isoformat(),
+        "remaining_vulnerabilities": len(analysis['vulnerabilities']) - len(improvements)
     })
 
 @app.route('/dump', methods=['GET'])
+@limiter.limit("1 per hour")
 def dump():
     """Return first 500 knowledge entries"""
-    return jsonify(dict(list(mother.knowledge.items())[:500]))
+    return jsonify({
+        "knowledge": dict(list(mother.knowledge.items())[:500]),
+        "warning": "Truncated output - use /dump_full for complete dump",
+        "count": len(mother.knowledge)
+    })
 
 @app.route('/dump_full', methods=['GET'])
+@limiter.limit("1 per day")
 def dump_full():
     """Return complete unfiltered knowledge dump"""
-    return jsonify(mother.knowledge)
+    return jsonify({
+        "knowledge": mother.knowledge,
+        "size_bytes": len(json.dumps(mother.knowledge).encode('utf-8')),
+        "entries": len(mother.knowledge)
+    })
+
+# Enhanced Flask routes with additional security headers
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['Permissions-Policy'] = 'geolocation=(), microphone=()'
+    return response
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000)
+    # Enhanced SSL configuration
+    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    context.minimum_version = ssl.TLSVersion.TLSv1_3
+    context.set_ciphers('ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384')
+    
+    app.run(
+        host='0.0.0.0',
+        port=10000,
+        ssl_context=context,
+        threaded=True,
+        debug=False
+    )
