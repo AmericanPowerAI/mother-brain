@@ -18,6 +18,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from sentence_transformers import SentenceTransformer
 import pickle
 import warnings
+from flask import Flask, jsonify
 
 warnings.filterwarnings('ignore')
 
@@ -197,7 +198,6 @@ class DynamicNeuralCore(EvolutionaryCore, nn.Module):
         
     def generate_ideas(self, context: str) -> List[str]:
         """Use LLM to generate improvement ideas"""
-        # Implementation would connect to your idea generation system
         return [
             f"Consider architectural modification to address: {context}",
             f"Additional training data may help with: {context}",
@@ -263,13 +263,18 @@ class DeploymentBridge:
                 
         return model
 
-# Continuous Learning Manager
+# Continuous Learning Manager - Updated with register_source capability
 class LearningOrchestrator:
     def __init__(self, core: EvolutionaryCore):
         self.core = core
         self.learning_thread = threading.Thread(target=self._continuous_learning)
         self.learning_thread.daemon = True
         self.running = False
+        self.data_sources = {}  # Dictionary to store registered data sources
+        
+    def register_source(self, name: str, callback: callable):
+        """Register a new learning data source"""
+        self.data_sources[name] = callback
         
     def start(self):
         self.running = True
@@ -303,17 +308,21 @@ class LearningOrchestrator:
                 time.sleep(300)  # Wait 5 minutes after error
                 
     def _gather_experiences(self) -> List[Dict]:
-        """Collect learning experiences from connected systems"""
-        # Implementation would gather data from:
-        # - Mother Brain's operations
-        # - Child nodes
-        # - Security monitors
-        # - External data sources
-        return []  # Placeholder
+        """Collect learning experiences from registered sources"""
+        experiences = []
+        for name, callback in self.data_sources.items():
+            try:
+                result = callback()
+                if isinstance(result, list):
+                    experiences.extend(result)
+                elif result is not None:
+                    experiences.append(result)
+            except Exception as e:
+                self.core.log_error(f"Failed to gather from {name}: {str(e)}")
+        return experiences
         
     def _adapt_learning_rate(self, effectiveness: float):
         """Dynamic learning adjustment"""
-        # Implementation would modify learning parameters
         pass
 
 # Central Heart System
@@ -357,7 +366,7 @@ class AICardioSystem:
         # File handler
         file_handler = RotatingFileHandler(
             'ai_core.log',
-            maxBytes=10*1024*1024,  # 10MB
+            maxBytes=10*1024*1024,
             backupCount=5
         )
         file_formatter = logging.Formatter(
@@ -393,17 +402,16 @@ class AICardioSystem:
                 if health_status['memory'] > 90:
                     self._handle_memory_emergency()
                     
-                time.sleep(60)  # Check every minute
+                time.sleep(60)
                 
             except Exception as e:
                 self.logger.error(f"Health monitor failed: {str(e)}")
-                time.sleep(300)  # Wait 5 minutes after error
+                time.sleep(300)
                 
     def _handle_memory_emergency(self):
         """Critical memory management"""
         self.logger.warning("Memory emergency detected! Taking action...")
         
-        # Ordered emergency measures
         actions = [
             "Clearing PyTorch cache",
             "Requesting garbage collection",
@@ -432,10 +440,6 @@ class AICardioSystem:
                 
     def _compress_memory(self):
         """Memory compression techniques"""
-        # Implementation would include:
-        # - Knowledge distillation
-        # - Model pruning
-        # - Quantization
         pass
 
 # Singleton Access
@@ -481,4 +485,4 @@ if __name__ == "__main__":
     else:
         # In cloud, just keep running
         while True:
-            time.sleep(3600)  # Prevent container exit
+            time.sleep(3600)
