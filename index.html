@@ -3,69 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTHER AI | American Power Global</title>
+    <title>MOTHER AI | Friendly Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
-        /* ===== BRAND COLORS ===== */
+        /* ===== NEW COLOR PALETTE ===== */
         :root {
-            /* American Power Global */
-            --apg-red: #e63946;
-            --apg-yellow: #ffd60a;
-            
-            /* Mother AI */
-            --mother-blue: #48cae4;
-            --mother-deep-blue: #0096c7;
-            --mother-light: #caf0f8;
-            
-            /* Neutrals */
-            --dark: #1d3557;
-            --darker: #0a192f;
-            --white: #ffffff;
+            --primary: #5E81F4;  /* Friendly blue */
+            --secondary: #FF7AC6; /* Playful pink */
+            --accent: #00D1B2;   /* Vibrant teal */
+            --background: #F8FAFF; /* Light background */
+            --text: #2E384D;     /* Readable dark */
+            --success: #4ADE80;  /* Positive green */
+            --warning: #F97316;  /* Orange for warnings */
+            --error: #F43F5E;    /* Red for errors */
         }
 
         /* ===== BASE STYLES ===== */
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: var(--darker);
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
             overflow-x: hidden;
-            background-image: 
-                linear-gradient(rgba(72, 202, 228, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(72, 202, 228, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        /* ===== CYBERPUNK ELEMENTS ===== */
-        .cyber-glows {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(255, 214, 10, 0.03) 0%, transparent 30%),
-                radial-gradient(circle at 80% 70%, rgba(72, 202, 228, 0.05) 0%, transparent 30%);
-        }
-
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15) 0px,
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.3;
         }
 
         /* ===== HEADER ===== */
@@ -74,8 +34,8 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: rgba(13, 27, 42, 0.8);
-            border-bottom: 1px solid var(--mother-blue);
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .logo-group {
@@ -84,19 +44,17 @@
             gap: 1rem;
         }
 
-        .apg-logo {
+        .logo-img {
             height: 40px;
-            filter: drop-shadow(0 0 5px var(--apg-red));
         }
 
-        .mother-logo {
-            font-family: 'Orbitron', sans-serif;
+        .logo-text {
+            font-family: 'Fredoka One', cursive;
             font-size: 1.8rem;
-            background: linear-gradient(90deg, var(--mother-blue), var(--mother-light));
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: 1px;
         }
 
         .ai-status {
@@ -104,14 +62,15 @@
             align-items: center;
             gap: 8px;
             font-size: 0.9rem;
+            color: var(--primary);
         }
 
         .status-light {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #4ade80;
-            box-shadow: 0 0 10px #4ade80;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
             animation: pulse 2s infinite;
         }
 
@@ -125,60 +84,57 @@
         .app-container {
             display: flex;
             min-height: calc(100vh - 80px);
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         /* AI Avatar Panel */
         .avatar-panel {
             width: 300px;
             padding: 2rem;
-            border-right: 1px solid rgba(72, 202, 228, 0.3);
+            background: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
+            border-right: 1px solid rgba(0,0,0,0.05);
         }
 
         .avatar-container {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 160px;
+            height: 160px;
         }
 
         .avatar {
             width: 100%;
             height: 100%;
-            object-fit: contain;
             border-radius: 50%;
-            border: 3px solid var(--mother-blue);
-            box-shadow: 0 0 20px var(--mother-blue);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 8px 24px rgba(94, 129, 244, 0.2);
             transition: all 0.3s;
         }
 
         .avatar.talking {
-            box-shadow: 0 0 30px var(--mother-blue);
-            transform: scale(1.03);
-        }
-
-        .hologram-effect {
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background: radial-gradient(circle at center, transparent 40%, var(--mother-blue) 150%);
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0.3;
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(94, 129, 244, 0.3);
         }
 
         .ai-name {
             font-size: 1.5rem;
-            color: var(--mother-light);
+            color: var(--text);
             margin-top: 1rem;
+            font-weight: 600;
         }
 
         .ai-title {
-            color: var(--mother-blue);
+            color: var(--primary);
             font-size: 0.9rem;
             text-align: center;
         }
@@ -189,28 +145,30 @@
             padding: 2rem;
             display: flex;
             flex-direction: column;
+            background: var(--background);
         }
 
         .message-box {
             flex: 1;
-            background: rgba(10, 25, 47, 0.6);
-            border: 1px solid rgba(72, 202, 228, 0.3);
-            border-radius: 8px;
+            background: white;
+            border-radius: 12px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         .message {
             max-width: 80%;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
             line-height: 1.5;
             position: relative;
             animation: fadeIn 0.3s ease-out;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         @keyframes fadeIn {
@@ -220,64 +178,68 @@
 
         .user-message {
             align-self: flex-end;
-            background: rgba(230, 57, 70, 0.15);
-            border: 1px solid var(--apg-red);
-            color: var(--white);
-            border-bottom-right-radius: 0;
+            background: var(--primary);
+            color: white;
+            border-bottom-right-radius: 4px;
         }
 
         .ai-message {
             align-self: flex-start;
-            background: rgba(72, 202, 228, 0.15);
-            border: 1px solid var(--mother-blue);
-            color: var(--mother-light);
-            border-bottom-left-radius: 0;
+            background: white;
+            border: 1px solid #E5E9F2;
+            color: var(--text);
+            border-bottom-left-radius: 4px;
         }
 
         .message-sender {
             font-weight: bold;
             margin-bottom: 0.5rem;
             display: block;
+            font-size: 0.8rem;
         }
 
         .user-message .message-sender {
-            color: var(--apg-yellow);
+            color: rgba(255,255,255,0.8);
         }
 
         .ai-message .message-sender {
-            color: var(--mother-blue);
+            color: var(--primary);
         }
 
         /* Input Area */
         .input-area {
             display: flex;
             gap: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
         .input-field {
             flex: 1;
-            background: rgba(10, 25, 47, 0.8);
-            border: 1px solid var(--mother-blue);
-            border-radius: 8px;
-            padding: 1rem;
-            color: var(--white);
+            background: var(--background);
+            border: 1px solid #E5E9F2;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            color: var(--text);
             font-size: 1rem;
             transition: all 0.3s;
         }
 
         .input-field:focus {
             outline: none;
-            border-color: var(--mother-light);
-            box-shadow: 0 0 10px var(--mother-blue);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(94, 129, 244, 0.1);
         }
 
         .send-button {
-            background: linear-gradient(135deg, var(--mother-blue), var(--mother-deep-blue));
-            color: var(--white);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50px;
             padding: 0 2rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
@@ -288,29 +250,8 @@
         }
 
         .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(72, 202, 228, 0.4);
-        }
-
-        .send-button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(255, 255, 255, 0) 45%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 55%
-            );
-            transform: rotate(30deg);
-            transition: all 0.3s;
-        }
-
-        .send-button:hover::after {
-            left: 100%;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(94, 129, 244, 0.3);
         }
 
         /* Quick Commands */
@@ -322,38 +263,96 @@
         }
 
         .command-button {
-            background: rgba(72, 202, 228, 0.1);
-            border: 1px solid var(--mother-blue);
-            color: var(--mother-light);
-            border-radius: 20px;
+            background: white;
+            border: 1px solid #E5E9F2;
+            color: var(--primary);
+            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .command-button:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Simple Commands */
+        .simple-commands {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .simple-commands h3 {
+            margin-top: 0;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .simple-commands button {
+            background: var(--background);
+            border: none;
+            border-radius: 50px;
             padding: 0.5rem 1rem;
+            margin: 0.25rem;
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
         }
 
-        .command-button:hover {
-            background: rgba(72, 202, 228, 0.3);
-            transform: translateY(-1px);
+        .simple-commands button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Thinking Animation */
+        .thinking {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 1rem;
+        }
+
+        .thinking span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .thinking span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .thinking span:nth-child(3) {
+            animation-delay: 0.4s;
         }
 
         /* Footer */
         footer {
-            background: rgba(10, 25, 47, 0.9);
+            background: white;
             padding: 1.5rem;
             text-align: center;
-            border-top: 1px solid rgba(72, 202, 228, 0.3);
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .legal-text {
-            margin-bottom: 0.5rem;
+            color: rgba(0,0,0,0.6);
         }
 
         .copyright {
-            color: var(--apg-yellow);
-            font-weight: bold;
+            color: var(--primary);
+            font-weight: 600;
         }
 
         /* ===== RESPONSIVE DESIGN ===== */
@@ -365,13 +364,13 @@
             .avatar-panel {
                 width: 100%;
                 border-right: none;
-                border-bottom: 1px solid rgba(72, 202, 228, 0.3);
+                border-bottom: 1px solid rgba(0,0,0,0.05);
                 padding: 1.5rem;
             }
             
             .avatar-container {
-                width: 150px;
-                height: 150px;
+                width: 120px;
+                height: 120px;
             }
             
             .message {
@@ -381,15 +380,11 @@
     </style>
 </head>
 <body>
-    <!-- Cyberpunk Effects -->
-    <div class="cyber-glows"></div>
-    <div class="scanlines"></div>
-
     <!-- Header -->
     <header>
         <div class="logo-group">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgNTAiPjxwYXRoIGZpbGw9IiNlNjM5NDYiIGQ9Ik0xODAgMTBjLTEwIDAtMTUgNS0yMCAxNWwtMjAgMzAtMjAtMzBjLTUtMTAtMTAtMTUtMjAtMTUtMTAgMC0xNSA1LTIwIDE1bC0yMCAzMC0yMC0zMGMtNS0xMC0xMC0xNS0yMC0xNUgwdjMwYzEwIDAgMTUtNSAyMC0xNWwyMCAzMCAyMC0zMGM1LTEwIDEwLTE1IDIwLTE1czE1IDUgMjAgMTVsMjAgMzAgMjAtMzBjNS0xMCAxMC0xNSAyMC0xNXYtMzBoLTIweiIvPjwvc3ZnPg==" alt="APG Logo" class="apg-logo">
-            <div class="mother-logo">MOTHER AI</div>
+            <img src="https://via.placeholder.com/150x50?text=APG+Logo" alt="APG Logo" class="logo-img">
+            <div class="logo-text">MOTHER AI</div>
         </div>
         <div class="ai-status">
             <div class="status-light"></div>
@@ -402,37 +397,44 @@
         <!-- AI Avatar Section -->
         <div class="avatar-panel">
             <div class="avatar-container">
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjkwIiBmaWxsPSIjMDA5NmM3Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI3MCIgZmlsbD0iIzQ4Y2FlNCIvPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjgwIiByPSIxNSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MCAxMjBjMC0xMCA0MC0xMCA0MCAwIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNSIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==" alt="Nero-Lea AI" class="avatar" id="avatar">
-                <div class="hologram-effect"></div>
+                <div class="avatar" id="avatar">M</div>
             </div>
-            <div class="ai-name">NERO-LEA</div>
-            <div class="ai-title">Mother AI Interface System v2.3</div>
-            <button class="send-button" onclick="startTutorial()" style="margin-top: 1rem;">
-                INITIATE TUTORIAL
+            <div class="ai-name">MOTHER AI</div>
+            <div class="ai-title">Your Friendly AI Assistant</div>
+            <button class="send-button" onclick="startTutorial()">
+                START TUTORIAL
             </button>
         </div>
 
         <!-- Chat Interface -->
         <div class="chat-panel">
+            <div class="simple-commands" id="simple-commands">
+                <h3>Try asking me:</h3>
+                <button onclick="insertCommand('scan network')">Check for problems</button>
+                <button onclick="insertCommand('analyze finances')">Money help</button>
+                <button onclick="insertCommand('research topic')">School project</button>
+                <button onclick="insertCommand('explain simply')">Explain like I'm 5</button>
+            </div>
+            
             <div class="message-box" id="message-box">
                 <div class="message ai-message">
-                    <span class="message-sender">NERO-LEA</span>
-                    <span class="message-text">Mother AI systems engaged. Query authorization: GRANTED. How shall we proceed?</span>
+                    <span class="message-sender">MOTHER AI</span>
+                    <span class="message-text">Hello! I'm your friendly AI assistant. How can I help you today?</span>
                 </div>
             </div>
             
             <div class="input-area">
-                <input type="text" class="input-field" id="user-input" placeholder="Type your command or question...">
+                <input type="text" class="input-field" id="user-input" placeholder="Type your question here..." onkeypress="handleKeyPress(event)">
                 <button class="send-button" id="send-button" onclick="sendMessage()">
                     SEND
                 </button>
             </div>
             
             <div class="quick-commands">
-                <div class="command-button" onclick="insertCommand('scan network')">NETWORK SCAN</div>
-                <div class="command-button" onclick="insertCommand('exploit CVE-')">CVE LOOKUP</div>
-                <div class="command-button" onclick="insertCommand('analyze finances')">FINANCIAL ANALYSIS</div>
-                <div class="command-button" onclick="insertCommand('legal research')">LEGAL RESEARCH</div>
+                <div class="command-button" onclick="insertCommand('scan network')">Network Scan</div>
+                <div class="command-button" onclick="insertCommand('exploit CVE-')">CVE Lookup</div>
+                <div class="command-button" onclick="insertCommand('analyze finances')">Financial Analysis</div>
+                <div class="command-button" onclick="insertCommand('legal research')">Legal Research</div>
             </div>
         </div>
     </div>
@@ -440,7 +442,7 @@
     <!-- Footer -->
     <footer>
         <div class="legal-text">
-            MOTHER-AI and its agent Nero-Lea are proprietary technologies of
+            MOTHER-AI is a proprietary technology of
         </div>
         <div class="copyright">
             AMERICAN POWER GLOBAL CORPORATION
@@ -463,7 +465,7 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}-message`;
             messageDiv.innerHTML = `
-                <span class="message-sender">${sender === 'user' ? 'YOU' : 'NERO-LEA'}</span>
+                <span class="message-sender">${sender === 'user' ? 'YOU' : 'MOTHER AI'}</span>
                 <span class="message-text">${text}</span>
             `;
             messageBox.appendChild(messageDiv);
@@ -480,8 +482,7 @@
             
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = 0.9;
-            utterance.pitch = 0.8;
-            utterance.voice = synth.getVoices().find(v => v.name.includes('Zira') || v.name.includes('David'));
+            utterance.pitch = 1.0;
             
             // Animate avatar while speaking
             avatar.classList.add('talking');
@@ -500,19 +501,35 @@
             addMessage('user', text);
             userInput.value = '';
             
-            // Show thinking indicator
-            const thinkingMsg = addMessage('ai', "Processing...");
+            // Show thinking animation
+            const thinkingMsg = document.createElement('div');
+            thinkingMsg.className = 'message ai-message thinking';
+            thinkingMsg.innerHTML = `
+                <span></span>
+                <span></span>
+                <span></span>
+            `;
+            messageBox.appendChild(thinkingMsg);
+            messageBox.scrollTop = messageBox.scrollHeight;
             
             // Call Mother Brain API
             fetch(`${API_ENDPOINT}/ask?q=${encodeURIComponent(text)}`)
                 .then(response => response.json())
                 .then(data => {
                     messageBox.removeChild(thinkingMsg);
-                    addMessage('ai', typeof data === 'string' ? data : formatApiResponse(data));
+                    const responseText = typeof data === 'string' ? data : formatApiResponse(data);
+                    addMessage('ai', responseText);
+                    
+                    // Add occasional fun response
+                    if(Math.random() > 0.7) {
+                        setTimeout(() => {
+                            addFunResponse();
+                        }, 1000);
+                    }
                 })
                 .catch(error => {
                     messageBox.removeChild(thinkingMsg);
-                    addMessage('ai', `SYSTEM ERROR: ${error.message}`);
+                    addMessage('ai', `Oops! Something went wrong: ${error.message}`);
                 });
         }
         
@@ -521,11 +538,24 @@
             
             // Format JSON responses nicely
             if (data.error) {
-                return `ERROR: ${data.error}`;
-            } else if (data.action) {
-                return `ACTION: ${data.action}\n${JSON.stringify(data, null, 2)}`;
+                return `⚠️ ${data.error}`;
+            } else if (data.result) {
+                return data.result;
             }
             return JSON.stringify(data, null, 2);
+        }
+        
+        // ===== FUN INTERACTIONS =====
+        function addFunResponse() {
+            const funResponses = [
+                "Want me to explain that with emojis? 😊",
+                "That was fun! What else can I help with?",
+                "Did you know? I learn new things every day!",
+                "🌟 You're doing great! Try asking me about...",
+                "Pro tip: Say 'explain simply' for easier answers"
+            ];
+            
+            addMessage('ai', funResponses[Math.floor(Math.random() * funResponses.length)]);
         }
         
         // ===== UI HELPERS =====
@@ -540,29 +570,40 @@
         
         // ===== TUTORIAL =====
         function startTutorial() {
-            const steps = [
-                "Welcome to MOTHER AI - American Power Global's advanced intelligence system.",
-                "I am Nero-Lea, your AI interface assistant.",
-                "You can use me to:",
-                "1. Analyze cybersecurity threats (e.g., 'scan network', 'exploit CVE-2023-1234')",
-                "2. Process financial data (e.g., 'analyze stock AAPL')",
-                "3. Conduct legal research (e.g., 'GDPR compliance requirements')",
-                "Try a command or ask for help at any time."
-            ];
-            
             // Clear chat
             messageBox.innerHTML = '';
+            
+            const steps = [
+                "👋 Welcome to MOTHER AI - your friendly helper!",
+                "I can answer questions, solve problems, and even tell jokes!",
+                "Try these simple commands:",
+                "1. 'Check for problems' - I'll look for computer issues",
+                "2. 'Money help' - I can explain finances simply",
+                "3. 'School project' - I'll help with research",
+                "4. 'Explain simply' - I'll make things easy to understand",
+                "Just type or say what you need help with!"
+            ];
             
             // Add tutorial steps with delays
             steps.forEach((step, i) => {
                 setTimeout(() => {
                     addMessage('ai', step);
-                }, i * 2500);
+                    if (i === steps.length - 1) {
+                        speak("Welcome to Mother AI! I'm ready to help you with anything!");
+                    }
+                }, i * 2000);
             });
         }
         
         // Initialize
-        userInput.addEventListener('keypress', handleKeyPress);
+        window.onload = function() {
+            // Preload avatar image (using real placeholder service)
+            const avatarImg = new Image();
+            avatarImg.src = "https://via.placeholder.com/160x160/5E81F4/FFFFFF?text=AI";
+            
+            // Focus input field
+            userInput.focus();
+        };
     </script>
 </body>
 </html>
