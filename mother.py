@@ -284,8 +284,20 @@ class MotherBrain:
         self._init_heart_integration()
         
         # Validate GitHub token
-        if len(self.gh_token) != 40 or not re.match(r'^github_pat_[a-zA-Z0-9_]+$', self.gh_token):
-            raise ValueError("Invalid GitHub token format")
+       self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
+if not self.gh_token:
+    raise RuntimeError("GitHub token not configured - check Render environment variables")
+
+# Debug output (visible in logs)
+print(f"Token type detected: {'Fine-grained' if self.gh_token.startswith('github_pat_') else 'Classic'}") 
+print(f"Token length: {len(self.gh_token)}")
+
+# Accept both token types
+if not (self.gh_token.startswith(('github_pat_', 'ghp_'))):
+    raise ValueError(
+        f"Invalid token prefix. Got: {self.gh_token[:10]}... "
+        f"(length: {len(self.gh_token)})"
+    )
             
         self.repo_name = "AmericanPowerAI/mother-brain"
         self.knowledge = {}
