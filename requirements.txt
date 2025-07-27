@@ -20,7 +20,7 @@ psutil==5.9.8         # System resource tracking (health monitoring thread)
 sentence-transformers>=2.2.2  # Text embeddings (knowledge_compressor.py)
 transformers>=4.36.2          # NLP models (heart.py neural core)
 torch>=2.2.1                  # Deep learning framework (heart.py training)
-numpy>=1.26.4                 # Numerical computing (all ML operations)
+numpy>=1.26.4,<2.0.0          # Numerical computing (all ML operations) - PINNED TO 1.x
 tqdm>=4.66.2                  # Progress bars (model training visuals)
 
 # ===== OPTIMIZED TORCH INSTALL =====
