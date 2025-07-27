@@ -7,7 +7,11 @@ import random
 import hashlib
 import socket
 import struct
+import threading
+import time
+import psutil
 from datetime import datetime
+from typing import List, Dict
 from flask import Flask, request, jsonify
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -16,6 +20,7 @@ from github import Github, Auth, InputGitAuthor
 import ssl
 from urllib.parse import urlparse
 import validators
+from heart import get_ai_heart
 
 app = Flask(__name__)
 
@@ -196,7 +201,7 @@ class MetaLearner:
 
 class MotherBrain:
     DOMAINS = {
-        # CYBER-INTELLIGENCE CORE
+       # CYBER-INTELLIGENCE CORE
         'cyber': {
             '0day': [
                 'https://cve.mitre.org/data/downloads/allitems.csv',
@@ -268,13 +273,18 @@ class MotherBrain:
             'https://www.bleepingcomputer.com/feed/'
         ]
     }
+    }
 
     def __init__(self):
         self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
         if not self.gh_token:
             raise RuntimeError("GitHub token not configured")
         
-        # Enhanced security for GitHub token
+        # Initialize heart system connection
+        self.heart = get_ai_heart()
+        self._init_heart_integration()
+        
+        # Validate GitHub token
         if len(self.gh_token) != 40 or not re.match(r'^github_pat_[a-zA-Z0-9_]+$', self.gh_token):
             raise ValueError("Invalid GitHub token format")
             
@@ -285,6 +295,63 @@ class MotherBrain:
         self.session = self._init_secure_session()
         self._init_self_healing()
         self._init_knowledge()
+
+    def _init_heart_integration(self):
+        """Connect to the AI cardiovascular system"""
+        self.heart.learning_orchestrator.register_source(
+            name="mother_brain",
+            callback=self._provide_learning_experiences
+        )
+        
+        # Start health monitoring thread
+        threading.Thread(
+            target=self._monitor_and_report,
+            daemon=True
+        ).start()
+
+    def _provide_learning_experiences(self) -> List[Dict]:
+        """Generate learning data for the heart system"""
+        return [{
+            'input': self._current_state(),
+            'target': self._desired_state(),
+            'context': {
+                'source': 'mother',
+                'timestamp': datetime.now().isoformat()
+            }
+        }]
+
+    def _current_state(self) -> Dict:
+        """Capture current system state"""
+        return {
+            'knowledge_size': len(self.knowledge),
+            'active_processes': len(psutil.pids()),
+            'load_avg': os.getloadavg()[0],
+            'memory_usage': psutil.virtual_memory().percent
+        }
+
+    def _desired_state(self) -> Dict:
+        """Define optimal operating parameters"""
+        return {
+            'knowledge_growth_rate': 0.1,  # Target 10% daily growth
+            'max_memory_usage': 80,  # Target max 80% memory usage
+            'optimal_process_count': 50
+        }
+
+    def _monitor_and_report(self):
+        """Continuous health monitoring and reporting"""
+        while True:
+            try:
+                status = self.system_status()
+                self.heart.logger.info(f"Mother status: {json.dumps(status)}")
+                
+                # Check for critical conditions
+                if status['memory_usage'] > 90:
+                    self.heart._handle_crisis('memory_emergency', status)
+                
+                time.sleep(300)  # Report every 5 minutes
+            except Exception as e:
+                self.heart.logger.error(f"Monitoring failed: {str(e)}")
+                time.sleep(60)  # Wait 1 minute before retrying
 
     def _init_secure_session(self):
         """Initialize secure HTTP session"""
@@ -580,6 +647,7 @@ class MotherBrain:
                 "available_commands": ["exploit", "scan", "decrypt"],
                 "tip": "Try with a target, e.g. 'exploit CVE-2023-1234'"
             }
+
 
 mother = MotherBrain()
 
