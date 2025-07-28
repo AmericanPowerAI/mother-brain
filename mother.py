@@ -274,39 +274,33 @@ class MotherBrain:
         ]
     }
 
-    def __init__(self):
-        self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
-        if not self.gh_token:
-            raise RuntimeError("GitHub token not configured")
-        
-        # Initialize heart system connection
-        self.heart = get_ai_heart()
-        self._init_heart_integration()
-        
-        # Validate GitHub token
-       self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
-       if not self.gh_token:
-    raise RuntimeError("GitHub token not configured - check Render environment variables")
+   def __init__(self):
+    self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
+    if not self.gh_token:
+        raise RuntimeError("GitHub token not configured - check Render environment variables")
 
-# Debug output (visible in logs)
-print(f"Token type detected: {'Fine-grained' if self.gh_token.startswith('github_pat_') else 'Classic'}") 
-print(f"Token length: {len(self.gh_token)}")
+    # Debug output (visible in logs)
+    print(f"Token type detected: {'Fine-grained' if self.gh_token.startswith('github_pat_') else 'Classic'}") 
+    print(f"Token length: {len(self.gh_token)}")
 
-# Accept both token types
-if not (self.gh_token.startswith(('github_pat_', 'ghp_'))):
-    raise ValueError(
-        f"Invalid token prefix. Got: {self.gh_token[:10]}... "
-        f"(length: {len(self.gh_token)})"
-    )
+    # Accept both token types
+    if not (self.gh_token.startswith(('github_pat_', 'ghp_'))):
+        raise ValueError(
+            f"Invalid token prefix. Got: {self.gh_token[:10]}... "
+            f"(length: {len(self.gh_token)})"
+        )
             
-        self.repo_name = "AmericanPowerAI/mother-brain"
-        self.knowledge = {}
-        self.self_improver = SelfImprovingAI()
-        self.meta = MetaLearner(self)
-        self.session = self._init_secure_session()
-        self._init_self_healing()
-        self._init_knowledge()
-
+    # Initialize heart system connection
+    self.heart = get_ai_heart()
+    self._init_heart_integration()
+        
+    self.repo_name = "AmericanPowerAI/mother-brain"
+    self.knowledge = {}
+    self.self_improver = SelfImprovingAI()
+    self.meta = MetaLearner(self)
+    self.session = self._init_secure_session()
+    self._init_self_healing()
+    self._init_knowledge()
     def _init_heart_integration(self):
         """Connect to the AI cardiovascular system"""
         self.heart.learning_orchestrator.register_source(
