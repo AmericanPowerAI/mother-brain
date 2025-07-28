@@ -285,7 +285,7 @@ class MotherBrain:
         
         # Validate GitHub token
        self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
-if not self.gh_token:
+       if not self.gh_token:
     raise RuntimeError("GitHub token not configured - check Render environment variables")
 
 # Debug output (visible in logs)
