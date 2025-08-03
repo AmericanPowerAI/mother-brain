@@ -274,7 +274,7 @@ class MotherBrain:
         ]
     }
 
-       def __init__(self):
+def __init__(self):
         self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
         if not self.gh_token:
             raise RuntimeError("GitHub token not configured - check Render environment variables")
