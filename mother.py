@@ -324,7 +324,6 @@ def _init_heart_integration(self):
                 'timestamp': datetime.now().isoformat()
             }
         }]
-
     def _current_state(self) -> Dict:
         """Capture current system state"""
         return {
