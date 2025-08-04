@@ -301,7 +301,7 @@ def __init__(self):
         self.session = self._init_secure_session()
         self._init_self_healing()
         self._init_knowledge()
-    def _init_heart_integration(self):
+def _init_heart_integration(self):
         """Connect to the AI cardiovascular system"""
         self.heart.learning_orchestrator.register_source(
             name="mother_brain",
