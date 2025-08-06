@@ -314,7 +314,7 @@ def _init_heart_integration(self):
             daemon=True
         ).start()
 
-    def _provide_learning_experiences(self) -> List[Dict]:
+def _provide_learning_experiences(self) -> List[Dict]:
         """Generate learning data for the heart system"""
         return [{
             'input': self._current_state(),
