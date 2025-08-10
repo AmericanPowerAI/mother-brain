@@ -515,7 +515,7 @@ def learn_all(self):
                     self._learn_url(url, domain)
         self._save()
 
-    def _learn_url(self, url, domain_tag):
+def _learn_url(self, url, domain_tag):
         """Enhanced URL learning with security checks"""
         if not self._validate_url(url):
             print(f"Skipping invalid URL: {url}")
