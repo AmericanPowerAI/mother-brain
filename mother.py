@@ -541,7 +541,7 @@ def _learn_url(self, url, domain_tag):
         except Exception as e:
             print(f"Failed {url}: {str(e)}")
 
-    def _process(self, domain, text):
+def _process(self, domain, text):
         """Process and store knowledge from text"""
         if domain.startswith("cyber:"):
             subdomain = domain.split(":")[1]
