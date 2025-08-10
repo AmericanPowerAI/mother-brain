@@ -384,7 +384,7 @@ def _validate_url(self, url: str) -> bool:
         except:
             return False
 
-    def _init_self_healing(self):
+def _init_self_healing(self):
         """Initialize autonomous repair systems"""
         self.healing_protocols = {
             'knowledge_corruption': self._repair_knowledge,
