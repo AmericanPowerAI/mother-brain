@@ -408,17 +408,17 @@ def _repair_knowledge(self, error: str) -> bool:
             self.knowledge = {"_meta": {"status": "recovery_mode"}}
             return False
     
-    def _restart_service(self, component: str) -> bool:
+def _restart_service(self, component: str) -> bool:
         """Simulate service restart"""
         print(f"Attempting to restart {component}")
         return True
     
-    def _isolate_system(self) -> bool:
+def _isolate_system(self) -> bool:
         """Emergency isolation procedure"""
         print("Initiating security lockdown")
         return True
 
-    def _init_knowledge(self):
+def _init_knowledge(self):
         """Initialize knowledge from GitHub or fallback"""
         try:
             g = Github(auth=Auth.Token(self.gh_token))
