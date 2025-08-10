@@ -455,7 +455,7 @@ def _init_knowledge(self):
                 }
             }
 
-    def _save_to_github(self):
+def _save_to_github(self):
         """Securely save to GitHub with minimal permissions"""
         try:
             g = Github(auth=Auth.Token(self.gh_token))
