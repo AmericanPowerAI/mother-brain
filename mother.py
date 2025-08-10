@@ -333,7 +333,7 @@ def _current_state(self) -> Dict:
             'memory_usage': psutil.virtual_memory().percent
         }
 
-    def _desired_state(self) -> Dict:
+def _desired_state(self) -> Dict:
         """Define optimal operating parameters"""
         return {
             'knowledge_growth_rate': 0.1,  # Target 10% daily growth
