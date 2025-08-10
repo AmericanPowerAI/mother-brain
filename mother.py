@@ -324,7 +324,7 @@ def _provide_learning_experiences(self) -> List[Dict]:
                 'timestamp': datetime.now().isoformat()
             }
         }]
-    def _current_state(self) -> Dict:
+def _current_state(self) -> Dict:
         """Capture current system state"""
         return {
             'knowledge_size': len(self.knowledge),
