@@ -494,16 +494,16 @@ def _save_to_github(self):
             print(f"GitHub save failed: {e}")
             return False
 
-    def load(self):
+def load(self):
         """Maintained for compatibility"""
         pass
 
-    def _save(self):
+def _save(self):
         """Replacement for filesystem save"""
         if not self._save_to_github():
             raise RuntimeError("Failed to persist knowledge to GitHub")
 
-    def learn_all(self):
+def learn_all(self):
         """Learn from all configured domains"""
         for domain, sources in self.DOMAINS.items():
             if isinstance(sources, dict):
