@@ -393,7 +393,7 @@ def _init_self_healing(self):
             'performance_degradation': self._optimize_resources
         }
     
-    def _optimize_resources(self) -> bool:
+def _optimize_resources(self) -> bool:
         """Optimize system resources"""
         print("Optimizing memory and CPU usage")
         return True
