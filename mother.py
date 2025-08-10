@@ -793,15 +793,15 @@ def add_security_headers(response):
     return response
 
 if __name__ == "__main__":
-    # Enhanced SSL configuration
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    context.minimum_version = ssl.TLSVersion.TLSv1_3
-    context.set_ciphers('ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384')
+    # Get port from Render's environment variable or default to 10000
+    port = int(os.environ.get("PORT", 10000))
     
-    app.run(
-        host='0.0.0.0',
-        port=10000,
-        ssl_context=context,
-        threaded=True,
-        debug=False
-    )
+    # For local development only (remove SSL in production)
+    if os.environ.get("ENV") == "development":
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.minimum_version = ssl.TLSVersion.TLSv1_3
+        context.set_ciphers('ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384')
+        app.run(host='0.0.0.0', port=port, ssl_context=context, threaded=True)
+    else:
+        # Production configuration (no SSL - Render handles HTTPS)
+        app.run(host='0.0.0.0', port=port, threaded=True)
