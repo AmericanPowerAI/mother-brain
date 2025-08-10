@@ -398,7 +398,7 @@ def _optimize_resources(self) -> bool:
         print("Optimizing memory and CPU usage")
         return True
     
-    def _repair_knowledge(self, error: str) -> bool:
+def _repair_knowledge(self, error: str) -> bool:
         """Automatically repair corrupted knowledge"""
         try:
             self._save_to_github()
