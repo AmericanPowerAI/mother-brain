@@ -566,7 +566,7 @@ def _process(self, domain, text):
                 for match in re.findall(pattern, text):
                     self.knowledge[f"{domain.upper()}:{match}"] = text[:500]
 
-    def generate_exploit(self, cve):
+def generate_exploit(self, cve):
         """Generate exploit for given CVE"""
         base = self.knowledge.get(f"0DAY:{cve}", "")
         if not base:
@@ -584,7 +584,7 @@ def _process(self, domain, text):
             "signature": hashlib.sha256(base.encode()).hexdigest()
         }
 
-    def process_hacking_command(self, command):
+def process_hacking_command(self, command):
         """Process hacking commands with enhanced security"""
         cmd_parts = command.lower().split()
         if not cmd_parts:
