@@ -341,7 +341,7 @@ def _desired_state(self) -> Dict:
             'optimal_process_count': 50
         }
 
-    def _monitor_and_report(self):
+def _monitor_and_report(self):
         """Continuous health monitoring and reporting"""
         while True:
             try:
@@ -357,7 +357,7 @@ def _desired_state(self) -> Dict:
                 self.heart.logger.error(f"Monitoring failed: {str(e)}")
                 time.sleep(60)  # Wait 1 minute before retrying
 
-    def _init_secure_session(self):
+def _init_secure_session(self):
         """Initialize secure HTTP session"""
         session = requests.Session()
         retry = requests.adapters.HTTPAdapter(
@@ -374,7 +374,7 @@ def _desired_state(self) -> Dict:
         })
         return session
 
-    def _validate_url(self, url: str) -> bool:
+def _validate_url(self, url: str) -> bool:
         """Validate URL before processing"""
         try:
             result = urlparse(url)
