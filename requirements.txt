@@ -12,6 +12,8 @@ validators>=0.22.0    # URL validation security (mother.py _validate_url)
 
 # ===== SECURITY =====
 pycryptodome==3.20.0  # Cryptographic functions (exploit generation/validation)
+PyJWT>=2.8.0          
+bcrypt>=4.0.0
 
 # ===== SYSTEM MONITORING =====
 psutil==5.9.8         # System resource tracking (health monitoring thread)
