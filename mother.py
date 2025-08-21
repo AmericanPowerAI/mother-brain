@@ -274,7 +274,7 @@ class MotherBrain:
         ]
     }
 
-def __init__(self):
+    def __init__(self):
         self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
         if not self.gh_token:
             raise RuntimeError("GitHub token not configured - check Render environment variables")
@@ -291,8 +291,12 @@ def __init__(self):
             )
                 
         # Initialize heart system connection
-        self.heart = get_ai_heart()
-        self._init_heart_integration()
+        try:
+            self.heart = get_ai_heart()
+            self._init_heart_integration()
+        except Exception as e:
+            print(f"Heart system initialization failed: {e}")
+            self.heart = None
             
         self.repo_name = "AmericanPowerAI/mother-brain"
         self.knowledge = {}
@@ -301,20 +305,22 @@ def __init__(self):
         self.session = self._init_secure_session()
         self._init_self_healing()
         self._init_knowledge()
-def _init_heart_integration(self):
-        """Connect to the AI cardiovascular system"""
-        self.heart.learning_orchestrator.register_source(
-            name="mother_brain",
-            callback=self._provide_learning_experiences
-        )
-        
-        # Start health monitoring thread
-        threading.Thread(
-            target=self._monitor_and_report,
-            daemon=True
-        ).start()
 
-def _provide_learning_experiences(self) -> List[Dict]:
+    def _init_heart_integration(self):
+        """Connect to the AI cardiovascular system"""
+        if self.heart:
+            self.heart.learning_orchestrator.register_source(
+                name="mother_brain",
+                callback=self._provide_learning_experiences
+            )
+            
+            # Start health monitoring thread
+            threading.Thread(
+                target=self._monitor_and_report,
+                daemon=True
+            ).start()
+
+    def _provide_learning_experiences(self) -> List[Dict]:
         """Generate learning data for the heart system"""
         return [{
             'input': self._current_state(),
@@ -324,16 +330,17 @@ def _provide_learning_experiences(self) -> List[Dict]:
                 'timestamp': datetime.now().isoformat()
             }
         }]
-def _current_state(self) -> Dict:
+
+    def _current_state(self) -> Dict:
         """Capture current system state"""
         return {
             'knowledge_size': len(self.knowledge),
             'active_processes': len(psutil.pids()),
-            'load_avg': os.getloadavg()[0],
+            'load_avg': os.getloadavg()[0] if hasattr(os, 'getloadavg') else 0.0,
             'memory_usage': psutil.virtual_memory().percent
         }
 
-def _desired_state(self) -> Dict:
+    def _desired_state(self) -> Dict:
         """Define optimal operating parameters"""
         return {
             'knowledge_growth_rate': 0.1,  # Target 10% daily growth
@@ -341,23 +348,35 @@ def _desired_state(self) -> Dict:
             'optimal_process_count': 50
         }
 
-def _monitor_and_report(self):
+    def _monitor_and_report(self):
         """Continuous health monitoring and reporting"""
         while True:
             try:
                 status = self.system_status()
-                self.heart.logger.info(f"Mother status: {json.dumps(status)}")
+                if self.heart:
+                    self.heart.logger.info(f"Mother status: {json.dumps(status)}")
                 
                 # Check for critical conditions
-                if status['memory_usage'] > 90:
-                    self.heart._handle_crisis('memory_emergency', status)
+                if status.get('memory_usage', 0) > 90:
+                    if self.heart:
+                        self.heart._handle_crisis('memory_emergency', status)
                 
                 time.sleep(300)  # Report every 5 minutes
             except Exception as e:
-                self.heart.logger.error(f"Monitoring failed: {str(e)}")
+                if self.heart:
+                    self.heart.logger.error(f"Monitoring failed: {str(e)}")
                 time.sleep(60)  # Wait 1 minute before retrying
 
-def _init_secure_session(self):
+    def system_status(self) -> Dict:
+        """Get current system status"""
+        return {
+            'memory_usage': psutil.virtual_memory().percent,
+            'cpu_usage': psutil.cpu_percent(),
+            'knowledge_entries': len(self.knowledge),
+            'timestamp': datetime.now().isoformat()
+        }
+
+    def _init_secure_session(self):
         """Initialize secure HTTP session"""
         session = requests.Session()
         retry = requests.adapters.HTTPAdapter(
@@ -374,7 +393,7 @@ def _init_secure_session(self):
         })
         return session
 
-def _validate_url(self, url: str) -> bool:
+    def _validate_url(self, url: str) -> bool:
         """Validate URL before processing"""
         try:
             result = urlparse(url)
@@ -384,7 +403,7 @@ def _validate_url(self, url: str) -> bool:
         except:
             return False
 
-def _init_self_healing(self):
+    def _init_self_healing(self):
         """Initialize autonomous repair systems"""
         self.healing_protocols = {
             'knowledge_corruption': self._repair_knowledge,
@@ -393,12 +412,12 @@ def _init_self_healing(self):
             'performance_degradation': self._optimize_resources
         }
     
-def _optimize_resources(self) -> bool:
+    def _optimize_resources(self) -> bool:
         """Optimize system resources"""
         print("Optimizing memory and CPU usage")
         return True
     
-def _repair_knowledge(self, error: str) -> bool:
+    def _repair_knowledge(self, error: str = None) -> bool:
         """Automatically repair corrupted knowledge"""
         try:
             self._save_to_github()
@@ -408,17 +427,17 @@ def _repair_knowledge(self, error: str) -> bool:
             self.knowledge = {"_meta": {"status": "recovery_mode"}}
             return False
     
-def _restart_service(self, component: str) -> bool:
+    def _restart_service(self, component: str) -> bool:
         """Simulate service restart"""
         print(f"Attempting to restart {component}")
         return True
     
-def _isolate_system(self) -> bool:
+    def _isolate_system(self) -> bool:
         """Emergency isolation procedure"""
         print("Initiating security lockdown")
         return True
 
-def _init_knowledge(self):
+    def _init_knowledge(self):
         """Initialize knowledge from GitHub or fallback"""
         try:
             g = Github(auth=Auth.Token(self.gh_token))
@@ -455,7 +474,7 @@ def _init_knowledge(self):
                 }
             }
 
-def _save_to_github(self):
+    def _save_to_github(self):
         """Securely save to GitHub with minimal permissions"""
         try:
             g = Github(auth=Auth.Token(self.gh_token))
@@ -494,28 +513,40 @@ def _save_to_github(self):
             print(f"GitHub save failed: {e}")
             return False
 
-def load(self):
+    def load(self):
         """Maintained for compatibility"""
         pass
 
-def _save(self):
+    def _save(self):
         """Replacement for filesystem save"""
         if not self._save_to_github():
             raise RuntimeError("Failed to persist knowledge to GitHub")
 
-def learn_all(self):
+    def learn_all(self):
         """Learn from all configured domains"""
+        learned_count = 0
         for domain, sources in self.DOMAINS.items():
             if isinstance(sources, dict):
                 for subdomain, urls in sources.items():
-                    for url in urls:
-                        self._learn_url(url, f"cyber:{subdomain}")
+                    for url in urls[:2]:  # Limit to 2 URLs per subdomain for speed
+                        try:
+                            self._learn_url(url, f"cyber:{subdomain}")
+                            learned_count += 1
+                        except Exception as e:
+                            print(f"Learning failed for {url}: {e}")
             else:
-                for url in sources:
-                    self._learn_url(url, domain)
+                for url in sources[:2]:  # Limit to 2 URLs per domain for speed
+                    try:
+                        self._learn_url(url, domain)
+                        learned_count += 1
+                    except Exception as e:
+                        print(f"Learning failed for {url}: {e}")
+        
+        print(f"Learning completed. Processed {learned_count} sources.")
         self._save()
+        return learned_count
 
-def _learn_url(self, url, domain_tag):
+    def _learn_url(self, url, domain_tag):
         """Enhanced URL learning with security checks"""
         if not self._validate_url(url):
             print(f"Skipping invalid URL: {url}")
@@ -541,7 +572,7 @@ def _learn_url(self, url, domain_tag):
         except Exception as e:
             print(f"Failed {url}: {str(e)}")
 
-def _process(self, domain, text):
+    def _process(self, domain, text):
         """Process and store knowledge from text"""
         if domain.startswith("cyber:"):
             subdomain = domain.split(":")[1]
@@ -566,7 +597,7 @@ def _process(self, domain, text):
                 for match in re.findall(pattern, text):
                     self.knowledge[f"{domain.upper()}:{match}"] = text[:500]
 
-def generate_exploit(self, cve):
+    def generate_exploit(self, cve):
         """Generate exploit for given CVE"""
         base = self.knowledge.get(f"0DAY:{cve}", "")
         if not base:
@@ -584,7 +615,7 @@ def generate_exploit(self, cve):
             "signature": hashlib.sha256(base.encode()).hexdigest()
         }
 
-def process_hacking_command(self, command):
+    def process_hacking_command(self, command):
         """Process hacking commands with enhanced security"""
         cmd_parts = command.lower().split()
         if not cmd_parts:
@@ -653,6 +684,7 @@ def process_hacking_command(self, command):
             }
 
 
+# Initialize mother instance
 mother = MotherBrain()
 
 @app.route('/')
