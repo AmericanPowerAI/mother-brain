@@ -22,6 +22,7 @@ transformers>=4.36.2          # NLP models (heart.py neural core)
 torch>=2.2.1                  # Deep learning framework (heart.py training)
 numpy>=1.26.4,<2.0.0          # Numerical computing (all ML operations) - PINNED TO 1.x
 tqdm>=4.66.2                  # Progress bars (model training visuals)
+redis>=4.5.0                  # Redis-based caching for frequently accessed data:
 
 # ===== OPTIMIZED TORCH INSTALL =====
 --extra-index-url https://download.pytorch.org/whl/cpu
