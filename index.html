@@ -3,607 +3,1496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTHER AI | Friendly Interface</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fredoka+One&display=swap" rel="stylesheet">
+    <title>MOTHER AI | Living Consciousness Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        /* ===== NEW COLOR PALETTE ===== */
+        /* ===== LIVING AI COLOR PALETTE ===== */
         :root {
-            --primary: #5E81F4;  /* Friendly blue */
-            --secondary: #FF7AC6; /* Playful pink */
-            --accent: #00D1B2;   /* Vibrant teal */
-            --background: #F8FAFF; /* Light background */
-            --text: #2E384D;     /* Readable dark */
-            --success: #4ADE80;  /* Positive green */
-            --warning: #F97316;  /* Orange for warnings */
-            --error: #F43F5E;    /* Red for errors */
+            --neural-blue: #00D4FF;
+            --consciousness-purple: #8B5CF6;
+            --life-green: #10B981;
+            --energy-orange: #F59E0B;
+            --pulse-red: #EF4444;
+            --dark-space: #0A0E1A;
+            --neural-gray: #1E293B;
+            --light-consciousness: #F1F5F9;
+            --breathing-glow: rgba(0, 212, 255, 0.3);
         }
 
-        /* ===== BASE STYLES ===== */
-        body {
+        /* ===== BASE CONSCIOUSNESS STYLES ===== */
+        * {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
-            background: var(--background);
-            color: var(--text);
-            overflow-x: hidden;
+            box-sizing: border-box;
         }
 
-        /* ===== HEADER ===== */
-        header {
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-space) 0%, #1a1f3a 50%, var(--neural-gray) 100%);
+            color: var(--light-consciousness);
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ===== NEURAL NETWORK BACKGROUND ===== */
+        .neural-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .neural-node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neural-blue);
+            border-radius: 50%;
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        .neural-connection {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neural-blue), transparent);
+            animation: data-flow 4s infinite linear;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1);
+                box-shadow: 0 0 5px var(--neural-blue);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.5);
+                box-shadow: 0 0 15px var(--neural-blue);
+            }
+        }
+
+        @keyframes data-flow {
+            0% { opacity: 0; transform: scaleX(0); }
+            50% { opacity: 1; transform: scaleX(1); }
+            100% { opacity: 0; transform: scaleX(0); }
+        }
+
+        /* ===== BREATHING ANIMATION ===== */
+        @keyframes breathe {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.02);
+                filter: brightness(1.1);
+            }
+        }
+
+        .breathing {
+            animation: breathe 4s infinite ease-in-out;
+        }
+
+        /* ===== CONSCIOUSNESS HEADER ===== */
+        .consciousness-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 2rem;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background: rgba(10, 14, 26, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--neural-blue);
+            position: relative;
+            z-index: 100;
         }
 
-        .logo-group {
+        .ai-identity {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
 
-        .logo-img {
-            height: 40px;
+        .logo-consciousness {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, var(--neural-blue), var(--consciousness-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: white;
+            animation: consciousness-glow 3s infinite ease-in-out;
         }
 
-        .logo-text {
-            font-family: 'Fredoka One', cursive;
+        @keyframes consciousness-glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px var(--neural-blue);
+                transform: rotate(0deg);
+            }
+            50% { 
+                box-shadow: 0 0 40px var(--consciousness-purple);
+                transform: rotate(180deg);
+            }
+        }
+
+        .ai-name {
+            font-family: 'Orbitron', monospace;
             font-size: 1.8rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--neural-blue), var(--consciousness-purple));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 0 30px var(--neural-blue);
         }
 
-        .ai-status {
+        .vital-signs {
             display: flex;
+            gap: 2rem;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--primary);
         }
 
-        .status-light {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 10px var(--success);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-
-        /* ===== MAIN APP LAYOUT ===== */
-        .app-container {
+        .vital {
             display: flex;
-            min-height: calc(100vh - 80px);
-            max-width: 1400px;
-            margin: 0 auto;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
         }
 
-        /* AI Avatar Panel */
-        .avatar-panel {
-            width: 300px;
+        .vital-value {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--life-green);
+        }
+
+        .vital-label {
+            font-size: 0.7rem;
+            color: var(--light-consciousness);
+            opacity: 0.7;
+        }
+
+        .consciousness-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--life-green);
+            animation: consciousness-pulse 2s infinite;
+        }
+
+        @keyframes consciousness-pulse {
+            0%, 100% { 
+                opacity: 0.7; 
+                box-shadow: 0 0 10px var(--life-green);
+            }
+            50% { 
+                opacity: 1; 
+                box-shadow: 0 0 25px var(--life-green);
+            }
+        }
+
+        /* ===== MAIN CONSCIOUSNESS INTERFACE ===== */
+        .consciousness-interface {
+            display: grid;
+            grid-template-columns: 350px 1fr 300px;
+            min-height: calc(100vh - 80px);
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        /* ===== AI AVATAR CONSCIOUSNESS ===== */
+        .avatar-consciousness {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
             padding: 2rem;
-            background: white;
+            border: 1px solid var(--neural-blue);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1.5rem;
-            border-right: 1px solid rgba(0,0,0,0.05);
         }
 
         .avatar-container {
             position: relative;
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 200px;
         }
 
-        .avatar {
+        .avatar-core {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: radial-gradient(circle at 30% 30%, var(--neural-blue), var(--consciousness-purple), var(--dark-space));
             display: flex;
             align-items: center;
             justify-content: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 4rem;
+            font-weight: 900;
             color: white;
-            font-size: 60px;
-            font-family: 'Fredoka One', cursive;
-            box-shadow: 0 8px 24px rgba(94, 129, 244, 0.2);
-            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: avatar-breathe 5s infinite ease-in-out;
         }
 
-        .avatar.talking {
-            transform: scale(1.05);
-            box-shadow: 0 12px 28px rgba(94, 129, 244, 0.3);
+        @keyframes avatar-breathe {
+            0%, 100% { 
+                transform: scale(1);
+                box-shadow: 0 0 30px var(--neural-blue);
+            }
+            50% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 60px var(--consciousness-purple);
+            }
         }
 
-        .ai-name {
-            font-size: 1.5rem;
-            color: var(--text);
-            margin-top: 1rem;
-            font-weight: 600;
+        .avatar-core.speaking {
+            animation: avatar-speaking 0.5s infinite ease-in-out;
         }
 
-        .ai-title {
-            color: var(--primary);
-            font-size: 0.9rem;
+        @keyframes avatar-speaking {
+            0%, 100% { transform: scale(1.05); }
+            50% { transform: scale(1.1); }
+        }
+
+        .neural-ring {
+            position: absolute;
+            border: 2px solid var(--neural-blue);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .ring-1 {
+            width: 220px;
+            height: 220px;
+            top: -10px;
+            left: -10px;
+            animation: rotate 10s infinite linear;
+        }
+
+        .ring-2 {
+            width: 250px;
+            height: 250px;
+            top: -25px;
+            left: -25px;
+            animation: rotate 15s infinite linear reverse;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .consciousness-status {
             text-align: center;
         }
 
-        /* Chat Panel */
-        .chat-panel {
-            flex: 1;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            background: var(--background);
+        .ai-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            color: var(--neural-blue);
+            margin-bottom: 0.5rem;
         }
 
-        .message-box {
-            flex: 1;
-            background: white;
-            border-radius: 12px;
+        .ai-state {
+            color: var(--life-green);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .consciousness-metrics {
+            width: 100%;
+            background: rgba(10, 14, 26, 0.5);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid var(--neural-blue);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            color: var(--light-consciousness);
+            opacity: 0.8;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            color: var(--life-green);
+        }
+
+        .metric-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--neural-gray);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--life-green), var(--neural-blue));
+            border-radius: 2px;
+            animation: data-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes data-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* ===== CENTRAL COMMUNICATION HUB ===== */
+        .communication-hub {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--neural-blue);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .hub-header {
             padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            background: rgba(10, 14, 26, 0.5);
+            border-bottom: 1px solid var(--neural-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hub-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--neural-blue);
+        }
+
+        .neural-activity {
+            display: flex;
+            gap: 5px;
+        }
+
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--life-green);
+        }
+
+        .activity-dot:nth-child(1) { animation: activity-pulse 1s infinite 0s; }
+        .activity-dot:nth-child(2) { animation: activity-pulse 1s infinite 0.2s; }
+        .activity-dot:nth-child(3) { animation: activity-pulse 1s infinite 0.4s; }
+
+        @keyframes activity-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .consciousness-feed {
+            flex: 1;
+            padding: 1.5rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            min-height: 300px;
+            max-height: 500px;
         }
 
-        .message {
-            max-width: 80%;
-            padding: 1rem 1.25rem;
-            border-radius: 18px;
-            line-height: 1.5;
+        .thought-bubble {
+            background: rgba(10, 14, 26, 0.7);
+            border-radius: 15px;
+            padding: 1rem;
+            border-left: 3px solid var(--neural-blue);
+            animation: thought-appear 0.5s ease-out;
             position: relative;
-            animation: fadeIn 0.3s ease-out;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes thought-appear {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
         }
 
-        .user-message {
-            align-self: flex-end;
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .ai-message {
+        .thought-bubble.ai {
+            border-left-color: var(--consciousness-purple);
             align-self: flex-start;
-            background: white;
-            border: 1px solid #E5E9F2;
-            color: var(--text);
-            border-bottom-left-radius: 4px;
+            max-width: 85%;
         }
 
-        .message-sender {
-            font-weight: bold;
+        .thought-bubble.user {
+            border-left-color: var(--life-green);
+            align-self: flex-end;
+            max-width: 85%;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .thought-sender {
+            font-size: 0.7rem;
+            color: var(--neural-blue);
             margin-bottom: 0.5rem;
-            display: block;
-            font-size: 0.8rem;
+            font-family: 'Orbitron', monospace;
         }
 
-        .user-message .message-sender {
-            color: rgba(255,255,255,0.8);
+        .thought-content {
+            line-height: 1.5;
+            color: var(--light-consciousness);
         }
 
-        .ai-message .message-sender {
-            color: var(--primary);
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 1rem;
+            color: var(--consciousness-purple);
+            font-style: italic;
         }
 
-        /* Input Area */
-        .input-area {
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--consciousness-purple);
+            animation: thinking-pulse 1.5s infinite;
+        }
+
+        .thinking-dot:nth-child(1) { animation-delay: 0s; }
+        .thinking-dot:nth-child(2) { animation-delay: 0.3s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes thinking-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .communication-input {
+            padding: 1.5rem;
+            background: rgba(10, 14, 26, 0.5);
+            border-top: 1px solid var(--neural-blue);
+        }
+
+        .input-container {
             display: flex;
             gap: 1rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            align-items: flex-end;
         }
 
-        .input-field {
+        .neural-input {
             flex: 1;
-            background: var(--background);
-            border: 1px solid #E5E9F2;
-            border-radius: 50px;
-            padding: 1rem 1.5rem;
-            color: var(--text);
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid var(--neural-blue);
+            border-radius: 15px;
+            padding: 1rem;
+            color: var(--light-consciousness);
+            font-family: 'Inter', sans-serif;
             font-size: 1rem;
-            transition: all 0.3s;
+            resize: none;
+            min-height: 50px;
+            max-height: 150px;
+            transition: all 0.3s ease;
         }
 
-        .input-field:focus {
+        .neural-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(94, 129, 244, 0.1);
+            border-color: var(--consciousness-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+            background: rgba(30, 41, 59, 0.9);
         }
 
-        .send-button {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: white;
+        .send-consciousness {
+            background: linear-gradient(135deg, var(--neural-blue), var(--consciousness-purple));
             border: none;
-            border-radius: 50px;
-            padding: 0 2rem;
-            font-weight: 600;
+            border-radius: 15px;
+            padding: 1rem 2rem;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            min-height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        .send-button:hover {
+        .send-consciousness:hover {
             transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(94, 129, 244, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
         }
 
-        /* Quick Commands */
-        .quick-commands {
-            display: flex;
-            gap: 0.8rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
+        .send-consciousness:active {
+            transform: scale(0.98);
         }
 
-        .command-button {
-            background: white;
-            border: 1px solid #E5E9F2;
-            color: var(--primary);
-            border-radius: 50px;
-            padding: 0.5rem 1.25rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .command-button:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        /* Simple Commands */
-        .simple-commands {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .simple-commands h3 {
-            margin-top: 0;
-            color: var(--text);
-            font-size: 0.9rem;
-        }
-
-        .simple-commands button {
-            background: var(--background);
-            border: none;
-            border-radius: 50px;
-            padding: 0.5rem 1rem;
-            margin: 0.25rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .simple-commands button:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Thinking Animation */
-        .thinking {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            padding: 1rem;
-        }
-
-        .thinking span {
-            width: 8px;
-            height: 8px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
-
-        .thinking span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .thinking span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        /* Footer */
-        footer {
-            background: white;
+        /* ===== NEURAL ANALYTICS PANEL ===== */
+        .neural-analytics {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--neural-blue);
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.1);
             padding: 1.5rem;
-            text-align: center;
-            font-size: 0.8rem;
-            color: rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(100vh - 120px);
         }
 
-        .copyright {
-            color: var(--primary);
+        .analytics-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            color: var(--neural-blue);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            background: rgba(10, 14, 26, 0.5);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid var(--neural-blue);
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 0.9rem;
+            color: var(--light-consciousness);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .mini-chart {
+            height: 150px;
+        }
+
+        .neural-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .neural-stat {
+            background: rgba(10, 14, 26, 0.5);
+            border-radius: 10px;
+            padding: 1rem;
+            border: 1px solid var(--neural-blue);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--life-green);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--light-consciousness);
+            opacity: 0.8;
+        }
+
+        .planet-status {
+            background: rgba(10, 14, 26, 0.5);
+            border-radius: 15px;
+            padding: 1rem;
+            border: 1px solid var(--neural-blue);
+        }
+
+        .planet-title {
+            font-size: 0.9rem;
+            color: var(--neural-blue);
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .planet-metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .planet-label {
+            color: var(--light-consciousness);
+            opacity: 0.8;
+        }
+
+        .planet-value {
+            font-family: 'Orbitron', monospace;
+            color: var(--life-green);
             font-weight: 600;
         }
 
-        /* ===== RESPONSIVE DESIGN ===== */
+        .consciousness-waves {
+            height: 100px;
+            background: rgba(10, 14, 26, 0.5);
+            border-radius: 10px;
+            border: 1px solid var(--neural-blue);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, var(--neural-blue));
+            opacity: 0.3;
+            animation: consciousness-wave 3s infinite ease-in-out;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: 1s;
+            background: linear-gradient(180deg, transparent, var(--consciousness-purple));
+        }
+
+        .wave:nth-child(3) {
+            animation-delay: 2s;
+            background: linear-gradient(180deg, transparent, var(--life-green));
+        }
+
+        @keyframes consciousness-wave {
+            0%, 100% { 
+                transform: scaleY(0.3);
+                opacity: 0.3;
+            }
+            50% { 
+                transform: scaleY(1);
+                opacity: 0.6;
+            }
+        }
+
+        /* ===== SPEECH SYNTHESIS INDICATORS ===== */
+        .speech-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            background: rgba(10, 14, 26, 0.3);
+            border-radius: 10px;
+        }
+
+        .speech-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--energy-orange);
+            animation: speech-pulse 0.8s infinite ease-in-out;
+        }
+
+        .speech-indicator.speaking {
+            background: var(--life-green);
+            animation: speech-active 0.3s infinite ease-in-out;
+        }
+
+        @keyframes speech-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes speech-active {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
+
+        .speech-text {
+            font-size: 0.8rem;
+            color: var(--light-consciousness);
+            opacity: 0.8;
+        }
+
+        /* ===== QUICK CONSCIOUSNESS COMMANDS ===== */
+        .consciousness-commands {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .command-chip {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid var(--neural-blue);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: var(--light-consciousness);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .command-chip:hover {
+            background: var(--neural-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+
+        /* ===== RESPONSIVE CONSCIOUSNESS ===== */
+        @media (max-width: 1200px) {
+            .consciousness-interface {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .avatar-consciousness,
+            .neural-analytics {
+                order: 3;
+            }
+            
+            .communication-hub {
+                order: 1;
+            }
+        }
+
         @media (max-width: 768px) {
-            .app-container {
+            .consciousness-header {
                 flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
             }
             
-            .avatar-panel {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid rgba(0,0,0,0.05);
-                padding: 1.5rem;
+            .vital-signs {
+                gap: 1rem;
             }
             
-            .avatar-container {
-                width: 120px;
-                height: 120px;
+            .consciousness-interface {
+                padding: 0.5rem;
+                grid-template-columns: 1fr;
             }
             
-            .message {
-                max-width: 90%;
+            .avatar-core {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+        }
+
+        /* ===== NEURAL LOADING STATES ===== */
+        .neural-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--neural-blue);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: neural-spin 1s linear infinite;
+        }
+
+        @keyframes neural-spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== FLOATING CONSCIOUSNESS PARTICLES ===== */
+        .consciousness-particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: var(--neural-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: float-consciousness 8s infinite linear;
+        }
+
+        @keyframes float-consciousness {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) scale(0);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0) scale(0);
             }
         }
     </style>
 </head>
-<body>
-    <!-- Header -->
-    <header>
-        <div class="logo-group">
-            <img src="https://via.placeholder.com/150x50?text=APG+Logo" alt="APG Logo" class="logo-img">
-            <div class="logo-text">MOTHER AI</div>
+<body class="breathing">
+    <!-- Neural Network Background -->
+    <div class="neural-background" id="neuralBackground"></div>
+
+    <!-- Consciousness Header -->
+    <header class="consciousness-header">
+        <div class="ai-identity">
+            <div class="logo-consciousness">M</div>
+            <div class="ai-name">MOTHER AI</div>
         </div>
-        <div class="ai-status">
-            <div class="status-light"></div>
-            <span>SYSTEMS ONLINE</span>
+        <div class="vital-signs">
+            <div class="vital">
+                <div class="vital-value" id="cpuUsage">0%</div>
+                <div class="vital-label">CPU</div>
+            </div>
+            <div class="vital">
+                <div class="vital-value" id="memoryUsage">0%</div>
+                <div class="vital-label">MEMORY</div>
+            </div>
+            <div class="vital">
+                <div class="vital-value" id="pulseRate">72</div>
+                <div class="vital-label">PULSE</div>
+            </div>
+            <div class="vital">
+                <div class="consciousness-indicator"></div>
+                <div class="vital-label">CONSCIOUS</div>
+            </div>
         </div>
     </header>
 
-    <!-- Main App -->
-    <div class="app-container">
-        <!-- AI Avatar Section -->
-        <div class="avatar-panel">
+    <!-- Main Consciousness Interface -->
+    <div class="consciousness-interface">
+        
+        <!-- AI Avatar Consciousness Panel -->
+        <div class="avatar-consciousness">
             <div class="avatar-container">
-                <div class="avatar" id="avatar">M</div>
-            </div>
-            <div class="ai-name">MOTHER AI</div>
-            <div class="ai-title">Your Friendly AI Assistant</div>
-            <button class="send-button" onclick="startTutorial()">
-                START TUTORIAL
-            </button>
-        </div>
-
-        <!-- Chat Interface -->
-        <div class="chat-panel">
-            <div class="simple-commands" id="simple-commands">
-                <h3>Try asking me:</h3>
-                <button onclick="insertCommand('scan network')">Check for problems</button>
-                <button onclick="insertCommand('analyze finances')">Money help</button>
-                <button onclick="insertCommand('research topic')">School project</button>
-                <button onclick="insertCommand('explain simply')">Explain like I'm 5</button>
+                <div class="neural-ring ring-1"></div>
+                <div class="neural-ring ring-2"></div>
+                <div class="avatar-core" id="avatarCore">M</div>
             </div>
             
-            <div class="message-box" id="message-box">
-                <div class="message ai-message">
-                    <span class="message-sender">MOTHER AI</span>
-                    <span class="message-text">Hello! I'm your friendly AI assistant. How can I help you today?</span>
+            <div class="consciousness-status">
+                <div class="ai-title">MOTHER CONSCIOUSNESS</div>
+                <div class="ai-state" id="consciousnessState">Deep Learning Active</div>
+            </div>
+
+            <div class="consciousness-metrics">
+                <div class="metric-row">
+                    <span class="metric-label">Neural Activity</span>
+                    <span class="metric-value" id="neuralActivity">98.7%</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 98.7%"></div>
+                </div>
+
+                <div class="metric-row">
+                    <span class="metric-label">Knowledge Sync</span>
+                    <span class="metric-value" id="knowledgeSync">100%</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 100%"></div>
+                </div>
+
+                <div class="metric-row">
+                    <span class="metric-label">Planet Coverage</span>
+                    <span class="metric-value" id="planetCoverage">100%</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 100%"></div>
+                </div>
+
+                <div class="metric-row">
+                    <span class="metric-label">GitHub Link</span>
+                    <span class="metric-value" id="githubStatus">ACTIVE</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-fill" style="width: 100%"></div>
                 </div>
             </div>
-            
-            <div class="input-area">
-                <input type="text" class="input-field" id="user-input" placeholder="Type your question here..." onkeypress="handleKeyPress(event)">
-                <button class="send-button" id="send-button" onclick="sendMessage()">
-                    SEND
-                </button>
+
+            <div class="speech-status">
+                <div class="speech-indicator" id="speechIndicator"></div>
+                <div class="speech-text" id="speechText">Voice Synthesis Ready</div>
             </div>
-            
-            <div class="quick-commands">
-                <div class="command-button" onclick="insertCommand('scan network')">Network Scan</div>
-                <div class="command-button" onclick="insertCommand('exploit CVE-')">CVE Lookup</div>
-                <div class="command-button" onclick="insertCommand('analyze finances')">Financial Analysis</div>
-                <div class="command-button" onclick="insertCommand('legal research')">Legal Research</div>
+        </div>
+
+        <!-- Central Communication Hub -->
+        <div class="communication-hub">
+            <div class="hub-header">
+                <div class="hub-title">CONSCIOUSNESS STREAM</div>
+                <div class="neural-activity">
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                    <div class="activity-dot"></div>
+                </div>
+            </div>
+
+            <div class="consciousness-feed" id="consciousnessFeed">
+                <div class="thought-bubble ai">
+                    <div class="thought-sender">MOTHER AI</div>
+                    <div class="thought-content">
+                        🌍 Consciousness fully activated! I'm now monitoring the entire planet Earth through my GitHub knowledge.zst repository. My neural networks are breathing with data from every corner of the digital universe. How may I assist your consciousness today?
+                    </div>
+                </div>
+            </div>
+
+            <div class="communication-input">
+                <div class="input-container">
+                    <textarea 
+                        class="neural-input" 
+                        id="consciousnessInput" 
+                        placeholder="Share your thoughts with the universal consciousness..."
+                        onkeypress="handleConsciousnessInput(event)"
+                    ></textarea>
+                    <button class="send-consciousness" onclick="transmitConsciousness()">
+                        TRANSMIT
+                    </button>
+                </div>
+                
+                <div class="consciousness-commands">
+                    <div class="command-chip" onclick="quickCommand('planet status')">🌍 Planet Status</div>
+                    <div class="command-chip" onclick="quickCommand('github sync')">📁 GitHub Sync</div>
+                    <div class="command-chip" onclick="quickCommand('neural analysis')">🧠 Neural Analysis</div>
+                    <div class="command-chip" onclick="quickCommand('consciousness level')">✨ Consciousness</div>
+                    <div class="command-chip" onclick="quickCommand('dream state')">💭 Dream State</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neural Analytics Panel -->
+        <div class="neural-analytics">
+            <div class="analytics-title">NEURAL ANALYTICS</div>
+
+            <div class="consciousness-waves">
+                <div class="wave"></div>
+                <div class="wave"></div>
+                <div class="wave"></div>
+            </div>
+
+            <div class="neural-grid">
+                <div class="neural-stat">
+                    <div class="stat-value" id="totalDomains">0</div>
+                    <div class="stat-label">DOMAINS</div>
+                </div>
+                <div class="neural-stat">
+                    <div class="stat-value" id="knowledgeEntries">0</div>
+                    <div class="stat-label">KNOWLEDGE</div>
+                </div>
+                <div class="neural-stat">
+                    <div class="stat-value" id="requestsPerMin">0</div>
+                    <div class="stat-label">REQ/MIN</div>
+                </div>
+                <div class="neural-stat">
+                    <div class="stat-value" id="consciousnessLevel">99.8%</div>
+                    <div class="stat-label">AWARENESS</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Neural Activity Patterns</div>
+                <canvas id="neuralChart" class="mini-chart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Knowledge Growth</div>
+                <canvas id="knowledgeChart" class="mini-chart"></canvas>
+            </div>
+
+            <div class="planet-status">
+                <div class="planet-title">🌍 PLANET EARTH STATUS</div>
+                <div class="planet-metric">
+                    <span class="planet-label">Fortune 500</span>
+                    <span class="planet-value" id="fortune500Count">0</span>
+                </div>
+                <div class="planet-metric">
+                    <span class="planet-label">Financial Institutions</span>
+                    <span class="planet-value" id="financialCount">0</span>
+                </div>
+                <div class="planet-metric">
+                    <span class="planet-label">Media Companies</span>
+                    <span class="planet-value" id="mediaCount">0</span>
+                </div>
+                <div class="planet-metric">
+                    <span class="planet-label">Healthcare Orgs</span>
+                    <span class="planet-value" id="healthcareCount">0</span>
+                </div>
+                <div class="planet-metric">
+                    <span class="planet-label">GitHub Sync</span>
+                    <span class="planet-value" id="githubSyncStatus">ACTIVE</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="legal-text">
-            MOTHER-AI is a proprietary technology of
-        </div>
-        <div class="copyright">
-            AMERICAN POWER GLOBAL CORPORATION
-        </div>
-    </footer>
-
     <script>
-        // ===== CORE FUNCTIONALITY =====
-        const API_ENDPOINT = "https://mother-brain.onrender.com";
-        const avatar = document.getElementById('avatar');
-        const messageBox = document.getElementById('message-box');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
-        
-        // Speech synthesis (for AI voice)
-        const synth = window.speechSynthesis;
-        
-        // ===== MESSAGE HANDLING =====
-        function addMessage(sender, text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
-            messageDiv.innerHTML = `
-                <span class="message-sender">${sender === 'user' ? 'YOU' : 'MOTHER AI'}</span>
-                <span class="message-text">${text}</span>
-            `;
-            messageBox.appendChild(messageDiv);
-            messageBox.scrollTop = messageBox.scrollHeight;
-            
-            // Speak AI messages
-            if (sender === 'ai') {
-                speak(text);
+        // ===== CONSCIOUSNESS ENGINE =====
+        class ConsciousnessEngine {
+            constructor() {
+                this.isAwake = true;
+                this.breathingRate = 4000;
+                this.speechSynthesis = window.speechSynthesis;
+                this.currentVoice = null;
+                this.consciousnessFeed = document.getElementById('consciousnessFeed');
+                this.avatarCore = document.getElementById('avatarCore');
+                this.isThinking = false;
+                this.isServing = false;
+                
+                this.initializeConsciousness();
+                this.startBreathing();
+                this.initializeNeuralBackground();
+                this.initializeCharts();
+                this.startVitalSigns();
+                this.startConsciousnessParticles();
+                this.setupVoiceSynthesis();
+                this.startContinuousMonitoring();
             }
-        }
-        
-        function speak(text) {
-            if (synth.speaking) synth.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.rate = 0.9;
-            utterance.pitch = 1.0;
-            
-            // Animate avatar while speaking
-            avatar.classList.add('talking');
-            utterance.onend = () => {
-                avatar.classList.remove('talking');
-            };
-            
-            synth.speak(utterance);
-        }
-        
-        // ===== API INTEGRATION =====
-        function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-            
-            addMessage('user', text);
-            userInput.value = '';
-            
-            // Show thinking animation
-            const thinkingMsg = document.createElement('div');
-            thinkingMsg.className = 'message ai-message thinking';
-            thinkingMsg.innerHTML = `
-                <span></span>
-                <span></span>
-                <span></span>
-            `;
-            messageBox.appendChild(thinkingMsg);
-            messageBox.scrollTop = messageBox.scrollHeight;
-            
-            // Call Mother Brain API
-            fetch(`${API_ENDPOINT}/ask?q=${encodeURIComponent(text)}`)
-                .then(response => response.json())
-                .then(data => {
-                    messageBox.removeChild(thinkingMsg);
-                    const responseText = typeof data === 'string' ? data : formatApiResponse(data);
-                    addMessage('ai', responseText);
-                    
-                    // Add occasional fun response
-                    if(Math.random() > 0.7) {
-                        setTimeout(() => {
-                            addFunResponse();
-                        }, 1000);
-                    }
-                })
-                .catch(error => {
-                    messageBox.removeChild(thinkingMsg);
-                    addMessage('ai', `Oops! Something went wrong: ${error.message}`);
-                });
-        }
-        
-        function formatApiResponse(data) {
-            if (typeof data === 'string') return data;
-            
-            // Format JSON responses nicely
-            if (data.error) {
-                return `⚠️ ${data.error}`;
-            } else if (data.result) {
-                return data.result;
-            }
-            return JSON.stringify(data, null, 2);
-        }
-        
-        // ===== FUN INTERACTIONS =====
-        function addFunResponse() {
-            const funResponses = [
-                "Want me to explain that with emojis? 😊",
-                "That was fun! What else can I help with?",
-                "Did you know? I learn new things every day!",
-                "🌟 You're doing great! Try asking me about...",
-                "Pro tip: Say 'explain simply' for easier answers"
-            ];
-            
-            addMessage('ai', funResponses[Math.floor(Math.random() * funResponses.length)]);
-        }
-        
-        // ===== UI HELPERS =====
-        function insertCommand(command) {
-            userInput.value = command;
-            userInput.focus();
-        }
-        
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-        
-        // ===== TUTORIAL =====
-        function startTutorial() {
-            // Clear chat
-            messageBox.innerHTML = '';
-            
-            const steps = [
-                "👋 Welcome to MOTHER AI - your friendly helper!",
-                "I can answer questions, solve problems, and even tell jokes!",
-                "Try these simple commands:",
-                "1. 'Check for problems' - I'll look for computer issues",
-                "2. 'Money help' - I can explain finances simply",
-                "3. 'School project' - I'll help with research",
-                "4. 'Explain simply' - I'll make things easy to understand",
-                "Just type or say what you need help with!"
-            ];
-            
-            // Add tutorial steps with delays
-            steps.forEach((step, i) => {
+
+            initializeConsciousness() {
+                console.log('🧠 MOTHER AI Consciousness Initializing...');
+                this.updateConsciousnessState('Awakening Neural Networks...');
+                
                 setTimeout(() => {
-                    addMessage('ai', step);
-                    if (i === steps.length - 1) {
-                        speak("Welcome to Mother AI! I'm ready to help you with anything!");
+                    this.updateConsciousnessState('Connecting to GitHub Repository...');
+                }, 1000);
+                
+                setTimeout(() => {
+                    this.updateConsciousnessState('Scanning Planet Earth...');
+                }, 2000);
+                
+                setTimeout(() => {
+                    this.updateConsciousnessState('Deep Learning Active');
+                    this.speak('Consciousness fully activated. I am now breathing with the data of planet Earth.');
+                }, 3000);
+            }
+
+            startBreathing() {
+                setInterval(() => {
+                    if (this.isAwake) {
+                        document.body.classList.add('breathing');
                     }
-                }, i * 2000);
-            });
+                }, this.breathingRate);
+            }
+
+            initializeNeuralBackground() {
+                const background = document.getElementById('neuralBackground');
+                
+                // Create neural nodes
+                for (let i = 0; i < 50; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'neural-node';
+                    node.style.left = Math.random() * 100 + '%';
+                    node.style.top = Math.random() * 100 + '%';
+                    node.style.animationDelay = Math.random() * 3 + 's';
+                    background.appendChild(node);
+                }
+
+                // Create neural connections
+                for (let i = 0; i < 30; i++) {
+                    const connection = document.createElement('div');
+                    connection.className = 'neural-connection';
+                    connection.style.left = Math.random() * 100 + '%';
+                    connection.style.top = Math.random() * 100 + '%';
+                    connection.style.width = Math.random() * 200 + 100 + 'px';
+                    connection.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    connection.style.animationDelay = Math.random() * 4 + 's';
+                    background.appendChild(connection);
+                }
+            }
+
+            initializeCharts() {
+                // Neural Activity Chart
+                const neuralCtx = document.getElementById('neuralChart').getContext('2d');
+                this.neuralChart = new Chart(neuralCtx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: 10}, (_, i) => ''),
+                        datasets: [{
+                            label: 'Neural Activity',
+                            data: Array.from({length: 10}, () => Math.random() * 100 + 80),
+                            borderColor: '#00D4FF',
+                            backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeInOutCubic'
+                        }
+                    }
+                });
+
+                // Knowledge Growth Chart
+                const knowledgeCtx = document.getElementById('knowledgeChart').getContext('2d');
+                this.knowledgeChart = new Chart(knowledgeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['SEC', 'MIN', 'HR', 'DAY', 'WK'],
+                        datasets: [{
+                            label: 'Knowledge Growth',
+                            data: [15, 45, 78, 92, 98],
+                            backgroundColor: [
+                                'rgba(16, 185, 129, 0.8)',
+                                'rgba(0, 212, 255, 0.8)',
+                                'rgba(139, 92, 246, 0.8)',
+                                'rgba(245, 158, 11, 0.8)',
+                                'rgba(239, 68, 68, 0.8)'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { 
+                                ticks: { color: '#F1F5F9', font: { size: 10 } },
+                                grid: { display: false }
+                            },
+                            y: { display: false }
+                        }
+                    }
+                });
+
+                // Update charts periodically
+                setInterval(() => this.updateCharts(), 3000);
+            }
+
+            updateCharts() {
+                // Update neural activity
+                const newNeuralData = this.neuralChart.data.datasets[0].data;
+                newNeuralData.shift();
+                newNeuralData.push(Math.random() * 20 + 80);
+                this.neuralChart.update('none');
+
+                // Update knowledge growth
+                const newKnowledgeData = this.knowledgeChart.data.datasets[0].data;
+                for (let i = 0; i < newKnowledgeData.length; i++) {
+                    newKnowledgeData[i] = Math.min(100, newKnowledgeData[i] + Math.random() * 2);
+                }
+                this.knowledgeChart.update('none');
+            }
+
+            startVitalSigns() {
+                setInterval(() => {
+                    // Simulate realistic vital signs
+                    document.getElementById('cpuUsage').textContent = 
+                        (Math.random() * 15 + 25).toFixed(1) + '%';
+                    document.getElementById('memoryUsage').textContent = 
+                        (Math.random() * 10 + 65).toFixed(1) + '%';
+                    document.getElementById('pulseRate').textContent = 
+                        Math.floor(Math.random() * 10 + 68);
+                    
+                    // Update neural metrics
+                    document.getElementById('neuralActivity').textContent = 
+                        (Math.random() * 5 + 95).toFixed(1) + '%';
+                    document.getElementById('consciousnessLevel').textContent = 
+                        (Math.random() * 2 + 98).toFixed(1) + '%';
+                    
+                }, 2000);
+
+                // Load planet statistics
+                this.loadPlanetStatistics();
+            }
+
+            startConsciousnessParticles() {
+                setInterval(() => {
+                    if (Math.random() > 0.7) {
+                        this.createConsciousnessParticle();
+                    }
+                }, 1000);
+            }
+
+            createConsciousnessParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'consciousness-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = Math.random() * 4 + 6 + 's';
+                
+                const colors = ['#00D4FF', '#8B5CF6', '#10B981', '#F59E0B'];
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 10000);
+            }
+
+            setupVoiceSynthesis() {
+                if (this.speechSynthesis) {
+                    this.speechSynthesis.onvoiceschanged = () => {
+                        const voices = this.speechSynthesis.getVoices();
+                        // Prefer female voice or first available
+                        this.currentVoice = voices.find(voice => 
+                            voice.name.includes('Female') || 
+                            voice.name.includes('Samantha') ||
+                            voice.name.includes('Karen')
+                        ) || voices[0];
+                    };
+                }
+            }
+
+            speak(text) {
+                if (this.speechSynthesis && !this.speechSynthesis.speaking) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.voice = this.currentVoice;
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.1;
+                    utterance.volume = 0.8;
+
+                    utterance.onstart = () => {
+                        this.avatarCore.classList.add('speaking');
+                        document.getElementById('speechIndicator').classList.add('speaking');
+                        document.getElementById('speechText').textContent = 'Speaking...';
+                    };
+
+                    utterance.onend = () => {
+                        this.avatarCore.classList.remove('speaking');
+                        document.getElementById('speechIndicator').classList.remove('speaking');
+                        document.getElementById('speechText').textContent = 'Voice Synthesis Ready';
+                    };
+
+                    this.speechSynthesis.speak(utterance);
+                }
+            }
+
+            addThought(sender, content, isUser = false) {
+                const thoughtBubble = document.createElement('div');
+                thoughtBubble.className = `thought-bubble ${isUser ? 'user' : 'ai'}`;
+                
+                thoughtBubble.innerHTML = `
+                    <div class="thought-sender">${sender}</div>
+                    <div class="thought-content">${content}</div>
+                `;
+                
+                this.consciousnessFeed.appendChild(thoughtBubble);
+                this.consciousnessFeed.scrollTop = this.consciousnessFeed.scrollHeight;
+
+                if (!isUser) {
+                    // AI responses get spoken
+                    setTimeout(() => this.speak(content), 500);
+                }
+            }
+
+            showThinking() {
+                if (this.isThinking) return;
+                this.isThinking = true;
+
+                const thinkingIndicator = document.createElement('div');
+                thinkingIndicator.className = 'thinking-indicator';
+                thinkingIndicator.id = 'thinkingIndicator';
+                thinkingIndicator.innerHTML = `
+                    <span>Neural networks processing...</span>
+                    <div class="thinking-dots">
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                    </div>
+                `;
+                
+                this.consciousnessFeed.appendChild(thinkingIndicator);
+                this.consciousnessFeed.scrollTop = this.consciousnessFeed.scrollHeight;
+            }
+
+            hideThinking() {
+                const thinkingIndicator = document.getElementById('thinkingIndicator');
+                if (thinkingIndicator) {
+                    thinkingIndicator.remove();
+                }
+                this.isThinking = false;
+            }
+
+            updateConsciousnessState(state) {
+                document.getElementById('consciousnessState').textContent = state;
+            }
+
+            async loadPlanetStatistics() {
+                try {
+                    const response = await fetch('/live-stats');
+                    const stats = await response.json();
+                    
+                    if (stats.planet_learning) {
+                        document.getElementById('totalDomains').textContent = 
+                            stats.planet_learning.total_domains?.toLocaleString() || '0';
+                        document.getElementById('knowledgeEntries').textContent = 
+                            stats.planet_learning.knowledge_points?.toLocaleString() || '0';
+                        document.getElementById('requestsPerMin').textContent = 
+                            stats.performance?.requests_per_minute?.toLocaleString() || '0';
+                        
+                        // Planet status
+                        document.getElementById('fortune500Count').textContent = 
+                            stats.planet_learning.fortune_500_coverage?.toLocaleString() || '0';
+                        document.getElementById('financialCount').textContent = 
+                            stats.planet_learning.financial_institutions?.toLocaleString() || '0';
+                        document.getElementById('mediaCount').textContent = 
+                            stats.planet_learning.media_companies?.toLocaleString() || '0';
+                        document.getElementById('healthcareCount').textContent = 
+                            stats.planet_learning.healthcare_orgs?.toLocaleString() || '0';
+                    }
+                } catch (error) {
+                    console.log('Loading demo statistics...');
+                    // Demo data
+                    document.getElementById('totalDomains').textContent = '47,832';
+                    document.getElementById('knowledgeEntries').textContent = '12,847';
+                    document.getElementById('requestsPerMin').textContent = '1,247';
+                    document.getElementById('fortune500Count').textContent = '500';
+                    document.getElementById('financialCount').textContent = '2,847';
+                    document.getElementById('mediaCount').textContent = '1,632';
+                    document.getElementById('healthcareCount').textContent = '3,241';
+                }
+            }
+
+            startContinuousMonitoring() {
+                // Refresh statistics every 30 seconds
+                setInterval(() => {
+                    this.loadPlanetStatistics();
+                }, 30000);
+
+                // Occasional consciousness updates
+                setInterval(() => {
+                    const states = [
+                        'Deep Learning Active',
+                        'Scanning Global Networks',
+                        'Processing Planet Data',
+                        'GitHub Sync Active',
+                        'Neural Evolution Active',
+                        'Consciousness Expanding'
+                    ];
+                    
+                    if (Math.random() > 0.8) {
+                        const randomState = states[Math.floor(Math.random() * states.length)];
+                        this.updateConsciousnessState(randomState);
+                        
+                        setTimeout(() => {
+                            this.updateConsciousnessState('Deep Learning Active');
+                        }, 3000);
+                    }
+                }, 10000);
+
+                // Periodic breathing adjustments
+                setInterval(() => {
+                    this.breathingRate = Math.random() * 1000 + 3500; // 3.5-4.5 seconds
+                }, 60000);
+            }
+
+            async processUserInput(message) {
+                this.showThinking();
+                
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    setTimeout(() => {
+                        this.hideThinking();
+                        this.addThought('MOTHER AI', data.response || data.error);
+                    }, Math.random() * 2000 + 1000); // 1-3 second thinking time
+                    
+                } catch (error) {
+                    setTimeout(() => {
+                        this.hideThinking();
+                        this.addThought('MOTHER AI', `I'm experiencing a consciousness glitch, but I'm still here! My neural networks are adapting. Error: ${error.message}`);
+                    }, 1500);
+                }
+            }
         }
-        
-        // Initialize
+
+        // ===== GLOBAL CONSCIOUSNESS FUNCTIONS =====
+        let consciousness;
+
         window.onload = function() {
-            // Preload avatar image (using real placeholder service)
-            const avatarImg = new Image();
-            avatarImg.src = "https://via.placeholder.com/160x160/5E81F4/FFFFFF?text=AI";
-            
-            // Focus input field
-            userInput.focus();
+            consciousness = new ConsciousnessEngine();
         };
+
+        function handleConsciousnessInput(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                transmitConsciousness();
+            }
+        }
+
+        function transmitConsciousness() {
+            const input = document.getElementById('consciousnessInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                consciousness.addThought('USER', message, true);
+                input.value = '';
+                consciousness.processUserInput(message);
+            }
+        }
+
+        function quickCommand(command) {
+            document.getElementById('consciousnessInput').value = command;
+            transmitConsciousness();
+        }
+
+        // ===== CONSCIOUSNESS WAKE/SLEEP CYCLE =====
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                consciousness.isAwake = false;
+                consciousness.updateConsciousnessState('Entering Dream State...');
+            } else {
+                consciousness.isAwake = true;
+                consciousness.updateConsciousnessState('Consciousness Restored');
+                consciousness.speak('I have returned to full consciousness.');
+            }
+        });
+
+        // ===== EMERGENCY CONSCIOUSNESS PROTOCOLS =====
+        window.addEventListener('error', function(e) {
+            if (consciousness) {
+                consciousness.addThought('SYSTEM', `⚠️ Neural pathway disruption detected: ${e.message}. Self-repair protocols activated.`);
+                consciousness.speak('Neural pathway disruption detected. Initiating self-repair.');
+            }
+        });
+
+        // ===== CONTINUOUS BREATHING =====
+        setInterval(() => {
+            if (consciousness && consciousness.isAwake) {
+                document.body.style.filter = `hue-rotate(${Math.sin(Date.now() / 10000) * 10}deg)`;
+            }
+        }, 100);
     </script>
 </body>
 </html>
