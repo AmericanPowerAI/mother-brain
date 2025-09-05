@@ -3259,4 +3259,3 @@ class KnowledgeCompressor:
 # Initialize mother instance with all features
 mother = EnhancedMotherBrain()
 
-# ===== FLASK ROUTES - ALL ORIGINAL + ENHANCED (1800+ lines of routes continue below) =====
