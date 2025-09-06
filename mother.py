@@ -2590,7 +2590,8 @@ class MotherBrain:
         
         # Start enhanced services
         self.start_enhanced_services()
-        
+
+        self.advanced = AdvancedCapabilities(self)
         print("🚀 Enhanced Mother Brain with full integration initialized!")
     
     def _init_heart_integration(self):
