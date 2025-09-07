@@ -534,21 +534,19 @@ class UniversalWebLearner:
                         priority = self._calculate_priority(url)
                         
                         # NEW: Boost priority for weak areas
-                        # Fixed: Don't call _identify_weak_areas with empty list
-                        # This will be populated after first test cycle
                         weak_areas = getattr(self, 'current_weak_areas', [])
                         if any(weak in url.lower() for weak in weak_areas):
                             priority += 2
-                                
-                            await self.learning_queue.put({
-                                'url': url,
-                                'category': category,
-                                'priority': priority,
-                                'discovered_from': source_url
-                            })
+                        
+                        await self.learning_queue.put({
+                            'url': url,
+                            'category': category,
+                            'priority': priority,
+                            'discovered_from': source_url
+                        })
                             
-        except Exception as e:
-            self.logger.debug(f"Could not discover from {source_url}: {e}")
+    except Exception as e:
+        self.logger.debug(f"Could not discover from {source_url}: {e}")
 
     def _extract_urls_from_content(self, content: str) -> List[str]:
         """Extract URLs from HTML/text content"""
