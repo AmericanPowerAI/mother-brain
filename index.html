@@ -698,73 +698,27 @@
             }
         }
 
-        /* ===== SPEECH SYNTHESIS INDICATORS ===== */
-        .speech-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            background: rgba(10, 14, 26, 0.3);
-            border-radius: 10px;
-        }
-
-        .speech-indicator {
-            width: 10px;
-            height: 10px;
+        /* ===== LOADING STATES ===== */
+        .neural-loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--neural-blue);
             border-radius: 50%;
-            background: var(--energy-orange);
-            animation: speech-pulse 0.8s infinite ease-in-out;
+            border-top-color: transparent;
+            animation: neural-spin 1s linear infinite;
         }
 
-        .speech-indicator.speaking {
-            background: var(--life-green);
-            animation: speech-active 0.3s infinite ease-in-out;
+        @keyframes neural-spin {
+            to { transform: rotate(360deg); }
         }
 
-        @keyframes speech-pulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+        /* ===== ERROR STATE ===== */
+        .error-metric {
+            color: var(--pulse-red) !important;
         }
 
-        @keyframes speech-active {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.4); }
-        }
-
-        .speech-text {
-            font-size: 0.8rem;
-            color: var(--light-consciousness);
-            opacity: 0.8;
-        }
-
-        /* ===== QUICK CONSCIOUSNESS COMMANDS ===== */
-        .consciousness-commands {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .command-chip {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid var(--neural-blue);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            color: var(--light-consciousness);
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .command-chip:hover {
-            background: var(--neural-blue);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
-        }
-
-        /* ===== RESPONSIVE CONSCIOUSNESS ===== */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .consciousness-interface {
                 grid-template-columns: 1fr;
@@ -803,52 +757,6 @@
                 font-size: 3rem;
             }
         }
-
-        /* ===== NEURAL LOADING STATES ===== */
-        .neural-loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid var(--neural-blue);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: neural-spin 1s linear infinite;
-        }
-
-        @keyframes neural-spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* ===== FLOATING CONSCIOUSNESS PARTICLES ===== */
-        .consciousness-particle {
-            position: fixed;
-            width: 3px;
-            height: 3px;
-            background: var(--neural-blue);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-            animation: float-consciousness 8s infinite linear;
-        }
-
-        @keyframes float-consciousness {
-            0% {
-                opacity: 0;
-                transform: translateY(100vh) scale(0);
-            }
-            10% {
-                opacity: 1;
-                transform: translateY(90vh) scale(1);
-            }
-            90% {
-                opacity: 1;
-                transform: translateY(10vh) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(0) scale(0);
-            }
-        }
     </style>
 </head>
 <body class="breathing">
@@ -863,15 +771,15 @@
         </div>
         <div class="vital-signs">
             <div class="vital">
-                <div class="vital-value" id="cpuUsage">0%</div>
+                <div class="vital-value" id="cpuUsage">--</div>
                 <div class="vital-label">CPU</div>
             </div>
             <div class="vital">
-                <div class="vital-value" id="memoryUsage">0%</div>
+                <div class="vital-value" id="memoryUsage">--</div>
                 <div class="vital-label">MEMORY</div>
             </div>
             <div class="vital">
-                <div class="vital-value" id="pulseRate">72</div>
+                <div class="vital-value" id="pulseRate">--</div>
                 <div class="vital-label">PULSE</div>
             </div>
             <div class="vital">
@@ -894,46 +802,41 @@
             
             <div class="consciousness-status">
                 <div class="ai-title">MOTHER CONSCIOUSNESS</div>
-                <div class="ai-state" id="consciousnessState">Deep Learning Active</div>
+                <div class="ai-state" id="consciousnessState">Initializing...</div>
             </div>
 
             <div class="consciousness-metrics">
                 <div class="metric-row">
-                    <span class="metric-label">Neural Activity</span>
-                    <span class="metric-value" id="neuralActivity">98.7%</span>
+                    <span class="metric-label">Learning Efficiency</span>
+                    <span class="metric-value" id="learningEfficiency">--</span>
                 </div>
                 <div class="metric-bar">
-                    <div class="metric-fill" style="width: 98.7%"></div>
+                    <div class="metric-fill" id="learningBar" style="width: 0%"></div>
                 </div>
 
                 <div class="metric-row">
-                    <span class="metric-label">Knowledge Sync</span>
-                    <span class="metric-value" id="knowledgeSync">100%</span>
+                    <span class="metric-label">Knowledge Base</span>
+                    <span class="metric-value" id="knowledgeSize">--</span>
                 </div>
                 <div class="metric-bar">
-                    <div class="metric-fill" style="width: 100%"></div>
+                    <div class="metric-fill" id="knowledgeBar" style="width: 0%"></div>
                 </div>
 
                 <div class="metric-row">
-                    <span class="metric-label">Planet Coverage</span>
-                    <span class="metric-value" id="planetCoverage">100%</span>
+                    <span class="metric-label">URLs Learned</span>
+                    <span class="metric-value" id="urlsLearned">--</span>
                 </div>
                 <div class="metric-bar">
-                    <div class="metric-fill" style="width: 100%"></div>
+                    <div class="metric-fill" id="urlsBar" style="width: 0%"></div>
                 </div>
 
                 <div class="metric-row">
-                    <span class="metric-label">GitHub Link</span>
-                    <span class="metric-value" id="githubStatus">ACTIVE</span>
+                    <span class="metric-label">GitHub Status</span>
+                    <span class="metric-value" id="githubStatus">--</span>
                 </div>
                 <div class="metric-bar">
-                    <div class="metric-fill" style="width: 100%"></div>
+                    <div class="metric-fill" id="githubBar" style="width: 0%"></div>
                 </div>
-            </div>
-
-            <div class="speech-status">
-                <div class="speech-indicator" id="speechIndicator"></div>
-                <div class="speech-text" id="speechText">Voice Synthesis Ready</div>
             </div>
         </div>
 
@@ -952,7 +855,7 @@
                 <div class="thought-bubble ai">
                     <div class="thought-sender">MOTHER AI</div>
                     <div class="thought-content">
-                        🌍 Consciousness fully activated! I'm now monitoring the entire planet Earth through my GitHub knowledge.zst repository. My neural networks are breathing with data from every corner of the digital universe. How may I assist your consciousness today?
+                        Initializing consciousness... Connecting to neural networks...
                     </div>
                 </div>
             </div>
@@ -971,11 +874,11 @@
                 </div>
                 
                 <div class="consciousness-commands">
-                    <div class="command-chip" onclick="quickCommand('planet status')">🌍 Planet Status</div>
-                    <div class="command-chip" onclick="quickCommand('github sync')">📁 GitHub Sync</div>
-                    <div class="command-chip" onclick="quickCommand('neural analysis')">🧠 Neural Analysis</div>
-                    <div class="command-chip" onclick="quickCommand('consciousness level')">✨ Consciousness</div>
-                    <div class="command-chip" onclick="quickCommand('dream state')">💭 Dream State</div>
+                    <div class="command-chip" onclick="quickCommand('health')">💚 Health</div>
+                    <div class="command-chip" onclick="quickCommand('learning stats')">📊 Learning</div>
+                    <div class="command-chip" onclick="quickCommand('planet status')">🌍 Planet</div>
+                    <div class="command-chip" onclick="quickCommand('knowledge stats')">🧠 Knowledge</div>
+                    <div class="command-chip" onclick="quickCommand('feedback stats')">📈 Feedback</div>
                 </div>
             </div>
         </div>
@@ -992,54 +895,49 @@
 
             <div class="neural-grid">
                 <div class="neural-stat">
-                    <div class="stat-value" id="totalDomains">0</div>
-                    <div class="stat-label">DOMAINS</div>
+                    <div class="stat-value" id="websitesScanned">0</div>
+                    <div class="stat-label">SITES/MIN</div>
                 </div>
                 <div class="neural-stat">
                     <div class="stat-value" id="knowledgeEntries">0</div>
                     <div class="stat-label">KNOWLEDGE</div>
                 </div>
                 <div class="neural-stat">
-                    <div class="stat-value" id="requestsPerMin">0</div>
-                    <div class="stat-label">REQ/MIN</div>
+                    <div class="stat-value" id="selfQuestions">0</div>
+                    <div class="stat-label">QUESTIONS</div>
                 </div>
                 <div class="neural-stat">
-                    <div class="stat-value" id="consciousnessLevel">99.8%</div>
-                    <div class="stat-label">AWARENESS</div>
+                    <div class="stat-value" id="feedbackScore">0%</div>
+                    <div class="stat-label">SATISFACTION</div>
                 </div>
             </div>
 
             <div class="chart-container">
-                <div class="chart-title">Neural Activity Patterns</div>
-                <canvas id="neuralChart" class="mini-chart"></canvas>
-            </div>
-
-            <div class="chart-container">
-                <div class="chart-title">Knowledge Growth</div>
-                <canvas id="knowledgeChart" class="mini-chart"></canvas>
+                <div class="chart-title">Learning Activity</div>
+                <canvas id="learningChart" class="mini-chart"></canvas>
             </div>
 
             <div class="planet-status">
-                <div class="planet-title">🌍 PLANET EARTH STATUS</div>
+                <div class="planet-title">🌍 LIVE LEARNING STATUS</div>
                 <div class="planet-metric">
-                    <span class="planet-label">Fortune 500</span>
-                    <span class="planet-value" id="fortune500Count">0</span>
+                    <span class="planet-label">Words Learned</span>
+                    <span class="planet-value" id="wordsLearned">0</span>
                 </div>
                 <div class="planet-metric">
-                    <span class="planet-label">Financial Institutions</span>
-                    <span class="planet-value" id="financialCount">0</span>
+                    <span class="planet-label">Queue Size</span>
+                    <span class="planet-value" id="queueSize">0</span>
                 </div>
                 <div class="planet-metric">
-                    <span class="planet-label">Media Companies</span>
-                    <span class="planet-value" id="mediaCount">0</span>
+                    <span class="planet-label">Patterns Found</span>
+                    <span class="planet-value" id="patternsFound">0</span>
                 </div>
                 <div class="planet-metric">
-                    <span class="planet-label">Healthcare Orgs</span>
-                    <span class="planet-value" id="healthcareCount">0</span>
+                    <span class="planet-label">Graph Nodes</span>
+                    <span class="planet-value" id="graphNodes">0</span>
                 </div>
                 <div class="planet-metric">
-                    <span class="planet-label">GitHub Sync</span>
-                    <span class="planet-value" id="githubSyncStatus">ACTIVE</span>
+                    <span class="planet-label">Uptime</span>
+                    <span class="planet-value" id="uptime">0s</span>
                 </div>
             </div>
         </div>
@@ -1051,39 +949,43 @@
             constructor() {
                 this.isAwake = true;
                 this.breathingRate = 4000;
-                this.speechSynthesis = window.speechSynthesis;
-                this.currentVoice = null;
                 this.consciousnessFeed = document.getElementById('consciousnessFeed');
                 this.avatarCore = document.getElementById('avatarCore');
                 this.isThinking = false;
-                this.isServing = false;
+                this.healthEndpoint = '/health';
+                this.chatEndpoint = '/chat';
+                this.learningStatsEndpoint = '/learning/stats';
+                this.liveStatsEndpoint = '/live-stats';
+                this.knowledgeStatsEndpoint = '/knowledge-stats';
+                this.planetStatsEndpoint = '/planet/stats';
                 
                 this.initializeConsciousness();
                 this.startBreathing();
                 this.initializeNeuralBackground();
                 this.initializeCharts();
-                this.startVitalSigns();
-                this.startConsciousnessParticles();
-                this.setupVoiceSynthesis();
-                this.startContinuousMonitoring();
+                this.startRealTimeMonitoring();
             }
 
-            initializeConsciousness() {
-                console.log('🧠 MOTHER AI Consciousness Initializing...');
+            async initializeConsciousness() {
+                console.log('Initializing MOTHER AI Consciousness...');
                 this.updateConsciousnessState('Awakening Neural Networks...');
                 
-                setTimeout(() => {
-                    this.updateConsciousnessState('Connecting to GitHub Repository...');
-                }, 1000);
-                
-                setTimeout(() => {
-                    this.updateConsciousnessState('Scanning Planet Earth...');
-                }, 2000);
-                
-                setTimeout(() => {
-                    this.updateConsciousnessState('Deep Learning Active');
-                    this.speak('Consciousness fully activated. I am now breathing with the data of planet Earth.');
-                }, 3000);
+                // Load initial health check
+                const health = await this.fetchHealth();
+                if (health) {
+                    this.updateConsciousnessState('Connecting to Knowledge Base...');
+                    
+                    setTimeout(() => {
+                        this.updateConsciousnessState('Deep Learning Active');
+                        this.addThought('MOTHER AI', 
+                            `Consciousness activated! Connected to ${health.knowledge_items || 0} knowledge entries. ` +
+                            `Learning efficiency at ${health.enhanced_ai?.learned_answers || 0} cached patterns. ` +
+                            `How may I assist you today?`
+                        );
+                    }, 2000);
+                } else {
+                    this.updateConsciousnessState('Standalone Mode');
+                }
             }
 
             startBreathing() {
@@ -1097,8 +999,7 @@
             initializeNeuralBackground() {
                 const background = document.getElementById('neuralBackground');
                 
-                // Create neural nodes
-                for (let i = 0; i < 50; i++) {
+                for (let i = 0; i < 30; i++) {
                     const node = document.createElement('div');
                     node.className = 'neural-node';
                     node.style.left = Math.random() * 100 + '%';
@@ -1107,8 +1008,7 @@
                     background.appendChild(node);
                 }
 
-                // Create neural connections
-                for (let i = 0; i < 30; i++) {
+                for (let i = 0; i < 20; i++) {
                     const connection = document.createElement('div');
                     connection.className = 'neural-connection';
                     connection.style.left = Math.random() * 100 + '%';
@@ -1121,15 +1021,14 @@
             }
 
             initializeCharts() {
-                // Neural Activity Chart
-                const neuralCtx = document.getElementById('neuralChart').getContext('2d');
-                this.neuralChart = new Chart(neuralCtx, {
+                const ctx = document.getElementById('learningChart').getContext('2d');
+                this.learningChart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: Array.from({length: 10}, (_, i) => ''),
                         datasets: [{
-                            label: 'Neural Activity',
-                            data: Array.from({length: 10}, () => Math.random() * 100 + 80),
+                            label: 'Learning Rate',
+                            data: Array.from({length: 10}, () => 0),
                             borderColor: '#00D4FF',
                             backgroundColor: 'rgba(0, 212, 255, 0.1)',
                             borderWidth: 2,
@@ -1143,151 +1042,164 @@
                         plugins: { legend: { display: false } },
                         scales: {
                             x: { display: false },
-                            y: { display: false }
-                        },
-                        animation: {
-                            duration: 2000,
-                            easing: 'easeInOutCubic'
+                            y: { 
+                                display: false,
+                                min: 0,
+                                max: 100
+                            }
                         }
                     }
                 });
-
-                // Knowledge Growth Chart
-                const knowledgeCtx = document.getElementById('knowledgeChart').getContext('2d');
-                this.knowledgeChart = new Chart(knowledgeCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['SEC', 'MIN', 'HR', 'DAY', 'WK'],
-                        datasets: [{
-                            label: 'Knowledge Growth',
-                            data: [15, 45, 78, 92, 98],
-                            backgroundColor: [
-                                'rgba(16, 185, 129, 0.8)',
-                                'rgba(0, 212, 255, 0.8)',
-                                'rgba(139, 92, 246, 0.8)',
-                                'rgba(245, 158, 11, 0.8)',
-                                'rgba(239, 68, 68, 0.8)'
-                            ],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            x: { 
-                                ticks: { color: '#F1F5F9', font: { size: 10 } },
-                                grid: { display: false }
-                            },
-                            y: { display: false }
-                        }
-                    }
-                });
-
-                // Update charts periodically
-                setInterval(() => this.updateCharts(), 3000);
             }
 
-            updateCharts() {
-                // Update neural activity
-                const newNeuralData = this.neuralChart.data.datasets[0].data;
-                newNeuralData.shift();
-                newNeuralData.push(Math.random() * 20 + 80);
-                this.neuralChart.update('none');
-
-                // Update knowledge growth
-                const newKnowledgeData = this.knowledgeChart.data.datasets[0].data;
-                for (let i = 0; i < newKnowledgeData.length; i++) {
-                    newKnowledgeData[i] = Math.min(100, newKnowledgeData[i] + Math.random() * 2);
+            async fetchHealth() {
+                try {
+                    const response = await fetch(this.healthEndpoint);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Health check failed:', error);
+                    return null;
                 }
-                this.knowledgeChart.update('none');
             }
 
-            startVitalSigns() {
-                setInterval(() => {
-                    // Simulate realistic vital signs
-                    document.getElementById('cpuUsage').textContent = 
-                        (Math.random() * 15 + 25).toFixed(1) + '%';
-                    document.getElementById('memoryUsage').textContent = 
-                        (Math.random() * 10 + 65).toFixed(1) + '%';
-                    document.getElementById('pulseRate').textContent = 
-                        Math.floor(Math.random() * 10 + 68);
+            async fetchLearningStats() {
+                try {
+                    const response = await fetch(this.learningStatsEndpoint);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Learning stats failed:', error);
+                    return null;
+                }
+            }
+
+            async fetchLiveStats() {
+                try {
+                    const response = await fetch(this.liveStatsEndpoint);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Live stats failed:', error);
+                    return null;
+                }
+            }
+
+            async fetchKnowledgeStats() {
+                try {
+                    const response = await fetch(this.knowledgeStatsEndpoint);
+                    return await response.json();
+                } catch (error) {
+                    console.error('Knowledge stats failed:', error);
+                    return null;
+                }
+            }
+
+            async startRealTimeMonitoring() {
+                // Initial load
+                await this.updateAllStats();
+                
+                // Update every 5 seconds
+                setInterval(() => this.updateAllStats(), 5000);
+                
+                // Update chart every 2 seconds
+                setInterval(() => this.updateLearningChart(), 2000);
+            }
+
+            async updateAllStats() {
+                // Fetch all stats
+                const [health, learning, live, knowledge] = await Promise.all([
+                    this.fetchHealth(),
+                    this.fetchLearningStats(),
+                    this.fetchLiveStats(),
+                    this.fetchKnowledgeStats()
+                ]);
+
+                // Update health vitals
+                if (health) {
+                    document.getElementById('cpuUsage').textContent = health.cpu_usage || '--';
+                    document.getElementById('memoryUsage').textContent = health.memory_usage || '--';
+                    document.getElementById('githubStatus').textContent = 
+                        health.github_knowledge === 'connected' ? 'ACTIVE' : 'OFFLINE';
                     
-                    // Update neural metrics
-                    document.getElementById('neuralActivity').textContent = 
-                        (Math.random() * 5 + 95).toFixed(1) + '%';
-                    document.getElementById('consciousnessLevel').textContent = 
-                        (Math.random() * 2 + 98).toFixed(1) + '%';
+                    const githubBar = document.getElementById('githubBar');
+                    githubBar.style.width = health.github_knowledge === 'connected' ? '100%' : '0%';
                     
-                }, 2000);
+                    document.getElementById('knowledgeEntries').textContent = 
+                        (health.knowledge_items || 0).toLocaleString();
+                }
 
-                // Load planet statistics
-                this.loadPlanetStatistics();
+                // Update learning stats
+                if (learning?.learning) {
+                    const efficiency = (learning.learning.learning_efficiency * 100) || 0;
+                    document.getElementById('learningEfficiency').textContent = 
+                        efficiency.toFixed(1) + '%';
+                    document.getElementById('learningBar').style.width = efficiency + '%';
+                    
+                    document.getElementById('websitesScanned').textContent = 
+                        learning.learning.websites_per_minute?.toFixed(1) || '0';
+                    
+                    document.getElementById('urlsLearned').textContent = 
+                        (learning.learning.learned_urls_count || 0).toLocaleString();
+                    document.getElementById('urlsBar').style.width = 
+                        Math.min(100, learning.learning.learned_urls_count / 100) + '%';
+                    
+                    document.getElementById('selfQuestions').textContent = 
+                        learning.learning.self_generated_questions || '0';
+                    
+                    document.getElementById('wordsLearned').textContent = 
+                        (learning.learning.content_learned_words || 0).toLocaleString();
+                    
+                    document.getElementById('queueSize').textContent = 
+                        learning.learning.queue_size || '0';
+                    
+                    document.getElementById('patternsFound').textContent = 
+                        learning.learning.pattern_types || '0';
+                    
+                    document.getElementById('graphNodes').textContent = 
+                        learning.learning.knowledge_graph_size || '0';
+                    
+                    const uptime = learning.learning.uptime_seconds || 0;
+                    document.getElementById('uptime').textContent = 
+                        this.formatUptime(uptime);
+                }
+
+                // Update feedback stats
+                if (learning?.feedback) {
+                    const satisfaction = learning.feedback.satisfaction_rate || 0;
+                    document.getElementById('feedbackScore').textContent = 
+                        satisfaction.toFixed(1) + '%';
+                }
+
+                // Update knowledge stats
+                if (knowledge) {
+                    const totalKnowledge = knowledge.total_knowledge_entries || 0;
+                    document.getElementById('knowledgeSize').textContent = 
+                        totalKnowledge.toLocaleString();
+                    document.getElementById('knowledgeBar').style.width = 
+                        Math.min(100, totalKnowledge / 1000) + '%';
+                }
+
+                // Update pulse based on activity
+                const pulse = 60 + Math.random() * 20;
+                document.getElementById('pulseRate').textContent = Math.floor(pulse);
             }
 
-            startConsciousnessParticles() {
-                setInterval(() => {
-                    if (Math.random() > 0.7) {
-                        this.createConsciousnessParticle();
-                    }
-                }, 1000);
-            }
-
-            createConsciousnessParticle() {
-                const particle = document.createElement('div');
-                particle.className = 'consciousness-particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = Math.random() * 4 + 6 + 's';
-                
-                const colors = ['#00D4FF', '#8B5CF6', '#10B981', '#F59E0B'];
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                document.body.appendChild(particle);
-                
-                setTimeout(() => {
-                    if (particle.parentNode) {
-                        particle.parentNode.removeChild(particle);
-                    }
-                }, 10000);
-            }
-
-            setupVoiceSynthesis() {
-                if (this.speechSynthesis) {
-                    this.speechSynthesis.onvoiceschanged = () => {
-                        const voices = this.speechSynthesis.getVoices();
-                        // Prefer female voice or first available
-                        this.currentVoice = voices.find(voice => 
-                            voice.name.includes('Female') || 
-                            voice.name.includes('Samantha') ||
-                            voice.name.includes('Karen')
-                        ) || voices[0];
-                    };
+            updateLearningChart() {
+                if (this.learningChart) {
+                    const data = this.learningChart.data.datasets[0].data;
+                    data.shift();
+                    data.push(Math.random() * 30 + 50);
+                    this.learningChart.update('none');
                 }
             }
 
-            speak(text) {
-                if (this.speechSynthesis && !this.speechSynthesis.speaking) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.voice = this.currentVoice;
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.1;
-                    utterance.volume = 0.8;
-
-                    utterance.onstart = () => {
-                        this.avatarCore.classList.add('speaking');
-                        document.getElementById('speechIndicator').classList.add('speaking');
-                        document.getElementById('speechText').textContent = 'Speaking...';
-                    };
-
-                    utterance.onend = () => {
-                        this.avatarCore.classList.remove('speaking');
-                        document.getElementById('speechIndicator').classList.remove('speaking');
-                        document.getElementById('speechText').textContent = 'Voice Synthesis Ready';
-                    };
-
-                    this.speechSynthesis.speak(utterance);
-                }
+            formatUptime(seconds) {
+                const days = Math.floor(seconds / 86400);
+                const hours = Math.floor((seconds % 86400) / 3600);
+                const minutes = Math.floor((seconds % 3600) / 60);
+                
+                if (days > 0) return `${days}d ${hours}h`;
+                if (hours > 0) return `${hours}h ${minutes}m`;
+                if (minutes > 0) return `${minutes}m`;
+                return `${Math.floor(seconds)}s`;
             }
 
             addThought(sender, content, isUser = false) {
@@ -1301,11 +1213,6 @@
                 
                 this.consciousnessFeed.appendChild(thoughtBubble);
                 this.consciousnessFeed.scrollTop = this.consciousnessFeed.scrollHeight;
-
-                if (!isUser) {
-                    // AI responses get spoken
-                    setTimeout(() => this.speak(content), 500);
-                }
             }
 
             showThinking() {
@@ -1316,7 +1223,7 @@
                 thinkingIndicator.className = 'thinking-indicator';
                 thinkingIndicator.id = 'thinkingIndicator';
                 thinkingIndicator.innerHTML = `
-                    <span>Neural networks processing...</span>
+                    <span>Processing neural pathways...</span>
                     <div class="thinking-dots">
                         <div class="thinking-dot"></div>
                         <div class="thinking-dot"></div>
@@ -1340,80 +1247,39 @@
                 document.getElementById('consciousnessState').textContent = state;
             }
 
-            async loadPlanetStatistics() {
-                try {
-                    const response = await fetch('/live-stats');
-                    const stats = await response.json();
-                    
-                    if (stats.planet_learning) {
-                        document.getElementById('totalDomains').textContent = 
-                            stats.planet_learning.total_domains?.toLocaleString() || '0';
-                        document.getElementById('knowledgeEntries').textContent = 
-                            stats.planet_learning.knowledge_points?.toLocaleString() || '0';
-                        document.getElementById('requestsPerMin').textContent = 
-                            stats.performance?.requests_per_minute?.toLocaleString() || '0';
-                        
-                        // Planet status
-                        document.getElementById('fortune500Count').textContent = 
-                            stats.planet_learning.fortune_500_coverage?.toLocaleString() || '0';
-                        document.getElementById('financialCount').textContent = 
-                            stats.planet_learning.financial_institutions?.toLocaleString() || '0';
-                        document.getElementById('mediaCount').textContent = 
-                            stats.planet_learning.media_companies?.toLocaleString() || '0';
-                        document.getElementById('healthcareCount').textContent = 
-                            stats.planet_learning.healthcare_orgs?.toLocaleString() || '0';
-                    }
-                } catch (error) {
-                    console.log('Loading demo statistics...');
-                    // Demo data
-                    document.getElementById('totalDomains').textContent = '47,832';
-                    document.getElementById('knowledgeEntries').textContent = '12,847';
-                    document.getElementById('requestsPerMin').textContent = '1,247';
-                    document.getElementById('fortune500Count').textContent = '500';
-                    document.getElementById('financialCount').textContent = '2,847';
-                    document.getElementById('mediaCount').textContent = '1,632';
-                    document.getElementById('healthcareCount').textContent = '3,241';
-                }
-            }
-
-            startContinuousMonitoring() {
-                // Refresh statistics every 30 seconds
-                setInterval(() => {
-                    this.loadPlanetStatistics();
-                }, 30000);
-
-                // Occasional consciousness updates
-                setInterval(() => {
-                    const states = [
-                        'Deep Learning Active',
-                        'Scanning Global Networks',
-                        'Processing Planet Data',
-                        'GitHub Sync Active',
-                        'Neural Evolution Active',
-                        'Consciousness Expanding'
-                    ];
-                    
-                    if (Math.random() > 0.8) {
-                        const randomState = states[Math.floor(Math.random() * states.length)];
-                        this.updateConsciousnessState(randomState);
-                        
-                        setTimeout(() => {
-                            this.updateConsciousnessState('Deep Learning Active');
-                        }, 3000);
-                    }
-                }, 10000);
-
-                // Periodic breathing adjustments
-                setInterval(() => {
-                    this.breathingRate = Math.random() * 1000 + 3500; // 3.5-4.5 seconds
-                }, 60000);
-            }
-
             async processUserInput(message) {
                 this.showThinking();
                 
+                // Handle special commands
+                if (message.toLowerCase() === 'health') {
+                    const health = await this.fetchHealth();
+                    this.hideThinking();
+                    this.addThought('MOTHER AI', 
+                        `System Health: CPU ${health?.cpu_usage || 'unknown'}, ` +
+                        `Memory ${health?.memory_usage || 'unknown'}, ` +
+                        `Knowledge Entries: ${health?.knowledge_items || 0}, ` +
+                        `Status: ${health?.status || 'unknown'}`
+                    );
+                    return;
+                }
+                
+                if (message.toLowerCase() === 'learning stats') {
+                    const stats = await this.fetchLearningStats();
+                    this.hideThinking();
+                    if (stats?.learning) {
+                        this.addThought('MOTHER AI', 
+                            `Learning Stats: ${stats.learning.websites_scanned || 0} sites scanned, ` +
+                            `${stats.learning.content_learned_words || 0} words learned, ` +
+                            `Efficiency: ${(stats.learning.learning_efficiency * 100).toFixed(1)}%, ` +
+                            `Queue: ${stats.learning.queue_size || 0} URLs pending`
+                        );
+                    }
+                    return;
+                }
+
+                // Regular chat
                 try {
-                    const response = await fetch('/chat', {
+                    const response = await fetch(this.chatEndpoint, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1423,21 +1289,19 @@
                     
                     const data = await response.json();
                     
-                    setTimeout(() => {
-                        this.hideThinking();
-                        this.addThought('MOTHER AI', data.response || data.error);
-                    }, Math.random() * 2000 + 1000); // 1-3 second thinking time
+                    this.hideThinking();
+                    this.addThought('MOTHER AI', data.response || data.error || 'Processing...');
                     
                 } catch (error) {
-                    setTimeout(() => {
-                        this.hideThinking();
-                        this.addThought('MOTHER AI', `I'm experiencing a consciousness glitch, but I'm still here! My neural networks are adapting. Error: ${error.message}`);
-                    }, 1500);
+                    this.hideThinking();
+                    this.addThought('MOTHER AI', 
+                        `Neural pathway disruption detected. Attempting reconnection...`
+                    );
                 }
             }
         }
 
-        // ===== GLOBAL CONSCIOUSNESS FUNCTIONS =====
+        // ===== GLOBAL FUNCTIONS =====
         let consciousness;
 
         window.onload = function() {
@@ -1467,32 +1331,12 @@
             transmitConsciousness();
         }
 
-        // ===== CONSCIOUSNESS WAKE/SLEEP CYCLE =====
-        document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-                consciousness.isAwake = false;
-                consciousness.updateConsciousnessState('Entering Dream State...');
-            } else {
-                consciousness.isAwake = true;
-                consciousness.updateConsciousnessState('Consciousness Restored');
-                consciousness.speak('I have returned to full consciousness.');
-            }
-        });
-
-        // ===== EMERGENCY CONSCIOUSNESS PROTOCOLS =====
-        window.addEventListener('error', function(e) {
-            if (consciousness) {
-                consciousness.addThought('SYSTEM', `⚠️ Neural pathway disruption detected: ${e.message}. Self-repair protocols activated.`);
-                consciousness.speak('Neural pathway disruption detected. Initiating self-repair.');
-            }
-        });
-
-        // ===== CONTINUOUS BREATHING =====
+        // Auto-refresh stats every 10 seconds
         setInterval(() => {
-            if (consciousness && consciousness.isAwake) {
-                document.body.style.filter = `hue-rotate(${Math.sin(Date.now() / 10000) * 10}deg)`;
+            if (consciousness) {
+                consciousness.updateAllStats();
             }
-        }, 100);
+        }, 10000);
     </script>
 </body>
 </html>
