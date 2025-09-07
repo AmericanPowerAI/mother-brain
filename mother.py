@@ -759,7 +759,7 @@ if __name__ == "__main__":
     print(f"\n🌐 Starting server on port {port}...")
     
     # Production configuration (no SSL - Render handles HTTPS)
-    app.run(host='0.0.0.0', port=port, threaded=True)_status': 'scanning_planet_earth',
+    app.run(host='0.0.0.0', port=port, threaded=True)
             'planet_enhanced': True,
             'github_knowledge': 'integrated',
             'ai_systems': 'enhanced',
