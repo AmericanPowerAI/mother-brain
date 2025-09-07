@@ -30,7 +30,7 @@ psutil==5.9.8         # System resource tracking
 # ===== AI/ML CORE =====
 sentence-transformers>=2.2.2  # Text embeddings
 transformers>=4.36.2          # NLP models (includes DialoGPT, BERT, etc.)
-torch>=2.2.1                  # Deep learning framework
+#torch>=2.2.1                  # Deep learning framework
 datasets>=2.14.0              # Hugging Face datasets for training
 accelerate>=0.24.0            # Training acceleration
 safetensors>=0.4.0            # Safe model serialization
