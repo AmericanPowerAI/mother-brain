@@ -906,6 +906,7 @@ import aiohttp
 import sqlite3
 from collections import Counter, defaultdict
 import numpy as np
+from feedback_learner import UnifiedFeedbackLearner
 
 # Add these imports at the top of mother.py (after your existing imports)
 from homegrown_core import HomegrownMotherBrain as HomegrownCore
@@ -2518,7 +2519,7 @@ class MotherBrain:
         
         # ===== INITIALIZE NEW ENHANCED AI SYSTEMS =====
         self.search_engine = IntelligentSearchEngine()
-        self.feedback_learner = FeedbackLearner()
+        self.feedback_learner = UnifiedFeedbackLearner()
         self.conversational_model = ConversationalModel()
         
         # GitHub configuration
