@@ -170,7 +170,11 @@ def chat_endpoint():
             'timestamp': datetime.utcnow().isoformat(),
             'learning_impact': 'Response patterns updated and applied to planet-wide knowledge',
             'planet_enhancement': True,
-            'github_sync': 'feedback_stored'
+            'github_sync': 'feedback_stored',
+            'planet_enhanced': True,  # ADD THESE LINES
+            'github_knowledge': 'integrated',  # ADD THESE LINES
+            'ai_systems': 'enhanced',  # ADD THESE LINES
+            'confidence': calculate_response_confidence(user_message, response)  # ADD THIS LINE
         })
         
     except Exception as e:
