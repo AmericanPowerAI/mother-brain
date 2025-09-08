@@ -799,7 +799,11 @@ def enhanced_chat():
             'quality_score': quality_score,
             'timestamp': datetime.utcnow().isoformat(),
             'enhanced': True,
-            'learning_active': True
+            'learning_active': True,
+            'planet_enhanced': True,  
+            'github_knowledge': 'integrated',  
+            'ai_systems': 'enhanced',  
+            'confidence': calculate_response_confidence(user_message, response)  
         })
         
     except Exception as e:
