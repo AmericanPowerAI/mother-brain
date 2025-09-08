@@ -171,10 +171,10 @@ def chat_endpoint():
             'learning_impact': 'Response patterns updated and applied to planet-wide knowledge',
             'planet_enhancement': True,
             'github_sync': 'feedback_stored',
-            'planet_enhanced': True,  
-            'github_knowledge': 'integrated',  
-            'ai_systems': 'enhanced',  
-            'confidence': calculate_response_confidence(user_message, response)  
+            'planet_enhanced': True,
+            'github_knowledge': 'integrated',
+            'ai_systems': 'enhanced',
+            'confidence': calculate_response_confidence(user_message, response)
         })
         
     except Exception as e:
