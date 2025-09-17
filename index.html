@@ -552,6 +552,27 @@
             transform: scale(0.98);
         }
 
+        .consciousness-commands {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .command-chip {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--neural-blue);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .command-chip:hover {
+            background: var(--neural-blue);
+            color: var(--dark-space);
+        }
+
         /* ===== NEURAL ANALYTICS PANEL ===== */
         .neural-analytics {
             background: rgba(30, 41, 59, 0.8);
@@ -952,12 +973,16 @@
                 this.consciousnessFeed = document.getElementById('consciousnessFeed');
                 this.avatarCore = document.getElementById('avatarCore');
                 this.isThinking = false;
-                this.healthEndpoint = '/health';
-                this.chatEndpoint = '/chat';
-                this.learningStatsEndpoint = '/learning/stats';
-                this.liveStatsEndpoint = '/live-stats';
-                this.knowledgeStatsEndpoint = '/knowledge-stats';
-                this.planetStatsEndpoint = '/planet/stats';
+                
+                // Fixed endpoints
+                this.endpoints = {
+                    health: '/health',
+                    chat: '/chat',
+                    learningStats: '/feedback',
+                    liveStats: '/live-stats',
+                    knowledgeStats: '/knowledge-stats',
+                    planetStats: '/planet/stats'
+                };
                 
                 this.initializeConsciousness();
                 this.startBreathing();
@@ -970,21 +995,20 @@
                 console.log('Initializing MOTHER AI Consciousness...');
                 this.updateConsciousnessState('Awakening Neural Networks...');
                 
-                // Load initial health check
-                const health = await this.fetchHealth();
-                if (health) {
+                try {
+                    const health = await this.fetchHealth();
                     this.updateConsciousnessState('Connecting to Knowledge Base...');
                     
                     setTimeout(() => {
                         this.updateConsciousnessState('Deep Learning Active');
                         this.addThought('MOTHER AI', 
-                            `Consciousness activated! Connected to ${health.knowledge_items || 0} knowledge entries. ` +
-                            `Learning efficiency at ${health.enhanced_ai?.learned_answers || 0} cached patterns. ` +
-                            `How may I assist you today?`
+                            `Consciousness activated! Connected to ${health?.knowledge_items || 0} knowledge entries.`
                         );
                     }, 2000);
-                } else {
+                } catch (error) {
+                    console.error('Initialization error:', error);
                     this.updateConsciousnessState('Standalone Mode');
+                    this.addThought('MOTHER AI', 'Running in offline mode. Some features may be limited.');
                 }
             }
 
@@ -998,8 +1022,10 @@
 
             initializeNeuralBackground() {
                 const background = document.getElementById('neuralBackground');
+                if (!background) return;
                 
-                for (let i = 0; i < 30; i++) {
+                // Reduced for performance
+                for (let i = 0; i < 15; i++) {
                     const node = document.createElement('div');
                     node.className = 'neural-node';
                     node.style.left = Math.random() * 100 + '%';
@@ -1008,7 +1034,7 @@
                     background.appendChild(node);
                 }
 
-                for (let i = 0; i < 20; i++) {
+                for (let i = 0; i < 10; i++) {
                     const connection = document.createElement('div');
                     connection.className = 'neural-connection';
                     connection.style.left = Math.random() * 100 + '%';
@@ -1021,7 +1047,9 @@
             }
 
             initializeCharts() {
-                const ctx = document.getElementById('learningChart').getContext('2d');
+                const ctx = document.getElementById('learningChart')?.getContext('2d');
+                if (!ctx) return;
+                
                 this.learningChart = new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -1052,134 +1080,90 @@
                 });
             }
 
-            async fetchHealth() {
+            async fetchWithFallback(endpoint, fallbackData = {}) {
                 try {
-                    const response = await fetch(this.healthEndpoint);
+                    const response = await fetch(endpoint);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
                     return await response.json();
                 } catch (error) {
-                    console.error('Health check failed:', error);
-                    return null;
+                    console.warn(`Failed to fetch ${endpoint}:`, error);
+                    return fallbackData;
                 }
+            }
+
+            async fetchHealth() {
+                return this.fetchWithFallback(this.endpoints.health, {
+                    status: 'offline',
+                    knowledge_items: 0,
+                    cpu_usage: '0%',
+                    memory_usage: '0%'
+                });
             }
 
             async fetchLearningStats() {
-                try {
-                    const response = await fetch(this.learningStatsEndpoint);
-                    return await response.json();
-                } catch (error) {
-                    console.error('Learning stats failed:', error);
-                    return null;
-                }
+                return this.fetchWithFallback(this.endpoints.learningStats, {
+                    learning: { learning_efficiency: 0 },
+                    feedback: { satisfaction_rate: 0 }
+                });
             }
 
             async fetchLiveStats() {
-                try {
-                    const response = await fetch(this.liveStatsEndpoint);
-                    return await response.json();
-                } catch (error) {
-                    console.error('Live stats failed:', error);
-                    return null;
-                }
+                return this.fetchWithFallback(this.endpoints.liveStats, {
+                    planet_learning: { knowledge_points: 0 }
+                });
             }
 
             async fetchKnowledgeStats() {
-                try {
-                    const response = await fetch(this.knowledgeStatsEndpoint);
-                    return await response.json();
-                } catch (error) {
-                    console.error('Knowledge stats failed:', error);
-                    return null;
-                }
+                return this.fetchWithFallback(this.endpoints.knowledgeStats, {
+                    total_knowledge_entries: 0
+                });
             }
 
             async startRealTimeMonitoring() {
-                // Initial load
                 await this.updateAllStats();
                 
-                // Update every 5 seconds
                 setInterval(() => this.updateAllStats(), 5000);
-                
-                // Update chart every 2 seconds
                 setInterval(() => this.updateLearningChart(), 2000);
             }
 
             async updateAllStats() {
-                // Fetch all stats
-                const [health, learning, live, knowledge] = await Promise.all([
-                    this.fetchHealth(),
-                    this.fetchLearningStats(),
-                    this.fetchLiveStats(),
-                    this.fetchKnowledgeStats()
-                ]);
+                try {
+                    const [health, learning, live, knowledge] = await Promise.all([
+                        this.fetchHealth(),
+                        this.fetchLearningStats(),
+                        this.fetchLiveStats(),
+                        this.fetchKnowledgeStats()
+                    ]);
 
-                // Update health vitals
-                if (health) {
-                    document.getElementById('cpuUsage').textContent = health.cpu_usage || '--';
-                    document.getElementById('memoryUsage').textContent = health.memory_usage || '--';
-                    document.getElementById('githubStatus').textContent = 
-                        health.github_knowledge === 'connected' ? 'ACTIVE' : 'OFFLINE';
+                    this.updateElement('cpuUsage', health.cpu_usage || '0%');
+                    this.updateElement('memoryUsage', health.memory_usage || '0%');
+                    this.updateElement('githubStatus', health.github_knowledge === 'connected' ? 'ACTIVE' : 'OFFLINE');
                     
-                    const githubBar = document.getElementById('githubBar');
-                    githubBar.style.width = health.github_knowledge === 'connected' ? '100%' : '0%';
+                    this.updateElement('knowledgeEntries', (health.knowledge_items || 0).toLocaleString());
+                    this.updateElement('websitesScanned', '0');
+                    this.updateElement('selfQuestions', '0');
+                    this.updateElement('feedbackScore', '0%');
                     
-                    document.getElementById('knowledgeEntries').textContent = 
-                        (health.knowledge_items || 0).toLocaleString();
+                    this.updateProgressBar('githubBar', health.github_knowledge === 'connected' ? 100 : 0);
+                    this.updateProgressBar('learningBar', 50);
+                    this.updateProgressBar('knowledgeBar', Math.min(100, (health.knowledge_items || 0) / 100));
+                    
+                    const pulse = 60 + Math.random() * 20;
+                    this.updateElement('pulseRate', Math.floor(pulse));
+                    
+                } catch (error) {
+                    console.error('Stats update error:', error);
                 }
+            }
 
-                // Update learning stats
-                if (learning?.learning) {
-                    const efficiency = (learning.learning.learning_efficiency * 100) || 0;
-                    document.getElementById('learningEfficiency').textContent = 
-                        efficiency.toFixed(1) + '%';
-                    document.getElementById('learningBar').style.width = efficiency + '%';
-                    
-                    document.getElementById('websitesScanned').textContent = 
-                        learning.learning.websites_per_minute?.toFixed(1) || '0';
-                    
-                    document.getElementById('urlsLearned').textContent = 
-                        (learning.learning.learned_urls_count || 0).toLocaleString();
-                    document.getElementById('urlsBar').style.width = 
-                        Math.min(100, learning.learning.learned_urls_count / 100) + '%';
-                    
-                    document.getElementById('selfQuestions').textContent = 
-                        learning.learning.self_generated_questions || '0';
-                    
-                    document.getElementById('wordsLearned').textContent = 
-                        (learning.learning.content_learned_words || 0).toLocaleString();
-                    
-                    document.getElementById('queueSize').textContent = 
-                        learning.learning.queue_size || '0';
-                    
-                    document.getElementById('patternsFound').textContent = 
-                        learning.learning.pattern_types || '0';
-                    
-                    document.getElementById('graphNodes').textContent = 
-                        learning.learning.knowledge_graph_size || '0';
-                    
-                    const uptime = learning.learning.uptime_seconds || 0;
-                    document.getElementById('uptime').textContent = 
-                        this.formatUptime(uptime);
-                }
+            updateElement(id, value) {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            }
 
-                // Update feedback stats
-                if (learning?.feedback) {
-                    const satisfaction = learning.feedback.satisfaction_rate || 0;
-                    document.getElementById('feedbackScore').textContent = 
-                        satisfaction.toFixed(1) + '%';
-                }
-
-                // Update knowledge stats
-                if (knowledge) {
-                    const totalKnowledge = knowledge.total_knowledge_entries || 0;
-                    document.getElementById('knowledgeSize').textContent = 
-                        totalKnowledge.toLocaleString();
-                    document.getElementById('knowledgeBar').style.width = 
-                        Math.min(100, totalKnowledge / 1000) + '%';
-                }
-
-                // Update pulse based on activity
-                const pulse = 60 + Math.random() * 20;
-                document.getElementById('pulseRate').textContent = Math.floor(pulse);
+            updateProgressBar(id, percentage) {
+                const bar = document.getElementById(id);
+                if (bar) bar.style.width = percentage + '%';
             }
 
             updateLearningChart() {
@@ -1203,6 +1187,8 @@
             }
 
             addThought(sender, content, isUser = false) {
+                if (!this.consciousnessFeed) return;
+                
                 const thoughtBubble = document.createElement('div');
                 thoughtBubble.className = `thought-bubble ${isUser ? 'user' : 'ai'}`;
                 
@@ -1216,7 +1202,7 @@
             }
 
             showThinking() {
-                if (this.isThinking) return;
+                if (this.isThinking || !this.consciousnessFeed) return;
                 this.isThinking = true;
 
                 const thinkingIndicator = document.createElement('div');
@@ -1244,42 +1230,15 @@
             }
 
             updateConsciousnessState(state) {
-                document.getElementById('consciousnessState').textContent = state;
+                const element = document.getElementById('consciousnessState');
+                if (element) element.textContent = state;
             }
 
             async processUserInput(message) {
                 this.showThinking();
                 
-                // Handle special commands
-                if (message.toLowerCase() === 'health') {
-                    const health = await this.fetchHealth();
-                    this.hideThinking();
-                    this.addThought('MOTHER AI', 
-                        `System Health: CPU ${health?.cpu_usage || 'unknown'}, ` +
-                        `Memory ${health?.memory_usage || 'unknown'}, ` +
-                        `Knowledge Entries: ${health?.knowledge_items || 0}, ` +
-                        `Status: ${health?.status || 'unknown'}`
-                    );
-                    return;
-                }
-                
-                if (message.toLowerCase() === 'learning stats') {
-                    const stats = await this.fetchLearningStats();
-                    this.hideThinking();
-                    if (stats?.learning) {
-                        this.addThought('MOTHER AI', 
-                            `Learning Stats: ${stats.learning.websites_scanned || 0} sites scanned, ` +
-                            `${stats.learning.content_learned_words || 0} words learned, ` +
-                            `Efficiency: ${(stats.learning.learning_efficiency * 100).toFixed(1)}%, ` +
-                            `Queue: ${stats.learning.queue_size || 0} URLs pending`
-                        );
-                    }
-                    return;
-                }
-
-                // Regular chat
                 try {
-                    const response = await fetch(this.chatEndpoint, {
+                    const response = await fetch(this.endpoints.chat, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1288,15 +1247,12 @@
                     });
                     
                     const data = await response.json();
-                    
                     this.hideThinking();
                     this.addThought('MOTHER AI', data.response || data.error || 'Processing...');
                     
                 } catch (error) {
                     this.hideThinking();
-                    this.addThought('MOTHER AI', 
-                        `Neural pathway disruption detected. Attempting reconnection...`
-                    );
+                    this.addThought('MOTHER AI', 'Connection disrupted. Attempting reconnection...');
                 }
             }
         }
@@ -1317,9 +1273,9 @@
 
         function transmitConsciousness() {
             const input = document.getElementById('consciousnessInput');
-            const message = input.value.trim();
+            const message = input?.value.trim();
             
-            if (message) {
+            if (message && consciousness) {
                 consciousness.addThought('USER', message, true);
                 input.value = '';
                 consciousness.processUserInput(message);
@@ -1327,16 +1283,12 @@
         }
 
         function quickCommand(command) {
-            document.getElementById('consciousnessInput').value = command;
-            transmitConsciousness();
-        }
-
-        // Auto-refresh stats every 10 seconds
-        setInterval(() => {
-            if (consciousness) {
-                consciousness.updateAllStats();
+            const input = document.getElementById('consciousnessInput');
+            if (input) {
+                input.value = command;
+                transmitConsciousness();
             }
-        }, 10000);
+        }
     </script>
 </body>
 </html>
