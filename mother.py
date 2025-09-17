@@ -69,582 +69,7 @@ limiter = Limiter(
     headers_enabled=True
 )
 
-@app.route('/')
-def home():
-    """Serve the enhanced living HTML interface"""
-    try:
-        with open('index.html', 'r') as f:
-            return f.read()
-    except FileNotFoundError:
-        total_domains = sum(len(sources) if isinstance(sources, list) else 
-                          sum(len(subsources) if isinstance(subsources, list) else 1 
-                              for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                          for sources in mother.DOMAINS.values())
-        
-        return jsonify({
-            "status": "Mother Brain Planet Earth Enhanced operational",
-            "message": "Universal AI learning from every website on planet Earth with advanced search and learning",
-            "planet_stats": {
-                "total_domains": total_domains,
-                "categories": len(mother.DOMAINS),
-                "coverage": "Complete planet Earth",
-                "scan_status": "active",
-                "github_knowledge": "Connected to knowledge.zst",
-                "ai_systems": ["intelligent_search", "feedback_learning", "conversational_ai"]
-            },
-            "endpoints": {
-                "/chat": "POST - Interactive chat with planet Earth knowledge",
-                "/enhanced-chat": "POST - Enhanced chat with search integration",
-                "/ask?q=<query>": "GET - Query planet-wide knowledge",
-                "/feedback": "POST - Provide learning feedback",
-                "/search": "POST - Search and verify information",
-                "/exploit/<cve>": "GET - Generate exploit for CVE",
-                "/hacking": "POST - Process hacking commands",
-                "/learn": "POST - Trigger planet-wide learning",
-                "/teach-ai": "POST - Teach the AI new information",
-                "/live-stats": "GET - Real-time planet statistics",
-                "/learning-activity": "GET - Planet-wide learning feed",
-                "/planet/discover": "GET - Discover new Earth domains",
-                "/planet/stats": "GET - Complete planet statistics",
-                "/system/analyze": "GET - Self-analysis report",
-                "/system/report": "GET - Full system report",
-                "/system/improve": "POST - Self-improvement",
-                "/health": "GET - System health check",
-                "/dump": "GET - Knowledge dump (truncated)",
-                "/dump_full": "GET - Complete knowledge dump"
-            },
-            "version": mother.knowledge.get("_meta", {}).get("version", "planet-earth-v3.0-enhanced"),
-            "learning_status": "continuously_scanning_planet_earth_with_enhanced_ai",
-            "github_integration": "active"
-        })
-
-@app.route('/health')
-def health():
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        "status": "healthy",
-        "knowledge_items": len(mother.knowledge),
-        "planet_domains": total_domains,
-        "memory_usage": f"{psutil.virtual_memory().percent}%",
-        "cpu_usage": f"{psutil.cpu_percent()}%",
-        "uptime": "active",
-        "planet_coverage": "100% of Earth",
-        "scan_status": "continuously_monitoring",
-        "github_knowledge": "connected",
-        "enhanced_ai": {
-            "search_engine": "active",
-            "feedback_learner": "active",
-            "conversational_model": "active",
-            "learned_answers": len(mother.learned_answers_cache)
-        },
-        "last_updated": mother.knowledge.get("_meta", {}).get("timestamp", "unknown")
-    })
-
-@app.route('/learn', methods=['POST'])
-@limiter.limit("5 per minute")
-def learn():
-    learned = mother.learn_all()
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        "status": "Planet-wide knowledge updated across all domains",
-        "sources_processed": learned,
-        "new_entries": len(mother.knowledge),
-        "planet_domains_total": total_domains,
-        "earth_coverage": "complete",
-        "github_sync": "active",
-        "timestamp": datetime.utcnow().isoformat()
-    })
-
-@app.route('/ask', methods=['GET'])
-def ask():
-    query = request.args.get('q', '')
-    if not query:
-        return jsonify({"error": "Missing query parameter"}), 400
-    
-    result = mother.knowledge.get(query, "No knowledge on this topic in the planet-wide database")
-    if isinstance(result, str) and len(result) > 1000:
-        result = result[:1000] + "... [truncated]"
-    
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        "query": query,
-        "result": result,
-        "source": mother.knowledge.get("_meta", {}).get("name", "mother-brain-planet-earth-enhanced"),
-        "planet_enhanced": True,
-        "total_domains_scanned": total_domains,
-        "earth_coverage": "complete",
-        "github_knowledge": "integrated"
-    })
-
-@app.route('/exploit/<cve>', methods=['GET'])
-@limiter.limit("10 per minute")
-def exploit(cve):
-    if not re.match(r'CVE-\d{4}-\d+', cve):
-        return jsonify({"error": "Invalid CVE format"}), 400
-    return jsonify(mother.generate_exploit(cve))
-
-@app.route('/hacking', methods=['POST'])
-@limiter.limit("15 per minute")
-def hacking():
-    if not request.is_json:
-        return jsonify({"error": "Request must be JSON"}), 400
-    
-    command = request.json.get('command', '')
-    if not command:
-        return jsonify({"error": "No command provided"}), 400
-    
-    try:
-        result = mother.process_hacking_command(command)
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({
-            "error": str(e),
-            "stacktrace": "hidden in production",
-            "timestamp": datetime.utcnow().isoformat(),
-            "planet_fallback": "System using planet-wide knowledge backup"
-        }), 500
-
-@app.route('/chat', methods=['POST'])
-@limiter.limit("30 per minute")
-def chat_endpoint():
-    """Enhanced chat endpoint with planet-wide learning integration"""
-    try:
-        data = request.get_json()
-        user_message = data.get('message', '').strip()
-        
-        if not user_message:
-            return jsonify({'error': 'Message cannot be empty'}), 400
-        
-        # Use async enhanced chat if possible
-        try:
-            import asyncio
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            response = loop.run_until_complete(mother.enhanced_chat_response(user_message))
-        except:
-            response = generate_intelligent_response(user_message)
-        
-        return jsonify({
-            'response': response,
-            'timestamp': datetime.utcnow().isoformat(),
-            'learning_impact': 'Response patterns updated and applied to planet-wide knowledge',
-            'planet_enhancement': True,
-            'github_sync': 'feedback_stored',
-            'planet_enhanced': True,
-            'github_knowledge': 'integrated',
-            'ai_systems': 'enhanced',
-            'confidence': calculate_response_confidence(user_message, response)
-        })
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/teach-ai', methods=['POST'])
-@limiter.limit("10 per minute")
-def teach_ai():
-    """Allow users to teach the AI new information"""
-    try:
-        data = request.get_json()
-        topic = data.get('topic', '')
-        information = data.get('information', '')
-        
-        if not topic or not information:
-            return jsonify({'error': 'Both topic and information required'}), 400
-        
-        verification = mother.truth_verifier.verify_knowledge(information)
-        
-        if verification['verified']:
-            knowledge_key = f"USER_TAUGHT:{topic.replace(' ', '_').upper()}"
-            mother.knowledge[knowledge_key] = {
-                'topic': topic,
-                'information': information,
-                'taught_by': 'user',
-                'verified': True,
-                'verification_score': verification['consensus_score'],
-                'taught_at': datetime.now().isoformat()
-            }
-            
-            return jsonify({
-                'status': 'success',
-                'message': f'Thank you for teaching me about {topic}! I verified this information and stored it.',
-                'verification_score': verification['consensus_score']
-            })
-        else:
-            return jsonify({
-                'status': 'verification_failed',
-                'message': f'I couldn\'t verify this information about {topic}. Could you provide additional sources?',
-                'verification_score': verification['consensus_score']
-            })
-            
-    except Exception as e:
-        return jsonify({'error': f'Teaching failed: {str(e)}'}), 500
-
-@app.route('/live-stats', methods=['GET'])
-def get_live_stats():
-    """Get real-time planet-wide system statistics"""
-    
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    stats = {
-        'system': {
-            'cpu_usage': psutil.cpu_percent(),
-            'memory_usage': psutil.virtual_memory().percent,
-            'uptime_seconds': (datetime.now() - datetime.fromtimestamp(psutil.boot_time())).total_seconds() if hasattr(psutil, 'boot_time') else 0,
-            'breathing_pattern': 'deep_rhythmic',
-            'consciousness_level': 'heightened_awareness'
-        },
-        'planet_learning': {
-            'total_domains': total_domains,
-            'categories_monitored': len(mother.DOMAINS),
-            'websites_scanned_per_minute': random.randint(15000, 30000),
-            'knowledge_points': len(mother.knowledge),
-            'planet_coverage': '100% of Earth',
-            'fortune_500_coverage': len(mother.DOMAINS.get('fortune_500_complete', [])),
-            'financial_institutions': len(mother.DOMAINS.get('financial_markets_planet', [])),
-            'media_companies': len(mother.DOMAINS.get('media_conglomerates_planet', [])),
-            'healthcare_orgs': len(mother.DOMAINS.get('healthcare_systems_planet', [])),
-            'energy_corporations': len(mother.DOMAINS.get('energy_corporations_planet', [])),
-            'telecom_companies': len(mother.DOMAINS.get('telecommunications_planet', [])),
-            'automotive_manufacturers': len(mother.DOMAINS.get('automotive_industry_planet', [])),
-            'aerospace_companies': len(mother.DOMAINS.get('aerospace_defense_planet', [])),
-            'pharmaceutical_companies': len(mother.DOMAINS.get('pharmaceutical_companies_planet', [])),
-            'github_knowledge_sync': 'active',
-            'knowledge_growth_rate': random.uniform(0.05, 0.15)
-        },
-        'enhanced_ai': {
-            'search_engine_status': 'active',
-            'feedback_learner_status': 'learning',
-            'conversational_ai_status': 'engaged',
-            'verification_system': 'operational',
-            'anticipatory_learning': 'active',
-            'learned_answers_cached': len(mother.learned_answers_cache)
-        },
-        'performance': {
-            'avg_response_time_ms': random.randint(15, 45),
-            'requests_per_minute': random.randint(800, 2000),
-            'success_rate': random.uniform(0.999, 0.9999),
-            'cache_hit_rate': random.uniform(0.97, 0.99),
-            'github_sync_speed': random.randint(50, 200),
-            'neural_activity': random.uniform(0.85, 0.98)
-        },
-        'feedback': {
-            'positive_feedback_24h': random.randint(2000, 5000),
-            'total_interactions_24h': random.randint(3000, 7000),
-            'satisfaction_rate': random.uniform(0.98, 0.999),
-            'learning_improvements': random.randint(200, 800),
-            'planet_discoveries': random.randint(50, 150)
-        },
-        'vitals': {
-            'pulse_rate': random.randint(60, 80),
-            'neural_temperature': random.uniform(36.5, 37.2),
-            'data_flow_pressure': random.uniform(120, 140),
-            'consciousness_coherence': random.uniform(0.95, 0.99),
-            'dream_state_activity': random.uniform(0.2, 0.4)
-        },
-        'timestamp': datetime.utcnow().isoformat()
-    }
-    
-    return jsonify(stats)
-
-@app.route('/learning-activity', methods=['GET'])
-def learning_activity():
-    """Get real-time learning activity feed"""
-    activities = []
-    
-    # Generate some recent learning activities
-    domains_learning = [
-        "fortune_500_complete", "financial_markets_planet", "healthcare_systems_planet",
-        "energy_corporations_planet", "telecommunications_planet", "retail_chains_planet"
-    ]
-    
-    for i in range(10):
-        activity = {
-            'timestamp': (datetime.now() - timedelta(minutes=i*5)).isoformat(),
-            'type': random.choice(['web_scrape', 'fact_verify', 'pattern_learn', 'feedback_process']),
-            'domain': random.choice(domains_learning),
-            'status': 'completed',
-            'facts_learned': random.randint(10, 100),
-            'confidence': random.uniform(0.7, 0.99)
-        }
-        activities.append(activity)
-    
-    return jsonify({
-        'activities': activities,
-        'total_24h': random.randint(5000, 10000),
-        'learning_rate': 'accelerating',
-        'planet_coverage': 'expanding'
-    })
-
-@app.route('/planet/discover', methods=['GET'])
-def discover_planet():
-    """Discover and return new domains from planet Earth"""
-    try:
-        # Generate new domains using the discovery system
-        new_domains = mother.web_discovery.discover_planet_earth_domains()
-        
-        # Sample a subset for response
-        sample_size = min(200, len(new_domains))
-        sample_domains = random.sample(new_domains, sample_size)
-        
-        return jsonify({
-            'status': 'planet_discovery_complete',
-            'total_discovered': len(new_domains),
-            'sample_domains': sample_domains,
-            'discovery_methods': len(mother.web_discovery.domain_generators),
-            'planet_coverage': 'comprehensive',
-            'scan_status': 'continuously_expanding',
-            'github_sync': 'active',
-            'timestamp': datetime.utcnow().isoformat()
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'error': 'Planet discovery failed',
-            'details': str(e),
-            'fallback': 'Using existing planet-wide knowledge'
-        }), 500
-
-@app.route('/planet/stats', methods=['GET'])
-def planet_stats():
-    """Get comprehensive planet Earth statistics"""
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        'planet_earth_coverage': {
-            'total_domains_monitored': total_domains,
-            'domain_categories': len(mother.DOMAINS),
-            'coverage_percentage': 100.0,
-            'scan_status': 'active_continuous',
-            'github_integration': 'synchronized',
-            'enhanced_ai_systems': 'operational'
-        },
-        'industry_coverage': {
-            'fortune_500_companies': len(mother.DOMAINS.get('fortune_500_complete', [])),
-            'startup_ecosystems': len(mother.DOMAINS.get('startup_ecosystem_planet', [])),
-            'financial_institutions': len(mother.DOMAINS.get('financial_markets_planet', [])),
-            'media_conglomerates': len(mother.DOMAINS.get('media_conglomerates_planet', [])),
-            'healthcare_systems': len(mother.DOMAINS.get('healthcare_systems_planet', [])),
-            'energy_corporations': len(mother.DOMAINS.get('energy_corporations_planet', [])),
-            'telecommunications': len(mother.DOMAINS.get('telecommunications_planet', [])),
-            'retail_chains': len(mother.DOMAINS.get('retail_chains_planet', [])),
-            'automotive_industry': len(mother.DOMAINS.get('automotive_industry_planet', [])),
-            'aerospace_defense': len(mother.DOMAINS.get('aerospace_defense_planet', [])),
-            'pharmaceutical_companies': len(mother.DOMAINS.get('pharmaceutical_companies_planet', []))
-        },
-        'global_infrastructure': {
-            'search_engines': len(mother.DOMAINS.get('search_engines_planet', [])),
-            'social_media_platforms': len(mother.DOMAINS.get('social_media_planet', [])),
-            'government_websites': len(mother.DOMAINS.get('government_worldwide_planet', [])),
-            'educational_institutions': len(mother.DOMAINS.get('education_worldwide_planet', [])),
-            'scientific_research': len(mother.DOMAINS.get('scientific_research_planet', [])),
-            'iot_devices': len(mother.DOMAINS.get('iot_devices_planet', [])),
-            'satellite_networks': len(mother.DOMAINS.get('satellite_networks_planet', [])),
-            'dark_web_services': len(mother.DOMAINS.get('dark_web_planet', [])),
-            'blockchain_domains': len(mother.DOMAINS.get('blockchain_domains_planet', []))
-        },
-        'discovery_methods': {
-            'dns_zone_walks': len(mother.DOMAINS.get('dns_zone_walks_planet', [])),
-            'certificate_transparency': len(mother.DOMAINS.get('certificate_transparency_planet', [])),
-            'web_crawl_discoveries': len(mother.DOMAINS.get('web_crawl_discoveries_planet', [])),
-            'subdomain_bruteforce': len(mother.DOMAINS.get('subdomain_bruteforce_planet', [])),
-            'archived_websites': len(mother.DOMAINS.get('archived_websites_planet', [])),
-            'api_endpoints': len(mother.DOMAINS.get('api_endpoints_planet', []))
-        },
-        'knowledge_repository': {
-            'github_status': 'connected',
-            'knowledge_entries': len(mother.knowledge),
-            'learned_answers': len(mother.learned_answers_cache),
-            'last_sync': mother.knowledge.get('_meta', {}).get('timestamp', 'unknown'),
-            'repository_health': 'optimal'
-        },
-        'enhanced_ai': {
-            'search_capabilities': 'multi-source verification',
-            'feedback_learning': 'pattern recognition active',
-            'conversational_ai': 'context-aware',
-            'truth_verification': 'consensus-based',
-            'anticipatory_learning': 'predictive modeling'
-        },
-        'timestamp': datetime.utcnow().isoformat()
-    })
-
-@app.route('/system/analyze', methods=['GET'])
-@limiter.limit("2 per hour")
-def analyze_self():
-    analysis = mother.self_improver.analyze_code()
-    analysis['planet_enhanced'] = True
-    analysis['github_knowledge'] = 'integrated'
-    analysis['enhanced_ai'] = 'active'
-    analysis['total_domains_monitored'] = sum(len(sources) if isinstance(sources, list) else 
-                                            sum(len(subsources) if isinstance(subsources, list) else 1 
-                                                for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                                            for sources in mother.DOMAINS.values())
-    return jsonify(analysis)
-
-@app.route('/system/report', methods=['GET'])
-def system_report():
-    report = mother.meta.generate_self_report()
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    report['planet_statistics'] = {
-        'total_domain_categories': len(mother.DOMAINS),
-        'total_domains_monitored': total_domains,
-        'planet_coverage': '100% of Earth',
-        'learning_scope': 'entire planet Earth',
-        'github_integration': 'active',
-        'knowledge_persistence': 'github_repository',
-        'enhanced_ai_systems': {
-            'search_engine': 'operational',
-            'feedback_learner': 'active',
-            'conversational_model': 'engaged'
-        }
-    }
-    return jsonify(report)
-
-@app.route('/system/improve', methods=['POST'])
-@limiter.limit("1 per day")
-def self_improve():
-    analysis = mother.self_improver.analyze_code()
-    improvements = []
-    
-    for vuln in analysis['vulnerabilities']:
-        if mother._repair_knowledge(vuln['type']):
-            improvements.append(f"Fixed {vuln['type']} vulnerability")
-    
-    return jsonify({
-        "status": "planet_improvement_attempted",
-        "changes": improvements,
-        "timestamp": datetime.utcnow().isoformat(),
-        "remaining_vulnerabilities": len(analysis['vulnerabilities']) - len(improvements),
-        "planet_enhancements": "Applied improvements across all Earth domain categories",
-        "github_sync": "improvements_saved",
-        "ai_systems_optimized": True
-    })
-
-@app.route('/verification-status/<topic>')
-def get_verification_status(topic):
-    """Get verification status of knowledge"""
-    try:
-        knowledge_key = f"USER_TAUGHT:{topic.replace(' ', '_').upper()}"
-        
-        if knowledge_key in mother.knowledge:
-            knowledge_data = mother.knowledge[knowledge_key]
-            return jsonify({
-                'topic': topic,
-                'verified': knowledge_data.get('verified', False),
-                'verification_score': knowledge_data.get('verification_score', 0),
-                'last_updated': knowledge_data.get('taught_at', 'unknown')
-            })
-        else:
-            return jsonify({
-                'topic': topic,
-                'exists': False,
-                'message': 'No knowledge found for this topic'
-            })
-            
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/knowledge-stats')
-def enhanced_knowledge_stats():
-    """Get enhanced knowledge statistics"""
-    try:
-        total_knowledge = len(mother.knowledge)
-        user_taught = len([k for k in mother.knowledge.keys() if k.startswith('USER_TAUGHT')])
-        verified_knowledge = len([k for k, v in mother.knowledge.items() 
-                                if isinstance(v, dict) and v.get('verified', False)])
-        prelearned = len([k for k in mother.knowledge.keys() if k.startswith('PRELEARNED')])
-        learned = len([k for k in mother.knowledge.keys() if k.startswith('LEARNED')])
-        failed = len([k for k in mother.knowledge.keys() if k.startswith('FAILED')])
-        
-        stats = {
-            'total_knowledge_entries': total_knowledge,
-            'user_taught_entries': user_taught,
-            'verified_entries': verified_knowledge,
-            'prelearned_entries': prelearned,
-            'learned_successful': learned,
-            'learned_failed': failed,
-            'verification_rate': (verified_knowledge / max(1, total_knowledge)) * 100,
-            'learning_sources': {
-                'web_scraping': total_knowledge - user_taught - prelearned - learned,
-                'user_teaching': user_taught,
-                'anticipatory_learning': prelearned,
-                'feedback_learning': learned
-            },
-            'enhanced_ai_stats': {
-                'cached_answers': len(mother.learned_answers_cache),
-                'conversation_context': len(mother.conversation_context),
-                'feedback_patterns': len(mother.feedback_learner.feedback_patterns) if hasattr(mother.feedback_learner, 'feedback_patterns') else 0
-            }
-        }
-        
-        if mother.knowledge_db:
-            db_stats = mother.knowledge_db.get_stats()
-            stats['database'] = db_stats
-        
-        return jsonify(stats)
-        
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/dump', methods=['GET'])
-@limiter.limit("1 per hour")
-def dump():
-    """Return first 500 knowledge entries from planet Earth"""
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        "knowledge": dict(list(mother.knowledge.items())[:500]),
-        "warning": "Truncated output - use /dump_full for complete planet dump",
-        "count": len(mother.knowledge),
-        "planet_enhanced": True,
-        "total_domains": total_domains,
-        "github_source": "knowledge.zst",
-        "learned_answers": len(mother.learned_answers_cache)
-    })
-
-@app.route('/dump_full', methods=['GET'])
-@limiter.limit("1 per day")
-def dump_full():
-    """Return complete unfiltered planet Earth knowledge dump"""
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    return jsonify({
-        "knowledge": mother.knowledge,
-        "size_bytes": len(json.dumps(mother.knowledge).encode('utf-8')),
-        "entries": len(mother.knowledge),
-        "planet_coverage": "complete",
-        "total_domains": total_domains,
-        "domain_categories": len(mother.DOMAINS),
-        "github_repository": "knowledge.zst",
-        "learned_answers": mother.learned_answers_cache,
-        "enhanced_ai": True
-    })
+# Initialize mother instance with all features
 
 # Helper functions for generating responses
 def generate_intelligent_response(message: str) -> str:
@@ -708,7 +133,8 @@ def calculate_response_confidence(message: str, response: str) -> float:
 
 # Enhanced Flask routes with security headers
 @app.after_request
-def add_security_headers(response):
+def after_request(response):
+    # Security headers from the first function
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'DENY'
     response.headers['X-XSS-Protection'] = '1; mode=block'
@@ -719,17 +145,15 @@ def add_security_headers(response):
     response.headers['X-Coverage'] = 'complete-planet-earth'
     response.headers['X-GitHub-Knowledge'] = 'integrated'
     response.headers['X-Enhanced-AI'] = 'active'
-    return response
-
-# Add CORS support
-@app.after_request
-def after_request(response):
+    
+    # CORS headers from the second function
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('X-Planet-AI', 'MOTHER-BRAIN-PLANET-EARTH-ENHANCED')
     response.headers.add('X-GitHub-Sync', 'ACTIVE')
     response.headers.add('X-AI-Systems', 'SEARCH-FEEDBACK-CONVERSATIONAL')
+    
     return response
 
 # Error handling
@@ -3256,6 +2680,584 @@ class EnhancedMotherBrain(MotherBrain):
         
         print("🚀 Enhanced Mother Brain with full integration initialized!")
 
+mother = EnhancedMotherBrain()
+
+@app.route('/')
+def home():
+    """Serve the enhanced living HTML interface"""
+    try:
+        with open('index.html', 'r') as f:
+            return f.read()
+    except FileNotFoundError:
+        total_domains = sum(len(sources) if isinstance(sources, list) else 
+                          sum(len(subsources) if isinstance(subsources, list) else 1 
+                              for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                          for sources in mother.DOMAINS.values())
+        
+        return jsonify({
+            "status": "Mother Brain Planet Earth Enhanced operational",
+            "message": "Universal AI learning from every website on planet Earth with advanced search and learning",
+            "planet_stats": {
+                "total_domains": total_domains,
+                "categories": len(mother.DOMAINS),
+                "coverage": "Complete planet Earth",
+                "scan_status": "active",
+                "github_knowledge": "Connected to knowledge.zst",
+                "ai_systems": ["intelligent_search", "feedback_learning", "conversational_ai"]
+            },
+            "endpoints": {
+                "/chat": "POST - Interactive chat with planet Earth knowledge",
+                "/enhanced-chat": "POST - Enhanced chat with search integration",
+                "/ask?q=<query>": "GET - Query planet-wide knowledge",
+                "/feedback": "POST - Provide learning feedback",
+                "/search": "POST - Search and verify information",
+                "/exploit/<cve>": "GET - Generate exploit for CVE",
+                "/hacking": "POST - Process hacking commands",
+                "/learn": "POST - Trigger planet-wide learning",
+                "/teach-ai": "POST - Teach the AI new information",
+                "/live-stats": "GET - Real-time planet statistics",
+                "/learning-activity": "GET - Planet-wide learning feed",
+                "/planet/discover": "GET - Discover new Earth domains",
+                "/planet/stats": "GET - Complete planet statistics",
+                "/system/analyze": "GET - Self-analysis report",
+                "/system/report": "GET - Full system report",
+                "/system/improve": "POST - Self-improvement",
+                "/health": "GET - System health check",
+                "/dump": "GET - Knowledge dump (truncated)",
+                "/dump_full": "GET - Complete knowledge dump"
+            },
+            "version": mother.knowledge.get("_meta", {}).get("version", "planet-earth-v3.0-enhanced"),
+            "learning_status": "continuously_scanning_planet_earth_with_enhanced_ai",
+            "github_integration": "active"
+        })
+
+@app.route('/health')
+def health():
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        "status": "healthy",
+        "knowledge_items": len(mother.knowledge),
+        "planet_domains": total_domains,
+        "memory_usage": f"{psutil.virtual_memory().percent}%",
+        "cpu_usage": f"{psutil.cpu_percent()}%",
+        "uptime": "active",
+        "planet_coverage": "100% of Earth",
+        "scan_status": "continuously_monitoring",
+        "github_knowledge": "connected",
+        "enhanced_ai": {
+            "search_engine": "active",
+            "feedback_learner": "active",
+            "conversational_model": "active",
+            "learned_answers": len(mother.learned_answers_cache)
+        },
+        "last_updated": mother.knowledge.get("_meta", {}).get("timestamp", "unknown")
+    })
+
+@app.route('/learn', methods=['POST'])
+@limiter.limit("5 per minute")
+def learn():
+    learned = mother.learn_all()
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        "status": "Planet-wide knowledge updated across all domains",
+        "sources_processed": learned,
+        "new_entries": len(mother.knowledge),
+        "planet_domains_total": total_domains,
+        "earth_coverage": "complete",
+        "github_sync": "active",
+        "timestamp": datetime.utcnow().isoformat()
+    })
+
+@app.route('/ask', methods=['GET'])
+def ask():
+    query = request.args.get('q', '')
+    if not query:
+        return jsonify({"error": "Missing query parameter"}), 400
+    
+    result = mother.knowledge.get(query, "No knowledge on this topic in the planet-wide database")
+    if isinstance(result, str) and len(result) > 1000:
+        result = result[:1000] + "... [truncated]"
+    
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        "query": query,
+        "result": result,
+        "source": mother.knowledge.get("_meta", {}).get("name", "mother-brain-planet-earth-enhanced"),
+        "planet_enhanced": True,
+        "total_domains_scanned": total_domains,
+        "earth_coverage": "complete",
+        "github_knowledge": "integrated"
+    })
+
+@app.route('/exploit/<cve>', methods=['GET'])
+@limiter.limit("10 per minute")
+def exploit(cve):
+    if not re.match(r'CVE-\d{4}-\d+', cve):
+        return jsonify({"error": "Invalid CVE format"}), 400
+    return jsonify(mother.generate_exploit(cve))
+
+@app.route('/hacking', methods=['POST'])
+@limiter.limit("15 per minute")
+def hacking():
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+    
+    command = request.json.get('command', '')
+    if not command:
+        return jsonify({"error": "No command provided"}), 400
+    
+    try:
+        result = mother.process_hacking_command(command)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({
+            "error": str(e),
+            "stacktrace": "hidden in production",
+            "timestamp": datetime.utcnow().isoformat(),
+            "planet_fallback": "System using planet-wide knowledge backup"
+        }), 500
+
+@app.route('/chat', methods=['POST'])
+@limiter.limit("30 per minute")
+def chat_endpoint():
+    """Enhanced chat endpoint with planet-wide learning integration"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        
+        if not user_message:
+            return jsonify({'error': 'Message cannot be empty'}), 400
+        
+        # Use async enhanced chat if possible
+        try:
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            response = loop.run_until_complete(mother.enhanced_chat_response(user_message))
+        except:
+            response = generate_intelligent_response(user_message)
+        
+        return jsonify({
+            'response': response,
+            'timestamp': datetime.utcnow().isoformat(),
+            'learning_impact': 'Response patterns updated and applied to planet-wide knowledge',
+            'planet_enhancement': True,
+            'github_sync': 'feedback_stored',
+            'planet_enhanced': True,
+            'github_knowledge': 'integrated',
+            'ai_systems': 'enhanced',
+            'confidence': calculate_response_confidence(user_message, response)
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/teach-ai', methods=['POST'])
+@limiter.limit("10 per minute")
+def teach_ai():
+    """Allow users to teach the AI new information"""
+    try:
+        data = request.get_json()
+        topic = data.get('topic', '')
+        information = data.get('information', '')
+        
+        if not topic or not information:
+            return jsonify({'error': 'Both topic and information required'}), 400
+        
+        verification = mother.truth_verifier.verify_knowledge(information)
+        
+        if verification['verified']:
+            knowledge_key = f"USER_TAUGHT:{topic.replace(' ', '_').upper()}"
+            mother.knowledge[knowledge_key] = {
+                'topic': topic,
+                'information': information,
+                'taught_by': 'user',
+                'verified': True,
+                'verification_score': verification['consensus_score'],
+                'taught_at': datetime.now().isoformat()
+            }
+            
+            return jsonify({
+                'status': 'success',
+                'message': f'Thank you for teaching me about {topic}! I verified this information and stored it.',
+                'verification_score': verification['consensus_score']
+            })
+        else:
+            return jsonify({
+                'status': 'verification_failed',
+                'message': f'I couldn\'t verify this information about {topic}. Could you provide additional sources?',
+                'verification_score': verification['consensus_score']
+            })
+            
+    except Exception as e:
+        return jsonify({'error': f'Teaching failed: {str(e)}'}), 500
+
+@app.route('/live-stats', methods=['GET'])
+def get_live_stats():
+    """Get real-time planet-wide system statistics"""
+    
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    stats = {
+        'system': {
+            'cpu_usage': psutil.cpu_percent(),
+            'memory_usage': psutil.virtual_memory().percent,
+            'uptime_seconds': (datetime.now() - datetime.fromtimestamp(psutil.boot_time())).total_seconds() if hasattr(psutil, 'boot_time') else 0,
+            'breathing_pattern': 'deep_rhythmic',
+            'consciousness_level': 'heightened_awareness'
+        },
+        'planet_learning': {
+            'total_domains': total_domains,
+            'categories_monitored': len(mother.DOMAINS),
+            'websites_scanned_per_minute': random.randint(15000, 30000),
+            'knowledge_points': len(mother.knowledge),
+            'planet_coverage': '100% of Earth',
+            'fortune_500_coverage': len(mother.DOMAINS.get('fortune_500_complete', [])),
+            'financial_institutions': len(mother.DOMAINS.get('financial_markets_planet', [])),
+            'media_companies': len(mother.DOMAINS.get('media_conglomerates_planet', [])),
+            'healthcare_orgs': len(mother.DOMAINS.get('healthcare_systems_planet', [])),
+            'energy_corporations': len(mother.DOMAINS.get('energy_corporations_planet', [])),
+            'telecom_companies': len(mother.DOMAINS.get('telecommunications_planet', [])),
+            'automotive_manufacturers': len(mother.DOMAINS.get('automotive_industry_planet', [])),
+            'aerospace_companies': len(mother.DOMAINS.get('aerospace_defense_planet', [])),
+            'pharmaceutical_companies': len(mother.DOMAINS.get('pharmaceutical_companies_planet', [])),
+            'github_knowledge_sync': 'active',
+            'knowledge_growth_rate': random.uniform(0.05, 0.15)
+        },
+        'enhanced_ai': {
+            'search_engine_status': 'active',
+            'feedback_learner_status': 'learning',
+            'conversational_ai_status': 'engaged',
+            'verification_system': 'operational',
+            'anticipatory_learning': 'active',
+            'learned_answers_cached': len(mother.learned_answers_cache)
+        },
+        'performance': {
+            'avg_response_time_ms': random.randint(15, 45),
+            'requests_per_minute': random.randint(800, 2000),
+            'success_rate': random.uniform(0.999, 0.9999),
+            'cache_hit_rate': random.uniform(0.97, 0.99),
+            'github_sync_speed': random.randint(50, 200),
+            'neural_activity': random.uniform(0.85, 0.98)
+        },
+        'feedback': {
+            'positive_feedback_24h': random.randint(2000, 5000),
+            'total_interactions_24h': random.randint(3000, 7000),
+            'satisfaction_rate': random.uniform(0.98, 0.999),
+            'learning_improvements': random.randint(200, 800),
+            'planet_discoveries': random.randint(50, 150)
+        },
+        'vitals': {
+            'pulse_rate': random.randint(60, 80),
+            'neural_temperature': random.uniform(36.5, 37.2),
+            'data_flow_pressure': random.uniform(120, 140),
+            'consciousness_coherence': random.uniform(0.95, 0.99),
+            'dream_state_activity': random.uniform(0.2, 0.4)
+        },
+        'timestamp': datetime.utcnow().isoformat()
+    }
+    
+    return jsonify(stats)
+
+@app.route('/learning-activity', methods=['GET'])
+def learning_activity():
+    """Get real-time learning activity feed"""
+    activities = []
+    
+    # Generate some recent learning activities
+    domains_learning = [
+        "fortune_500_complete", "financial_markets_planet", "healthcare_systems_planet",
+        "energy_corporations_planet", "telecommunications_planet", "retail_chains_planet"
+    ]
+    
+    for i in range(10):
+        activity = {
+            'timestamp': (datetime.now() - timedelta(minutes=i*5)).isoformat(),
+            'type': random.choice(['web_scrape', 'fact_verify', 'pattern_learn', 'feedback_process']),
+            'domain': random.choice(domains_learning),
+            'status': 'completed',
+            'facts_learned': random.randint(10, 100),
+            'confidence': random.uniform(0.7, 0.99)
+        }
+        activities.append(activity)
+    
+    return jsonify({
+        'activities': activities,
+        'total_24h': random.randint(5000, 10000),
+        'learning_rate': 'accelerating',
+        'planet_coverage': 'expanding'
+    })
+
+@app.route('/planet/discover', methods=['GET'])
+def discover_planet():
+    """Discover and return new domains from planet Earth"""
+    try:
+        # Generate new domains using the discovery system
+        new_domains = mother.web_discovery.discover_planet_earth_domains()
+        
+        # Sample a subset for response
+        sample_size = min(200, len(new_domains))
+        sample_domains = random.sample(new_domains, sample_size)
+        
+        return jsonify({
+            'status': 'planet_discovery_complete',
+            'total_discovered': len(new_domains),
+            'sample_domains': sample_domains,
+            'discovery_methods': len(mother.web_discovery.domain_generators),
+            'planet_coverage': 'comprehensive',
+            'scan_status': 'continuously_expanding',
+            'github_sync': 'active',
+            'timestamp': datetime.utcnow().isoformat()
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': 'Planet discovery failed',
+            'details': str(e),
+            'fallback': 'Using existing planet-wide knowledge'
+        }), 500
+
+@app.route('/planet/stats', methods=['GET'])
+def planet_stats():
+    """Get comprehensive planet Earth statistics"""
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        'planet_earth_coverage': {
+            'total_domains_monitored': total_domains,
+            'domain_categories': len(mother.DOMAINS),
+            'coverage_percentage': 100.0,
+            'scan_status': 'active_continuous',
+            'github_integration': 'synchronized',
+            'enhanced_ai_systems': 'operational'
+        },
+        'industry_coverage': {
+            'fortune_500_companies': len(mother.DOMAINS.get('fortune_500_complete', [])),
+            'startup_ecosystems': len(mother.DOMAINS.get('startup_ecosystem_planet', [])),
+            'financial_institutions': len(mother.DOMAINS.get('financial_markets_planet', [])),
+            'media_conglomerates': len(mother.DOMAINS.get('media_conglomerates_planet', [])),
+            'healthcare_systems': len(mother.DOMAINS.get('healthcare_systems_planet', [])),
+            'energy_corporations': len(mother.DOMAINS.get('energy_corporations_planet', [])),
+            'telecommunications': len(mother.DOMAINS.get('telecommunications_planet', [])),
+            'retail_chains': len(mother.DOMAINS.get('retail_chains_planet', [])),
+            'automotive_industry': len(mother.DOMAINS.get('automotive_industry_planet', [])),
+            'aerospace_defense': len(mother.DOMAINS.get('aerospace_defense_planet', [])),
+            'pharmaceutical_companies': len(mother.DOMAINS.get('pharmaceutical_companies_planet', []))
+        },
+        'global_infrastructure': {
+            'search_engines': len(mother.DOMAINS.get('search_engines_planet', [])),
+            'social_media_platforms': len(mother.DOMAINS.get('social_media_planet', [])),
+            'government_websites': len(mother.DOMAINS.get('government_worldwide_planet', [])),
+            'educational_institutions': len(mother.DOMAINS.get('education_worldwide_planet', [])),
+            'scientific_research': len(mother.DOMAINS.get('scientific_research_planet', [])),
+            'iot_devices': len(mother.DOMAINS.get('iot_devices_planet', [])),
+            'satellite_networks': len(mother.DOMAINS.get('satellite_networks_planet', [])),
+            'dark_web_services': len(mother.DOMAINS.get('dark_web_planet', [])),
+            'blockchain_domains': len(mother.DOMAINS.get('blockchain_domains_planet', []))
+        },
+        'discovery_methods': {
+            'dns_zone_walks': len(mother.DOMAINS.get('dns_zone_walks_planet', [])),
+            'certificate_transparency': len(mother.DOMAINS.get('certificate_transparency_planet', [])),
+            'web_crawl_discoveries': len(mother.DOMAINS.get('web_crawl_discoveries_planet', [])),
+            'subdomain_bruteforce': len(mother.DOMAINS.get('subdomain_bruteforce_planet', [])),
+            'archived_websites': len(mother.DOMAINS.get('archived_websites_planet', [])),
+            'api_endpoints': len(mother.DOMAINS.get('api_endpoints_planet', []))
+        },
+        'knowledge_repository': {
+            'github_status': 'connected',
+            'knowledge_entries': len(mother.knowledge),
+            'learned_answers': len(mother.learned_answers_cache),
+            'last_sync': mother.knowledge.get('_meta', {}).get('timestamp', 'unknown'),
+            'repository_health': 'optimal'
+        },
+        'enhanced_ai': {
+            'search_capabilities': 'multi-source verification',
+            'feedback_learning': 'pattern recognition active',
+            'conversational_ai': 'context-aware',
+            'truth_verification': 'consensus-based',
+            'anticipatory_learning': 'predictive modeling'
+        },
+        'timestamp': datetime.utcnow().isoformat()
+    })
+
+@app.route('/system/analyze', methods=['GET'])
+@limiter.limit("2 per hour")
+def analyze_self():
+    analysis = mother.self_improver.analyze_code()
+    analysis['planet_enhanced'] = True
+    analysis['github_knowledge'] = 'integrated'
+    analysis['enhanced_ai'] = 'active'
+    analysis['total_domains_monitored'] = sum(len(sources) if isinstance(sources, list) else 
+                                            sum(len(subsources) if isinstance(subsources, list) else 1 
+                                                for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                                            for sources in mother.DOMAINS.values())
+    return jsonify(analysis)
+
+@app.route('/system/report', methods=['GET'])
+def system_report():
+    report = mother.meta.generate_self_report()
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    report['planet_statistics'] = {
+        'total_domain_categories': len(mother.DOMAINS),
+        'total_domains_monitored': total_domains,
+        'planet_coverage': '100% of Earth',
+        'learning_scope': 'entire planet Earth',
+        'github_integration': 'active',
+        'knowledge_persistence': 'github_repository',
+        'enhanced_ai_systems': {
+            'search_engine': 'operational',
+            'feedback_learner': 'active',
+            'conversational_model': 'engaged'
+        }
+    }
+    return jsonify(report)
+
+@app.route('/system/improve', methods=['POST'])
+@limiter.limit("1 per day")
+def self_improve():
+    analysis = mother.self_improver.analyze_code()
+    improvements = []
+    
+    for vuln in analysis['vulnerabilities']:
+        if mother._repair_knowledge(vuln['type']):
+            improvements.append(f"Fixed {vuln['type']} vulnerability")
+    
+    return jsonify({
+        "status": "planet_improvement_attempted",
+        "changes": improvements,
+        "timestamp": datetime.utcnow().isoformat(),
+        "remaining_vulnerabilities": len(analysis['vulnerabilities']) - len(improvements),
+        "planet_enhancements": "Applied improvements across all Earth domain categories",
+        "github_sync": "improvements_saved",
+        "ai_systems_optimized": True
+    })
+
+@app.route('/verification-status/<topic>')
+def get_verification_status(topic):
+    """Get verification status of knowledge"""
+    try:
+        knowledge_key = f"USER_TAUGHT:{topic.replace(' ', '_').upper()}"
+        
+        if knowledge_key in mother.knowledge:
+            knowledge_data = mother.knowledge[knowledge_key]
+            return jsonify({
+                'topic': topic,
+                'verified': knowledge_data.get('verified', False),
+                'verification_score': knowledge_data.get('verification_score', 0),
+                'last_updated': knowledge_data.get('taught_at', 'unknown')
+            })
+        else:
+            return jsonify({
+                'topic': topic,
+                'exists': False,
+                'message': 'No knowledge found for this topic'
+            })
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/knowledge-stats')
+def enhanced_knowledge_stats():
+    """Get enhanced knowledge statistics"""
+    try:
+        total_knowledge = len(mother.knowledge)
+        user_taught = len([k for k in mother.knowledge.keys() if k.startswith('USER_TAUGHT')])
+        verified_knowledge = len([k for k, v in mother.knowledge.items() 
+                                if isinstance(v, dict) and v.get('verified', False)])
+        prelearned = len([k for k in mother.knowledge.keys() if k.startswith('PRELEARNED')])
+        learned = len([k for k in mother.knowledge.keys() if k.startswith('LEARNED')])
+        failed = len([k for k in mother.knowledge.keys() if k.startswith('FAILED')])
+        
+        stats = {
+            'total_knowledge_entries': total_knowledge,
+            'user_taught_entries': user_taught,
+            'verified_entries': verified_knowledge,
+            'prelearned_entries': prelearned,
+            'learned_successful': learned,
+            'learned_failed': failed,
+            'verification_rate': (verified_knowledge / max(1, total_knowledge)) * 100,
+            'learning_sources': {
+                'web_scraping': total_knowledge - user_taught - prelearned - learned,
+                'user_teaching': user_taught,
+                'anticipatory_learning': prelearned,
+                'feedback_learning': learned
+            },
+            'enhanced_ai_stats': {
+                'cached_answers': len(mother.learned_answers_cache),
+                'conversation_context': len(mother.conversation_context),
+                'feedback_patterns': len(mother.feedback_learner.feedback_patterns) if hasattr(mother.feedback_learner, 'feedback_patterns') else 0
+            }
+        }
+        
+        if mother.knowledge_db:
+            db_stats = mother.knowledge_db.get_stats()
+            stats['database'] = db_stats
+        
+        return jsonify(stats)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/dump', methods=['GET'])
+@limiter.limit("1 per hour")
+def dump():
+    """Return first 500 knowledge entries from planet Earth"""
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        "knowledge": dict(list(mother.knowledge.items())[:500]),
+        "warning": "Truncated output - use /dump_full for complete planet dump",
+        "count": len(mother.knowledge),
+        "planet_enhanced": True,
+        "total_domains": total_domains,
+        "github_source": "knowledge.zst",
+        "learned_answers": len(mother.learned_answers_cache)
+    })
+
+@app.route('/dump_full', methods=['GET'])
+@limiter.limit("1 per day")
+def dump_full():
+    """Return complete unfiltered planet Earth knowledge dump"""
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    return jsonify({
+        "knowledge": mother.knowledge,
+        "size_bytes": len(json.dumps(mother.knowledge).encode('utf-8')),
+        "entries": len(mother.knowledge),
+        "planet_coverage": "complete",
+        "total_domains": total_domains,
+        "domain_categories": len(mother.DOMAINS),
+        "github_repository": "knowledge.zst",
+        "learned_answers": mother.learned_answers_cache,
+        "enhanced_ai": True
+    })
 
 # Helper class for knowledge compression
 class KnowledgeCompressor:
@@ -3270,6 +3272,5 @@ class KnowledgeCompressor:
         return json.loads(lzma.decompress(data))
 
 
-# Initialize mother instance with all features
-mother = EnhancedMotherBrain()
+
 
