@@ -1,3 +1,74 @@
+import lzma
+import re
+import os
+import requests
+import random
+import hashlib
+import socket
+import struct
+import threading
+import time
+import psutil
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional, Tuple
+from flask import Flask, request, jsonify
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from flask_talisman import Talisman
+from github import Github, Auth, InputGitAuthor
+import ssl
+from urllib.parse import urlparse
+import validators
+from heart import get_ai_heart
+
+# Enhanced imports for new AI systems
+import asyncio
+import aiohttp
+import sqlite3
+from collections import Counter, defaultdict
+import numpy as np
+from feedback_learner import UnifiedFeedbackLearner
+
+# Add these imports at the top of mother.py (after your existing imports)
+from homegrown_core import HomegrownMotherBrain as HomegrownCore
+from live_learning_engine import integrate_live_learning, UniversalWebLearner
+from consciousness_engine import ConsciousnessEngine, integrate_consciousness
+from advanced_homegrown_ai import AdvancedHomegrownAI
+from knowledge_compressor import KnowledgeCompressor
+from database import KnowledgeDB, MotherBrainWithDB
+from cache import MotherCache, cached
+from auth import UserManager, JWTManager
+from concurrent.futures import ThreadPoolExecutor
+
+app = Flask(__name__)
+
+# Enhanced security middleware
+csp = {
+    'default-src': "'self'",
+    'script-src': "'self'",
+    'style-src': "'self'",
+    'img-src': "'self' data:",
+    'connect-src': "'self'"
+}
+Talisman(
+    app,
+    content_security_policy=csp,
+    force_https=True,
+    strict_transport_security=True,
+    session_cookie_secure=True,
+    session_cookie_http_only=True
+)
+
+# Rate limiting with enhanced protection
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+    strategy="fixed-window",
+    headers_enabled=True
+)
+
 @app.route('/')
 def home():
     """Serve the enhanced living HTML interface"""
@@ -885,47 +956,6 @@ def record_feedback():
             'status': 'success',
             'message': 'Thank you! Your feedback helps MOTHER AI learn and improve across planet Earth.',
             'learningimport json
-import lzma
-import re
-import os
-import requests
-import random
-import hashlib
-import socket
-import struct
-import threading
-import time
-import psutil
-from datetime import datetime, timedelta
-from typing import List, Dict, Optional, Tuple
-from flask import Flask, request, jsonify
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
-from flask_talisman import Talisman
-from github import Github, Auth, InputGitAuthor
-import ssl
-from urllib.parse import urlparse
-import validators
-from heart import get_ai_heart
-
-# Enhanced imports for new AI systems
-import asyncio
-import aiohttp
-import sqlite3
-from collections import Counter, defaultdict
-import numpy as np
-from feedback_learner import UnifiedFeedbackLearner
-
-# Add these imports at the top of mother.py (after your existing imports)
-from homegrown_core import HomegrownMotherBrain as HomegrownCore
-from live_learning_engine import integrate_live_learning, UniversalWebLearner
-from consciousness_engine import ConsciousnessEngine, integrate_consciousness
-from advanced_homegrown_ai import AdvancedHomegrownAI
-from knowledge_compressor import KnowledgeCompressor
-from database import KnowledgeDB, MotherBrainWithDB
-from cache import MotherCache, cached
-from auth import UserManager, JWTManager
-from concurrent.futures import ThreadPoolExecutor
 
 # ============= NEW ENHANCED AI SYSTEMS =============
 
@@ -1785,35 +1815,6 @@ class AnticipatoryLearningEngine:
             }
             
             print(f"✅ Pre-learned: {question}")
-
-app = Flask(__name__)
-
-# Enhanced security middleware
-csp = {
-    'default-src': "'self'",
-    'script-src': "'self'",
-    'style-src': "'self'",
-    'img-src': "'self' data:",
-    'connect-src': "'self'"
-}
-Talisman(
-    app,
-    content_security_policy=csp,
-    force_https=True,
-    strict_transport_security=True,
-    session_cookie_secure=True,
-    session_cookie_http_only=True
-)
-
-# Rate limiting with enhanced protection
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"],
-    storage_uri="memory://",
-    strategy="fixed-window",
-    headers_enabled=True
-)
 
 class UniversalWebDiscovery:
     """Discovers and catalogues EVERY website on planet Earth"""
