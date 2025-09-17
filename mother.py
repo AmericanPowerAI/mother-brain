@@ -955,7 +955,10 @@ def record_feedback():
         return jsonify({
             'status': 'success',
             'message': 'Thank you! Your feedback helps MOTHER AI learn and improve across planet Earth.',
-            'learningimport json
+            'learning_impact': 'Feedback stored and processed'})
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 # ============= NEW ENHANCED AI SYSTEMS =============
 
