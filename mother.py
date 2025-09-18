@@ -222,54 +222,7 @@ if hasattr(mother, 'advanced_ai') and hasattr(mother.advanced_ai, 'server'):
     except Exception as e:
         print(f"Bridge initialization failed: {e}")
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    
-    total_domains = sum(len(sources) if isinstance(sources, list) else 
-                      sum(len(subsources) if isinstance(subsources, list) else 1 
-                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                      for sources in mother.DOMAINS.values())
-    
-    print("🌍 ENHANCED MOTHER AI PLANET EARTH STARTING...")
-    print(f"📊 Monitoring {len(mother.DOMAINS)} domain categories")
-    print(f"🌍 Planet coverage: {total_domains} domains across Earth")
-    print(f"🔗 GitHub Knowledge: Connected to knowledge.zst repository")
-    print("\n✨ ENHANCED AI SYSTEMS:")
-    print("🔍 Intelligent Search Engine: Multi-source verification active")
-    print("📚 Feedback Learner: Pattern recognition and quality prediction")
-    print("💬 Conversational AI: Context-aware natural dialogue")
-    print("✅ Truth Verification: Cross-reference validation enabled")
-    print("🧠 Anticipatory Learning: Predictive knowledge acquisition")
-    print(f"\n📊 PLANET STATISTICS:")
-    print(f"🏢 Fortune 500: {len(mother.DOMAINS.get('fortune_500_complete', []))} companies")
-    print(f"🦅 Financial: {len(mother.DOMAINS.get('financial_markets_planet', []))} institutions")
-    print(f"📺 Media: {len(mother.DOMAINS.get('media_conglomerates_planet', []))} conglomerates")
-    print(f"🏥 Healthcare: {len(mother.DOMAINS.get('healthcare_systems_planet', []))} organizations")
-    print(f"⚡ Energy: {len(mother.DOMAINS.get('energy_corporations_planet', []))} corporations")
-    print(f"📱 Telecom: {len(mother.DOMAINS.get('telecommunications_planet', []))} companies")
-    print(f"🛒 Retail: {len(mother.DOMAINS.get('retail_chains_planet', []))} chains")
-    print(f"🚗 Automotive: {len(mother.DOMAINS.get('automotive_industry_planet', []))} manufacturers")
-    print(f"✈️ Aerospace: {len(mother.DOMAINS.get('aerospace_defense_planet', []))} companies")
-    print(f"💊 Pharma: {len(mother.DOMAINS.get('pharmaceutical_companies_planet', []))} companies")
-    print(f"\n🚀 TOTAL PLANET EARTH COVERAGE: {total_domains} domains")
-    print(f"📝 Knowledge entries: {len(mother.knowledge)} items")
-    print(f"🎓 Learned answers: {len(mother.learned_answers_cache)} cached")
-    print("\n✅ All systems enhanced and operational!")
-    print(f"\n🌐 Starting server on port {port}...")
-    
-    # Production configuration (no SSL - Render handles HTTPS)
-    app.run(host='0.0.0.0', port=port, threaded=True)
-            'planet_enhanced': True,
-            'github_knowledge': 'integrated',
-            'ai_systems': 'enhanced',
-            'confidence': calculate_response_confidence(user_message, response)
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'error': 'I encountered an error, but I\'m learning from it across planet Earth!',
-            'details': str(e) if app.debug else None
-        }), 500
+# ===== ALL FLASK ROUTES SHOULD BE HERE (BEFORE if __name__ == "__main__") =====
 
 @app.route('/enhanced-chat', methods=['POST'])
 @limiter.limit("30 per minute")
@@ -383,6 +336,46 @@ def record_feedback():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# ===== END OF FLASK ROUTES =====
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    
+    total_domains = sum(len(sources) if isinstance(sources, list) else 
+                      sum(len(subsources) if isinstance(subsources, list) else 1 
+                          for subsources in sources.values()) if isinstance(sources, dict) else 1 
+                      for sources in mother.DOMAINS.values())
+    
+    print("🌍 ENHANCED MOTHER AI PLANET EARTH STARTING...")
+    print(f"📊 Monitoring {len(mother.DOMAINS)} domain categories")
+    print(f"🌍 Planet coverage: {total_domains} domains across Earth")
+    print(f"🔗 GitHub Knowledge: Connected to knowledge.zst repository")
+    print("\n✨ ENHANCED AI SYSTEMS:")
+    print("🔍 Intelligent Search Engine: Multi-source verification active")
+    print("📚 Feedback Learner: Pattern recognition and quality prediction")
+    print("💬 Conversational AI: Context-aware natural dialogue")
+    print("✅ Truth Verification: Cross-reference validation enabled")
+    print("🧠 Anticipatory Learning: Predictive knowledge acquisition")
+    print(f"\n📊 PLANET STATISTICS:")
+    print(f"🏢 Fortune 500: {len(mother.DOMAINS.get('fortune_500_complete', []))} companies")
+    print(f"🦅 Financial: {len(mother.DOMAINS.get('financial_markets_planet', []))} institutions")
+    print(f"📺 Media: {len(mother.DOMAINS.get('media_conglomerates_planet', []))} conglomerates")
+    print(f"🏥 Healthcare: {len(mother.DOMAINS.get('healthcare_systems_planet', []))} organizations")
+    print(f"⚡ Energy: {len(mother.DOMAINS.get('energy_corporations_planet', []))} corporations")
+    print(f"📱 Telecom: {len(mother.DOMAINS.get('telecommunications_planet', []))} companies")
+    print(f"🛒 Retail: {len(mother.DOMAINS.get('retail_chains_planet', []))} chains")
+    print(f"🚗 Automotive: {len(mother.DOMAINS.get('automotive_industry_planet', []))} manufacturers")
+    print(f"✈️ Aerospace: {len(mother.DOMAINS.get('aerospace_defense_planet', []))} companies")
+    print(f"💊 Pharma: {len(mother.DOMAINS.get('pharmaceutical_companies_planet', []))} companies")
+    print(f"\n🚀 TOTAL PLANET EARTH COVERAGE: {total_domains} domains")
+    print(f"📝 Knowledge entries: {len(mother.knowledge)} items")
+    print(f"🎓 Learned answers: {len(mother.learned_answers_cache)} cached")
+    print("\n✅ All systems enhanced and operational!")
+    print(f"\n🌐 Starting server on port {port}...")
+    
+    # Production configuration (no SSL - Render handles HTTPS)
+    app.run(host='0.0.0.0', port=port, threaded=True)
 
 # ============= NEW ENHANCED AI SYSTEMS =============
 
