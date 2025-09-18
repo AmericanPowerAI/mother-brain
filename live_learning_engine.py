@@ -545,26 +545,26 @@ class UniversalWebLearner:
                                 'discovered_from': source_url
                             })
                             
-    except Exception as e:
-        self.logger.debug(f"Could not discover from {source_url}: {e}")
+        except Exception as e:
+            self.logger.debug(f"Could not discover from {source_url}: {e}")
 
-    def _extract_urls_from_content(self, content: str) -> List[str]:
-        """Extract URLs from HTML/text content"""
-        urls = []
+        def _extract_urls_from_content(self, content: str) -> List[str]:
+            """Extract URLs from HTML/text content"""
+            urls = []
         
-        # Parse HTML if possible
-        try:
-            soup = BeautifulSoup(content, 'html.parser')
+            # Parse HTML if possible
+            try:
+                soup = BeautifulSoup(content, 'html.parser')
             
-            # Extract from links
-            for link in soup.find_all('a', href=True):
-                href = link['href']
-                if href.startswith('http'):
-                    urls.append(href)
+                # Extract from links
+                for link in soup.find_all('a', href=True):
+                    href = link['href']
+                    if href.startswith('http'):
+                        urls.append(href)
             
-            # Extract from text using regex
-            text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
-            urls.extend(text_urls)
+                # Extract from text using regex
+                text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
+                urls.extend(text_urls)
             
         except:
             # Fallback to regex extraction
