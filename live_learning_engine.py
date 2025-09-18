@@ -522,28 +522,28 @@ class UniversalWebLearner:
                 await asyncio.sleep(30)
 
     async def _discover_from_source(self, source_url: str, category: str):
-    """Discover URLs from a specific source"""
-    try:
-        async with self.session.get(source_url, timeout=10) as response:
-            if response.status == 200:
-                content = await response.text()
-                urls = self._extract_urls_from_content(content)
+        """Discover URLs from a specific source"""
+        try:
+            async with self.session.get(source_url, timeout=10) as response:
+                if response.status == 200:
+                    content = await response.text()
+                    urls = self._extract_urls_from_content(content)
                 
-                for url in urls[:50]:  # Limit per source
-                    if url not in self.learned_urls:
-                        priority = self._calculate_priority(url)
+                    for url in urls[:50]:  # Limit per source
+                        if url not in self.learned_urls:
+                            priority = self._calculate_priority(url)
                         
-                        # NEW: Boost priority for weak areas
-                        weak_areas = getattr(self, 'current_weak_areas', [])
-                        if any(weak in url.lower() for weak in weak_areas):
-                            priority += 2
+                            # NEW: Boost priority for weak areas
+                            weak_areas = getattr(self, 'current_weak_areas', [])
+                            if any(weak in url.lower() for weak in weak_areas):
+                                priority += 2
                         
-                        await self.learning_queue.put({
-                            'url': url,
-                            'category': category,
-                            'priority': priority,
-                            'discovered_from': source_url
-                        })
+                            await self.learning_queue.put({
+                                'url': url,
+                                'category': category,
+                                'priority': priority,
+                                'discovered_from': source_url
+                            })
                             
     except Exception as e:
         self.logger.debug(f"Could not discover from {source_url}: {e}")
