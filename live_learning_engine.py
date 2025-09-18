@@ -549,28 +549,28 @@ class UniversalWebLearner:
             self.logger.debug(f"Could not discover from {source_url}: {e}")
 
         def _extract_urls_from_content(self, content: str) -> List[str]:
-            """Extract URLs from HTML/text content"""
-            urls = []
+    """Extract URLs from HTML/text content"""
+    urls = []
+    
+    # Parse HTML if possible
+    try:
+        soup = BeautifulSoup(content, 'html.parser')
         
-            # Parse HTML if possible
-            try:
-                soup = BeautifulSoup(content, 'html.parser')
-            
-                # Extract from links
-                for link in soup.find_all('a', href=True):
-                    href = link['href']
-                    if href.startswith('http'):
-                        urls.append(href)
-            
-                # Extract from text using regex
-                text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
-                urls.extend(text_urls)
-            
-        except:
-            # Fallback to regex extraction
-            urls = re.findall(self.extraction_patterns['url_pattern'], content)
+        # Extract from links
+        for link in soup.find_all('a', href=True):
+            href = link['href']
+            if href.startswith('http'):
+                urls.append(href)
         
-        return list(set(urls))  # Remove duplicates
+        # Extract from text using regex
+        text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
+        urls.extend(text_urls)
+        
+    except Exception as e:
+        # Fallback to regex extraction
+        urls = re.findall(self.extraction_patterns['url_pattern'], content)
+    
+    return list(set(urls))  # Remove duplicates
 
     def _calculate_priority(self, url: str) -> int:
         """Calculate learning priority for a URL"""
