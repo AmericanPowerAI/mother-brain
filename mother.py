@@ -35,7 +35,7 @@ from live_learning_engine import integrate_live_learning, UniversalWebLearner
 from consciousness_engine import ConsciousnessEngine, integrate_consciousness
 from advanced_homegrown_ai import AdvancedHomegrownAI
 from knowledge_compressor import KnowledgeCompressor
-from database import KnowledgeDB, MotherBrainWithDB
+from database import KnowledgeDB, create_mother_brain_with_db
 from cache import MotherCache, cached
 from auth import UserManager, JWTManager
 from concurrent.futures import ThreadPoolExecutor
