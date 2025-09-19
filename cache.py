@@ -1,4 +1,4 @@
-# cache.py - Add this new file
+# cache.py - Standalone caching module (no inheritance required)
 import redis
 import json
 import hashlib
@@ -7,6 +7,7 @@ from functools import wraps
 import time
 
 class MotherCache:
+    """Standalone Redis cache manager"""
     def __init__(self, redis_url: str = "redis://localhost:6379"):
         try:
             self.redis_client = redis.from_url(redis_url)
@@ -106,54 +107,75 @@ def cached(cache_instance: MotherCache, ttl: int = 3600, prefix: str = ""):
         return wrapper
     return decorator
 
-# Update mother.py to use caching
-class MotherBrainWithCache(MotherBrain):
-    def __init__(self):
-        super().__init__()
-        self.cache = MotherCache()
+# Helper function to add caching to existing methods without modifying the class
+def add_cache_to_method(obj, method_name: str, cache: MotherCache, ttl: int = 3600):
+    """
+    Dynamically add caching to an existing method without modifying the class.
+    Usage: add_cache_to_method(mother, 'get_knowledge', mother.cache)
+    """
+    if not hasattr(obj, method_name):
+        return
     
-    @cached(cache_instance=None, ttl=1800, prefix="knowledge")  # 30 min cache
-    def get_knowledge(self, key: str) -> str:
-        """Cached knowledge retrieval"""
-        return super().get_knowledge(key)
+    original_method = getattr(obj, method_name)
     
-    @cached(cache_instance=None, ttl=3600, prefix="exploit")  # 1 hour cache
-    def generate_exploit(self, cve: str):
-        """Cached exploit generation"""
-        return super().generate_exploit(cve)
-    
-    @cached(cache_instance=None, ttl=300, prefix="search")  # 5 min cache
-    def search_knowledge(self, query: str, domain: str = None):
-        """Cached knowledge search"""
-        if hasattr(self, 'db'):
-            return self.db.search_knowledge(query, domain)
-        else:
-            # Fallback to original search
-            results = []
-            for key, value in self.knowledge.items():
-                if query.lower() in key.lower() or query.lower() in str(value).lower():
-                    if not domain or domain.lower() in key.lower():
-                        results.append({"key": key, "value": str(value)[:200]})
-                        if len(results) >= 10:
-                            break
-            return results
-    
-    def invalidate_knowledge_cache(self):
-        """Invalidate all knowledge caches after updates"""
-        if hasattr(self.get_knowledge, 'invalidate_all'):
-            self.get_knowledge.invalidate_all()
-        if hasattr(self.search_knowledge, 'invalidate_all'):
-            self.search_knowledge.invalidate_all()
-    
-    def learn_all(self):
-        """Override to invalidate cache after learning"""
-        result = super().learn_all()
-        self.invalidate_knowledge_cache()
+    @wraps(original_method)
+    def cached_method(*args, **kwargs):
+        cache_key = cache._generate_key(method_name, *args, **kwargs)
+        
+        # Try cache first
+        cached_result = cache.get(cache_key)
+        if cached_result is not None:
+            return cached_result
+        
+        # Call original method
+        result = original_method(*args, **kwargs)
+        
+        # Cache the result
+        cache.set(cache_key, result, ttl)
         return result
+    
+    # Replace the method with cached version
+    setattr(obj, method_name, cached_method)
 
-# Cache warming strategies
+# Utility class to create cached versions of functions
+class CacheWrapper:
+    """Wrapper to add caching to any callable without modifying original code"""
+    
+    def __init__(self, cache: MotherCache):
+        self.cache = cache
+        self.metrics = CacheMetrics(cache)
+    
+    def wrap(self, func, ttl: int = 3600, prefix: str = None):
+        """Wrap any function with caching"""
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = self.cache._generate_key(prefix or func.__name__, *args, **kwargs)
+            
+            # Check cache
+            result = self.cache.get(cache_key)
+            if result is not None:
+                self.metrics.record_hit()
+                return result
+            
+            # Cache miss
+            self.metrics.record_miss()
+            result = func(*args, **kwargs)
+            self.cache.set(cache_key, result, ttl)
+            return result
+        
+        return wrapper
+    
+    def cache_method(self, obj, method_name: str, ttl: int = 3600):
+        """Cache a specific method of an object"""
+        if hasattr(obj, method_name):
+            original = getattr(obj, method_name)
+            cached_version = self.wrap(original, ttl, f"{obj.__class__.__name__}.{method_name}")
+            setattr(obj, method_name, cached_version)
+
+# Cache warming strategies (works with any MotherBrain instance)
 class CacheWarmer:
-    def __init__(self, mother_brain: MotherBrainWithCache):
+    def __init__(self, mother_brain):
+        """Initialize with any MotherBrain instance"""
         self.mother = mother_brain
     
     def warm_popular_queries(self):
@@ -168,7 +190,8 @@ class CacheWarmer:
         
         for query in popular_queries:
             try:
-                self.mother.search_knowledge(query)
+                if hasattr(self.mother, 'search_knowledge'):
+                    self.mother.search_knowledge(query)
                 time.sleep(0.1)  # Rate limit
             except Exception as e:
                 print(f"Cache warming failed for {query}: {e}")
@@ -182,7 +205,8 @@ class CacheWarmer:
             for month in range(1, 13):
                 cve_pattern = f"CVE-{year}-{month:02d}"
                 try:
-                    self.mother.search_knowledge(cve_pattern, "cyber")
+                    if hasattr(self.mother, 'search_knowledge'):
+                        self.mother.search_knowledge(cve_pattern, "cyber")
                     time.sleep(0.1)
                 except Exception as e:
                     print(f"CVE cache warming failed: {e}")
@@ -213,6 +237,61 @@ class CacheMetrics:
             "uptime_seconds": uptime,
             "cache_enabled": self.cache.enabled
         }
+
+# Factory function to create cached MotherBrain without inheritance
+def create_cached_brain(mother_brain_instance):
+    """
+    Add caching to an existing MotherBrain instance without modifying it.
+    This function can be called from mother.py after creating the instance.
+    """
+    if not hasattr(mother_brain_instance, 'cache'):
+        mother_brain_instance.cache = MotherCache()
+    
+    wrapper = CacheWrapper(mother_brain_instance.cache)
+    
+    # Add caching to specific methods if they exist
+    methods_to_cache = [
+        ('get_knowledge', 1800),  # 30 min
+        ('generate_exploit', 3600),  # 1 hour
+        ('search_knowledge', 300),  # 5 min
+    ]
+    
+    for method_name, ttl in methods_to_cache:
+        wrapper.cache_method(mother_brain_instance, method_name, ttl)
+    
+    return mother_brain_instance
+
+# Standalone cache manager for use without modifying MotherBrain
+class StandaloneCacheManager:
+    """
+    Manages caching independently of MotherBrain class.
+    Can be used to cache any function or method results.
+    """
+    
+    def __init__(self, redis_url: str = "redis://localhost:6379"):
+        self.cache = MotherCache(redis_url)
+        self.wrapper = CacheWrapper(self.cache)
+        self.metrics = self.wrapper.metrics
+    
+    def cache_function(self, func, ttl: int = 3600):
+        """Return a cached version of any function"""
+        return self.wrapper.wrap(func, ttl)
+    
+    def get_cached_value(self, key: str):
+        """Get value from cache by key"""
+        return self.cache.get(key)
+    
+    def set_cached_value(self, key: str, value: Any, ttl: int = 3600):
+        """Set value in cache"""
+        return self.cache.set(key, value, ttl)
+    
+    def clear_cache(self, pattern: str = "*"):
+        """Clear cache entries matching pattern"""
+        return self.cache.invalidate_pattern(pattern)
+    
+    def get_metrics(self):
+        """Get cache performance metrics"""
+        return self.metrics.get_stats()
 
 # Add to requirements.txt:
 # redis>=4.5.0
