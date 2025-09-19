@@ -35,6 +35,7 @@ datasets>=2.14.0              # Hugging Face datasets for training
 accelerate>=0.24.0            # Training acceleration
 safetensors>=0.4.0            # Safe model serialization
 tokenizers>=0.15.0            # Fast tokenization
+umap-learn>=0.5.5            # UMAP for dimensionality reduction
 
 # ===== VECTOR DATABASE & MEMORY =====
 faiss-cpu>=1.7.4              # Vector similarity search for memory
