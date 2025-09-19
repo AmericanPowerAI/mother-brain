@@ -1,4 +1,4 @@
-# auth.py - Add this new file
+# auth.py - Authentication utilities without Flask routes
 import jwt
 import bcrypt
 from datetime import datetime, timedelta
@@ -7,6 +7,7 @@ from flask import request, jsonify, current_app
 from typing import Dict, Optional, List
 import secrets
 import hashlib
+import json
 
 class UserManager:
     def __init__(self, db_connection):
@@ -214,7 +215,10 @@ def token_required(f):
             token = token[7:]
         
         try:
-            jwt_manager = current_app.config['JWT_MANAGER']
+            jwt_manager = current_app.config.get('JWT_MANAGER')
+            if not jwt_manager:
+                return jsonify({'error': 'JWT not configured'}), 500
+                
             data = jwt_manager.verify_token(token)
             if not data:
                 return jsonify({'error': 'Invalid token'}), 401
@@ -235,7 +239,10 @@ def api_key_required(permissions: List[str] = None):
                 return jsonify({'error': 'API key missing'}), 401
             
             try:
-                user_manager = current_app.config['USER_MANAGER']
+                user_manager = current_app.config.get('USER_MANAGER')
+                if not user_manager:
+                    return jsonify({'error': 'User manager not configured'}), 500
+                    
                 key_data = user_manager.validate_api_key(api_key)
                 if not key_data:
                     return jsonify({'error': 'Invalid API key'}), 401
@@ -271,67 +278,68 @@ def role_required(required_role: str):
         return decorated
     return decorator
 
-# Update mother.py with authentication
-@app.route('/auth/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+# Helper functions for route implementations
+def create_login_route_handler(user_manager, jwt_manager):
+    """Helper to create login handler - use in mother.py"""
+    def login():
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        
+        if not username or not password:
+            return jsonify({'error': 'Username and password required'}), 400
+        
+        user = user_manager.authenticate_user(username, password, request.remote_addr)
+        
+        if user:
+            token = jwt_manager.generate_token(user)
+            return jsonify({
+                'token': token,
+                'user': {
+                    'username': user['username'],
+                    'role': user['role']
+                }
+            })
+        else:
+            return jsonify({'error': 'Invalid credentials'}), 401
     
-    if not username or not password:
-        return jsonify({'error': 'Username and password required'}), 400
-    
-    user_manager = current_app.config['USER_MANAGER']
-    user = user_manager.authenticate_user(username, password, request.remote_addr)
-    
-    if user:
-        jwt_manager = current_app.config['JWT_MANAGER']
-        token = jwt_manager.generate_token(user)
-        return jsonify({
-            'token': token,
-            'user': {
-                'username': user['username'],
-                'role': user['role']
-            }
-        })
-    else:
-        return jsonify({'error': 'Invalid credentials'}), 401
+    return login
 
-@app.route('/auth/api-key', methods=['POST'])
-@token_required
-@role_required('admin')
-def create_api_key():
-    data = request.get_json()
-    name = data.get('name', 'API Key')
-    permissions = data.get('permissions', ['read'])
-    expires_days = data.get('expires_days', 30)
+def create_api_key_route_handler(user_manager):
+    """Helper to create API key handler - use in mother.py"""
+    @token_required
+    @role_required('admin')
+    def create_api_key():
+        data = request.get_json()
+        name = data.get('name', 'API Key')
+        permissions = data.get('permissions', ['read'])
+        expires_days = data.get('expires_days', 30)
+        
+        api_key = user_manager.generate_api_key(
+            request.current_user['user_id'],
+            name,
+            permissions,
+            expires_days
+        )
+        
+        return jsonify({'api_key': api_key})
     
-    user_manager = current_app.config['USER_MANAGER']
-    api_key = user_manager.generate_api_key(
-        request.current_user['user_id'],
-        name,
-        permissions,
-        expires_days
-    )
-    
-    return jsonify({'api_key': api_key})
+    return create_api_key
 
-# Protected route examples
-@app.route('/admin/users', methods=['GET'])
-@token_required
-@role_required('admin')
-def list_users():
-    return jsonify({'users': 'admin only data'})
-
-@app.route('/learn', methods=['POST'])
-@api_key_required(['write', 'admin'])
-def learn():
-    # Existing learn functionality with API key protection
-    mother.learn_all()
-    return jsonify({
-        "status": "Knowledge updated",
-        "user": request.current_user['username']
-    })
+# Note: The actual Flask routes should be added in mother.py where app is defined
+# Example usage in mother.py:
+#
+# from auth import UserManager, JWTManager, create_login_route_handler, create_api_key_route_handler
+# 
+# # Initialize managers
+# user_manager = UserManager(db_connection)
+# jwt_manager = JWTManager(secret_key)
+# app.config['USER_MANAGER'] = user_manager
+# app.config['JWT_MANAGER'] = jwt_manager
+#
+# # Add routes
+# app.route('/auth/login', methods=['POST'])(create_login_route_handler(user_manager, jwt_manager))
+# app.route('/auth/api-key', methods=['POST'])(create_api_key_route_handler(user_manager))
 
 # Add to requirements.txt:
 # PyJWT>=2.8.0
