@@ -133,27 +133,34 @@ class KnowledgeDB:
             
             return stats
 
-# Update mother.py to use database
-class MotherBrainWithDB(MotherBrain):
-    def __init__(self):
-        super().__init__()
-        self.db = KnowledgeDB()
-        self._migrate_github_to_db()
+def create_mother_brain_with_db():
+    from mother import MotherBrain  # Import inside function to avoid circular import
     
-    def _migrate_github_to_db(self):
-        """One-time migration from GitHub storage to database"""
-        for key, value in self.knowledge.items():
-            if not key.startswith('_'):
-                domain = key.split(':')[0] if ':' in key else 'general'
-                self.db.store_knowledge(key, str(value), domain)
+    class MotherBrainWithDB(MotherBrain):
+        def __init__(self):
+            super().__init__()
+            self.db = KnowledgeDB()
+            self._migrate_github_to_db()
+        
+        def _migrate_github_to_db(self):
+            """One-time migration from GitHub storage to database"""
+            for key, value in self.knowledge.items():
+                if not key.startswith('_'):
+                    domain = key.split(':')[0] if ':' in key else 'general'
+                    self.db.store_knowledge(key, str(value), domain)
+        
+        def _process(self, domain, text):
+            """Override to use database storage"""
+            # ... existing processing logic ...
+            # Replace self.knowledge[key] = value with:
+            self.db.store_knowledge(key, value, domain)
+        
+        def get_knowledge(self, key: str) -> str:
+            """Get knowledge from database"""
+            result = self.db.get_knowledge(key)
+            return result if result else "No knowledge on this topic"
     
-    def _process(self, domain, text):
-        """Override to use database storage"""
-        # ... existing processing logic ...
-        # Replace self.knowledge[key] = value with:
-        self.db.store_knowledge(key, value, domain)
-    
-    def get_knowledge(self, key: str) -> str:
-        """Get knowledge from database"""
-        result = self.db.get_knowledge(key)
-        return result if result else "No knowledge on this topic"
+    return MotherBrainWithDB
+
+# Create the class when needed
+MotherBrainWithDB = create_mother_brain_with_db()
