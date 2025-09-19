@@ -1004,7 +1004,7 @@ class UniversalWebLearner:
                 uptime = datetime.now() - self.stats['start_time']
                 websites_per_minute = self.stats['websites_scanned'] / (uptime.total_seconds() / 60) if uptime.total_seconds() > 0 else 0
                 
-                self.logger.info(f"ðŸ"Š Learning Stats: {self.stats['websites_scanned']} sites, "
+                self.logger.info(f"📊 Learning Stats: {self.stats['websites_scanned']} sites, "
                                f"{self.stats['content_learned']} words learned, "
                                f"{websites_per_minute:.1f} sites/min, "
                                f"Efficiency: {self.learning_efficiency:.2%}")
