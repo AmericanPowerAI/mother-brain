@@ -947,7 +947,7 @@ class UniversalWebLearner:
 
     async def _find_content_patterns(self):
         """Find patterns in recently learned content"""
-        self.logger.info("ðŸ" Analyzing content patterns...")
+        self.logger.info("🔍 Analyzing content patterns...")
         
         # Analyze pattern success rates
         cursor = self.autonomous_db.execute(
