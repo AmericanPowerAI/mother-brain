@@ -212,7 +212,7 @@ class UniversalWebLearner:
         
         thread = threading.Thread(target=autonomous_loop, daemon=True)
         thread.start()
-        self.logger.info("🧠 Autonomous learning started")
+        self.logger.info("ðŸ§  Autonomous learning started")
 
     def _generate_self_questions(self):
         """Generate questions about things it doesn't know"""
@@ -371,7 +371,7 @@ class UniversalWebLearner:
 
     async def start_continuous_learning(self):
         """Start the continuous learning process"""
-        self.logger.info("🚀 Starting Universal Web Learning System")
+        self.logger.info("ðŸš€ Starting Universal Web Learning System")
         
         # Start multiple learning workers
         workers = [
@@ -548,29 +548,29 @@ class UniversalWebLearner:
         except Exception as e:
             self.logger.debug(f"Could not discover from {source_url}: {e}")
 
-        def _extract_urls_from_content(self, content: str) -> List[str]:
-    """Extract URLs from HTML/text content"""
-    urls = []
-    
-    # Parse HTML if possible
-    try:
-        soup = BeautifulSoup(content, 'html.parser')
+    def _extract_urls_from_content(self, content: str) -> List[str]:
+        """Extract URLs from HTML/text content"""
+        urls = []
         
-        # Extract from links
-        for link in soup.find_all('a', href=True):
-            href = link['href']
-            if href.startswith('http'):
-                urls.append(href)
+        # Parse HTML if possible
+        try:
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # Extract from links
+            for link in soup.find_all('a', href=True):
+                href = link['href']
+                if href.startswith('http'):
+                    urls.append(href)
+            
+            # Extract from text using regex
+            text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
+            urls.extend(text_urls)
+            
+        except Exception as e:
+            # Fallback to regex extraction
+            urls = re.findall(self.extraction_patterns['url_pattern'], content)
         
-        # Extract from text using regex
-        text_urls = re.findall(self.extraction_patterns['url_pattern'], content)
-        urls.extend(text_urls)
-        
-    except Exception as e:
-        # Fallback to regex extraction
-        urls = re.findall(self.extraction_patterns['url_pattern'], content)
-    
-    return list(set(urls))  # Remove duplicates
+        return list(set(urls))  # Remove duplicates
 
     def _calculate_priority(self, url: str) -> int:
         """Calculate learning priority for a URL"""
@@ -632,7 +632,7 @@ class UniversalWebLearner:
                         patterns = self._extract_learning_patterns(learned_content)
                         self._store_patterns(patterns)
                         
-                        self.logger.info(f"✅ Learned from: {url} ({learned_content.domain})")
+                        self.logger.info(f"âœ… Learned from: {url} ({learned_content.domain})")
                     
         except Exception as e:
             self.stats['errors'] += 1
@@ -663,7 +663,7 @@ class UniversalWebLearner:
             })
         
         # Extract list patterns
-        lists = re.findall(r'(?:^|\n)\s*[\d•\-\*]\s+(.+)', content.content, re.MULTILINE)
+        lists = re.findall(r'(?:^|\n)\s*[\dâ€¢\-\*]\s+(.+)', content.content, re.MULTILINE)
         if lists:
             patterns.append({
                 'type': 'list',
@@ -920,7 +920,7 @@ class UniversalWebLearner:
                     synthesis_key = f"SYNTHESIS:{hashlib.md5(synthesis.encode()).hexdigest()[:8]}"
                     self.mother.knowledge[synthesis_key] = synthesis
                     
-                    self.logger.info(f"💡 Synthesized new knowledge: {synthesis[:100]}...")
+                    self.logger.info(f"ðŸ'¡ Synthesized new knowledge: {synthesis[:100]}...")
 
     def _combine_patterns(self, patterns):
         """Combine multiple patterns into new knowledge"""
@@ -947,7 +947,7 @@ class UniversalWebLearner:
 
     async def _find_content_patterns(self):
         """Find patterns in recently learned content"""
-        self.logger.info("🔍 Analyzing content patterns...")
+        self.logger.info("ðŸ" Analyzing content patterns...")
         
         # Analyze pattern success rates
         cursor = self.autonomous_db.execute(
@@ -961,7 +961,7 @@ class UniversalWebLearner:
         """Update knowledge compression based on new content"""
         # Trigger knowledge compression if we have enough new content
         if self.stats['content_learned'] % 10000 == 0:  # Every 10k words
-            self.logger.info("🗜️ Updating knowledge compression...")
+            self.logger.info("ðŸ—œï¸ Updating knowledge compression...")
             
             # NEW: Actually compress knowledge
             self._compress_similar_knowledge()
@@ -986,7 +986,7 @@ class UniversalWebLearner:
 
     async def _generate_insights(self):
         """Generate insights from learned content"""
-        self.logger.info("💡 Generating insights from learned content...")
+        self.logger.info("ðŸ'¡ Generating insights from learned content...")
         
         # Generate insight based on patterns
         if self.pattern_memory:
@@ -1004,7 +1004,7 @@ class UniversalWebLearner:
                 uptime = datetime.now() - self.stats['start_time']
                 websites_per_minute = self.stats['websites_scanned'] / (uptime.total_seconds() / 60) if uptime.total_seconds() > 0 else 0
                 
-                self.logger.info(f"📊 Learning Stats: {self.stats['websites_scanned']} sites, "
+                self.logger.info(f"ðŸ"Š Learning Stats: {self.stats['websites_scanned']} sites, "
                                f"{self.stats['content_learned']} words learned, "
                                f"{websites_per_minute:.1f} sites/min, "
                                f"Efficiency: {self.learning_efficiency:.2%}")
@@ -1063,7 +1063,7 @@ class UniversalWebLearner:
         # Save state before stopping
         self._save_learning_state()
         
-        self.logger.info("🛑 Learning system stopped")
+        self.logger.info("ðŸ›' Learning system stopped")
 
     def _save_learning_state(self):
         """Save current learning state for persistence"""
@@ -1078,7 +1078,7 @@ class UniversalWebLearner:
         with open('learning_state.pkl', 'wb') as f:
             pickle.dump(state, f)
         
-        self.logger.info("💾 Learning state saved")
+        self.logger.info("ðŸ'¾ Learning state saved")
 
     def load_learning_state(self):
         """Load previous learning state if exists"""
@@ -1092,7 +1092,7 @@ class UniversalWebLearner:
             self.learning_efficiency = state['learning_efficiency']
             self.stats.update(state['stats'])
             
-            self.logger.info("📂 Previous learning state loaded")
+            self.logger.info("ðŸ"‚ Previous learning state loaded")
             return True
         except Exception as e:
             self.logger.info(f"No previous state found: {e}")
@@ -1170,6 +1170,11 @@ class FeedbackLearner:
             best_matches.sort(key=lambda x: x[2], reverse=True)
             improved_key = f"IMPROVED:{hashlib.md5(query.encode()).hexdigest()[:8]}"
             self.mother.knowledge[improved_key] = best_matches[0][1]
+
+    def record_interaction(self, question, answer, score):
+        """Record interaction for learning"""
+        feedback_type = 'positive' if score > 0.5 else 'negative'
+        self.record_feedback(question, answer, feedback_type)
 
     def get_feedback_insights(self) -> Dict:
         """Get insights from user feedback"""
