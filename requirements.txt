@@ -67,3 +67,4 @@ python-dotenv>=1.0.0         # Environment variable management
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.2.1+cpu             # Lighter CPU-only PyTorch build
 river>=0.19.0                # Incremental learning
+feedparser>=6.0.10           # RSS/Atom feed parsing
