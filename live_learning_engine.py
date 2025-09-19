@@ -1092,7 +1092,7 @@ class UniversalWebLearner:
             self.learning_efficiency = state['learning_efficiency']
             self.stats.update(state['stats'])
             
-            self.logger.info("ðŸ"‚ Previous learning state loaded")
+            self.logger.info("📂 Previous learning state loaded")
             return True
         except Exception as e:
             self.logger.info(f"No previous state found: {e}")
