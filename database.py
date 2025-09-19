@@ -162,5 +162,4 @@ def create_mother_brain_with_db():
     
     return MotherBrainWithDB
 
-# Create the class when needed
-MotherBrainWithDB = create_mother_brain_with_db()
+
