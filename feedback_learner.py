@@ -17,11 +17,16 @@ class UnifiedFeedbackLearner:
     """Single unified learning system that actually works and improves"""
     
     def __init__(self, model_name="distilbert-base-uncased"):
+        # Get Hugging Face token from environment
+        import os
+        hf_token = os.environ.get('HF_TOKEN')
+        
         # Transformer model for deep understanding
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, token=hf_token)
         self.model = AutoModelForSequenceClassification.from_pretrained(
             model_name, 
-            num_labels=2
+            num_labels=2,
+            token=hf_token
         )
         
         # Incremental learning with River
