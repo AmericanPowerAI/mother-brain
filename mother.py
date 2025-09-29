@@ -12,7 +12,7 @@ import json
 import psutil
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Tuple
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from flask_talisman import Talisman
@@ -2779,9 +2779,9 @@ mother = EnhancedMotherBrain()
 def home():
     """Serve the enhanced living HTML interface"""
     try:
-        with open('index.html', 'r') as f:
-            return f.read()
-    except FileNotFoundError:
+        return send_file('index.html')
+    except Exception as e:
+        print(f"Error loading index.html: {e}")
         total_domains = sum(len(sources) if isinstance(sources, list) else 
                           sum(len(subsources) if isinstance(subsources, list) else 1 
                               for subsources in sources.values()) if isinstance(sources, dict) else 1 
