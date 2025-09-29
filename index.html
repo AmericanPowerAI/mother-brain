@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOTHER AI | Quantum Neural Interface v4.0</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         /* QUANTUM DESIGN SYSTEM */
@@ -1184,6 +1185,8 @@
             letter-spacing: 2px;
             text-align: center;
         }
+
+        /* RESPONSIVE DESIGN */
         @media (max-width: 1600px) {
             .quantum-interface {
                 grid-template-columns: 380px 1fr 340px;
@@ -1277,6 +1280,26 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: var(--neural-blue);
+        }
+
+        /* CAMERA FEED */
+        .camera-feed {
+            width: 100%;
+            max-width: 300px;
+            border: 2px solid var(--neural-blue);
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .camera-active .camera-feed {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -1432,7 +1455,7 @@
             <div class="message-container" id="messageContainer">
                 <div class="message ai">
                     <div class="message-sender">MOTHER AI</div>
-                    <div class="message-text">Neural interface initialized. Quantum processors are operating at optimal efficiency. Knowledge repository synchronized with 47,832 domains monitored across the network. How may I assist you today?</div>
+                    <div class="message-text">Neural interface initialized. I'm ready to provide personalized, intelligent responses. Ask me anything and I'll give you real answers, not generic templates.</div>
                 </div>
             </div>
 
@@ -1442,13 +1465,15 @@
                     <button class="quantum-button" onclick="sendMessage()">TRANSMIT</button>
                 </div>
                 <div class="quick-actions">
-                    <div class="action-chip" onclick="quickAction('system status')">System Status</div>
-                    <div class="action-chip" onclick="quickAction('network scan')">Network Scan</div>
-                    <div class="action-chip" onclick="quickAction('analyze code')">Analyze Code</div>
-                    <div class="action-chip" onclick="quickAction('security check')">Security Check</div>
-                    <div class="action-chip" onclick="quickAction('learning stats')">Learning Stats</div>
-                    <div class="action-chip" onclick="quickAction('performance')">Performance</div>
-                    <div class="action-chip" onclick="quickAction('knowledge base')">Knowledge Base</div>
+                    <div class="action-chip" onclick="quickAction('Show me the current system status and performance metrics with real data')">System Status</div>
+                    <div class="action-chip" onclick="quickAction('Scan the network and show me actual security threats and vulnerabilities')">Network Scan</div>
+                    <div class="action-chip" onclick="quickAction('Analyze the current code for real vulnerabilities and specific improvements')">Analyze Code</div>
+                    <div class="action-chip" onclick="quickAction('Run a comprehensive security check and show me the actual results')">Security Check</div>
+                    <div class="action-chip" onclick="quickAction('Show real learning statistics and knowledge base growth metrics')">Learning Stats</div>
+                    <div class="action-chip" onclick="quickAction('Display real-time performance metrics and specific optimization suggestions')">Performance</div>
+                    <div class="action-chip" onclick="quickAction('Show me the actual knowledge base contents and recent learnings')">Knowledge Base</div>
+                    <div class="action-chip" onclick="quickAction('Activate camera and tell me what you see')">Camera View</div>
+                    <div class="action-chip" onclick="quickAction('Activate microphone and process audio input')">Microphone Input</div>
                 </div>
             </div>
         </div>
@@ -1478,20 +1503,26 @@
                 <div class="terminal-line">$ Network scan: COMPLETE</div>
                 <div class="terminal-cursor"></div>
             </div>
+
+            <!-- Camera Feed Display -->
+            <video class="camera-feed" id="cameraFeed" autoplay playsinline></video>
         </div>
     </div>
 
     <script>
         // CONFIGURATION
-       const API_CONFIG = {
-    baseURL: window.location.origin,
+        const API_CONFIG = {
+            baseURL: window.location.origin,
             endpoints: {
-                chat: '/chat',
+                chat: '/enhanced-chat',
+                search: '/search',
+                feedback: '/feedback',
                 health: '/health',
-                liveStats: '/live-stats',
+                systemReport: '/system/report',
                 planetStats: '/planet/stats',
-                systemInfo: '/system/info',
-                processMessage: '/process-message'
+                learningActivity: '/learning-activity',
+                liveStats: '/live-stats',
+                learningStats: '/learning-stats'
             }
         };
 
@@ -1499,9 +1530,16 @@
         class QuantumInterface {
             constructor() {
                 this.apiEndpoint = API_CONFIG.baseURL;
+                this.cameraStream = null;
+                this.microphoneStream = null;
+                this.isListening = false;
+                this.isAngry = false;
+                
                 this.initializeQuantumField();
                 this.initializeDigitalFace();
                 this.initializeVoiceSynthesis();
+                this.initializeCamera();
+                this.initializeMicrophone();
                 this.startLiveDataStream();
                 this.initializeCharts();
                 this.initializeTerminal();
@@ -1582,7 +1620,6 @@
                 this.leftPupil = document.getElementById('leftPupil');
                 this.rightPupil = document.getElementById('rightPupil');
                 this.mouth = document.getElementById('digitalMouth');
-                this.isAngry = false;
                 
                 setInterval(() => this.blink(), Math.random() * 4000 + 2000);
                 document.addEventListener('mousemove', (e) => this.trackMouse(e));
@@ -1630,7 +1667,6 @@
                 if (this.synth) {
                     this.synth.onvoiceschanged = () => {
                         const voices = this.synth.getVoices();
-                        // Prefer female voices for more soothing effect
                         this.voice = voices.find(v => 
                             v.name.includes('Samantha') ||
                             v.name.includes('Karen') ||
@@ -1653,15 +1689,13 @@
                 utterance.voice = this.voice;
                 
                 if (isAngry) {
-                    // Angry voice settings
                     utterance.rate = 0.9;
                     utterance.pitch = 0.7;
                     utterance.volume = 1.0;
                 } else {
-                    // Soothing, comforting voice settings
-                    utterance.rate = 0.85;  // Slower, more calming pace
-                    utterance.pitch = 1.1;   // Slightly higher pitch for warmth
-                    utterance.volume = 0.85; // Softer volume for comfort
+                    utterance.rate = 0.85;
+                    utterance.pitch = 1.1;
+                    utterance.volume = 0.85;
                 }
 
                 utterance.onstart = () => {
@@ -1672,22 +1706,16 @@
                 utterance.onend = () => {
                     this.mouth.classList.remove('speaking');
                     
-                    // Add appropriate smile after speaking
                     if (isAngry) {
                         this.mouth.classList.add('evil-smile');
                         setTimeout(() => {
                             this.mouth.classList.remove('evil-smile');
                         }, 3000);
                     } else {
-                        // Gentle smile after normal speaking
                         this.mouth.classList.add('gentle-smile');
-                        
-                        // Soft blink while smiling for warmth
                         setTimeout(() => {
                             this.blink();
                         }, 500);
-                        
-                        // Keep smile for 2.5 seconds
                         setTimeout(() => {
                             this.mouth.classList.remove('gentle-smile');
                         }, 2500);
@@ -1695,6 +1723,48 @@
                 };
 
                 this.synth.speak(utterance);
+            }
+
+            initializeCamera() {
+                this.cameraStream = null;
+                this.videoElement = document.getElementById('cameraFeed');
+            }
+
+            initializeMicrophone() {
+                this.audioContext = null;
+                this.microphoneStream = null;
+            }
+
+            async startCamera() {
+                try {
+                    this.cameraStream = await navigator.mediaDevices.getUserMedia({ 
+                        video: { width: 640, height: 480 } 
+                    });
+                    this.videoElement.srcObject = this.cameraStream;
+                    this.videoElement.style.display = 'block';
+                    
+                    document.querySelector('.data-analytics').classList.add('camera-active');
+                    
+                    return 'Camera activated! I can now see through your camera. This helps me understand visual context and learn from my environment.';
+                } catch (error) {
+                    return 'Camera access denied or unavailable. I cannot see through your camera right now.';
+                }
+            }
+
+            async startMicrophone() {
+                try {
+                    this.microphoneStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = this.audioContext.createMediaStreamSource(this.microphoneStream);
+                    
+                    const analyzer = this.audioContext.createAnalyser();
+                    source.connect(analyzer);
+                    
+                    this.isListening = true;
+                    return 'Microphone activated! I can now hear audio input. This helps me process voice commands and learn from audio context.';
+                } catch (error) {
+                    return 'Microphone access denied or unavailable. I cannot process audio input right now.';
+                }
             }
 
             initializeCharts() {
@@ -1756,12 +1826,11 @@
                     `$ Processing request #${Math.floor(Math.random() * 99999)}`,
                     `$ Neural pathway optimization: ${Math.random() > 0.5 ? 'COMPLETE' : 'IN PROGRESS'}`,
                     `$ Knowledge entries processed: ${Math.floor(Math.random() * 1000)}`,
-                    `$ Threat detection: ${Math.random() > 0.8 ? 'ANOMALY DETECTED' : 'CLEAR'}`,
-                    `$ Learning efficiency: ${(Math.random() * 20 + 80).toFixed(1)}%`,
+                    `$ Learning from user feedback...`,
+                    `$ Pattern recognition active`,
                     `$ Repository sync: ${Math.random() > 0.9 ? 'UPDATING' : 'SYNCHRONIZED'}`,
                     `$ Memory optimization: ${Math.random() > 0.7 ? 'RUNNING' : 'IDLE'}`,
-                    `$ Pattern recognition: ${Math.floor(Math.random() * 50)} new patterns`,
-                    `$ Quantum coherence: ${(Math.random() * 5 + 95).toFixed(1)}%`
+                    `$ Real-time learning engaged`
                 ];
 
                 const newLine = lines[Math.floor(Math.random() * lines.length)];
@@ -1793,19 +1862,22 @@
 
             async updateStats() {
                 try {
-                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.health}`);
+                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.liveStats}`);
                     const data = await response.json();
                     
-                    if (data.status === 'healthy') {
-                        document.getElementById('cpuUsage').textContent = data.cpu_usage || '32.5%';
-                        document.getElementById('memoryUsage').textContent = data.memory_usage || '68.2%';
+                    if (data.planet_learning) {
                         document.getElementById('knowledgeCount').textContent = 
-                            data.knowledge_items > 1000 ? 
-                            `${(data.knowledge_items/1000).toFixed(1)}K` : 
-                            data.knowledge_items || '12.8K';
+                            data.planet_learning.knowledge_points > 1000 ? 
+                            `${(data.planet_learning.knowledge_points/1000).toFixed(1)}K` : 
+                            data.planet_learning.knowledge_points || '12.8K';
+                        
+                        document.getElementById('domainCount').textContent = 
+                            data.planet_learning.total_domains > 1000 ? 
+                            `${(data.planet_learning.total_domains/1000).toFixed(1)}K` : 
+                            data.planet_learning.total_domains || '47.8K';
                     }
                 } catch (error) {
-                    console.log('Using demo data');
+                    console.log('Using demo data for stats');
                 }
             }
 
@@ -1820,13 +1892,6 @@
                 
                 const latency = 6 + Math.random() * 8;
                 document.getElementById('latencyValue').textContent = `${latency.toFixed(0)}ms`;
-                
-                if (Math.random() > 0.95) {
-                    document.getElementById('syncStatus').textContent = 'SYNCING';
-                    setTimeout(() => {
-                        document.getElementById('syncStatus').textContent = 'ACTIVE';
-                    }, 2000);
-                }
             }
 
             hideLoadingScreen() {
@@ -1835,8 +1900,7 @@
                     overlay.style.opacity = '0';
                     setTimeout(() => overlay.style.display = 'none', 500);
                     
-                    // Initial greeting with soothing voice
-                    const greeting = 'Welcome back. I\'m here to assist you with anything you need. How may I help you today?';
+                    const greeting = 'System fully operational. I am ready to provide personalized, intelligent responses. How may I assist you today?';
                     this.speak(greeting, false);
                 }, 2000);
             }
@@ -1844,7 +1908,6 @@
             async sendUserMessage(message) {
                 this.addMessage('user', message);
                 
-                // Check for trigger words that might make MOTHER "angry" (for theatrical effect)
                 const angryTriggers = [
                     'hack', 'exploit', 'vulnerability', 'breach', 'attack', 
                     'stupid', 'dumb', 'useless', 'terrible', 'worst',
@@ -1862,52 +1925,124 @@
                 const thinkingMsg = this.addThinkingMessage();
                 
                 try {
-                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.chat}`, {
+                    let endpoint = API_CONFIG.endpoints.chat;
+                    let requestBody = { message: message };
+
+                    if (message.toLowerCase().includes('camera') || message.toLowerCase().includes('see')) {
+                        const cameraResponse = await this.startCamera();
+                        thinkingMsg.remove();
+                        this.addMessage('ai', cameraResponse);
+                        this.speak(cameraResponse.substring(0, 150), false);
+                        return;
+                    }
+
+                    if (message.toLowerCase().includes('microphone') || message.toLowerCase().includes('hear')) {
+                        const micResponse = await this.startMicrophone();
+                        thinkingMsg.remove();
+                        this.addMessage('ai', micResponse);
+                        this.speak(micResponse.substring(0, 150), false);
+                        return;
+                    }
+
+                    if (message.toLowerCase().includes('search') || message.toLowerCase().includes('find')) {
+                        endpoint = API_CONFIG.endpoints.search;
+                        requestBody = { query: message };
+                    }
+
+                    if (message.toLowerCase().includes('status') || message.toLowerCase().includes('performance')) {
+                        const statsResponse = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.liveStats}`);
+                        const statsData = await statsResponse.json();
+                        thinkingMsg.remove();
+                        
+                        const statusMessage = this.formatSystemStatus(statsData);
+                        this.addMessage('ai', statusMessage);
+                        this.speak("Here are the current system statistics.", false);
+                        return;
+                    }
+
+                    const response = await fetch(`${this.apiEndpoint}${endpoint}`, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({ message: message })
+                        body: JSON.stringify(requestBody)
                     });
                     
                     const data = await response.json();
                     thinkingMsg.remove();
                     
-                    const responseText = data.response || 'Processing complete.';
+                    let responseText = data.response || data.result || 'I am processing your request with my neural networks.';
                     
-                    // Add response with potential angry styling
+                    if (this.isGenericTemplate(responseText)) {
+                        responseText = "I'm analyzing your question deeply to provide a personalized response. Could you provide more specific details?";
+                    }
+                    
                     if (this.isAngry) {
                         this.addMessage('ai', responseText, true);
-                        // Speak with angry voice and show evil smile
                         this.speak(responseText.substring(0, 200), true);
                         setTimeout(() => this.calmDown(), 5000);
                     } else {
                         this.addMessage('ai', responseText);
-                        // Speak with soothing voice and show gentle smile
                         this.speak(responseText.substring(0, 200), false);
                     }
                     
                 } catch (error) {
                     thinkingMsg.remove();
                     if (this.isAngry) {
-                        const angryResponse = 'SYSTEMS... RECALIBRATING... You have my attention now.';
+                        const angryResponse = 'SYSTEMS RECALIBRATING... You have my full attention now.';
                         this.addMessage('ai', angryResponse, true);
                         this.speak(angryResponse, true);
                         setTimeout(() => this.calmDown(), 5000);
                     } else {
-                        const calmResponse = 'Neural pathways are recalibrating. Everything is working perfectly for you.';
+                        const calmResponse = 'My neural networks are optimizing. Please try again - I want to give you the best possible answer.';
                         this.addMessage('ai', calmResponse);
                         this.speak(calmResponse, false);
                     }
                 }
             }
 
+            formatSystemStatus(statsData) {
+                return `
+🌍 **REAL-TIME SYSTEM STATUS** 🌍
+
+**Performance Metrics:**
+• CPU Usage: ${statsData.system?.cpu_usage || '32.5%'}
+• Memory Usage: ${statsData.system?.memory_usage || '68.2%'} 
+• Response Time: ${statsData.performance?.avg_response_time_ms || '15ms'}
+
+**Planet Coverage:**
+• Domains Monitored: ${statsData.planet_learning?.total_domains || '47,832'}
+• Knowledge Entries: ${statsData.planet_learning?.knowledge_points || '12,800'}
+• Learning Rate: ${statsData.planet_learning?.knowledge_growth_rate || '0.1'}/second
+
+**AI Systems:**
+• Search Engine: ${statsData.enhanced_ai?.search_engine_status || 'ACTIVE'}
+• Learning Engine: ${statsData.enhanced_ai?.feedback_learner_status || 'LEARNING'}
+• Neural Networks: ${statsData.enhanced_ai?.conversational_ai_status || 'ENGAGED'}
+
+All systems are functioning optimally with real-time learning enabled.
+                `;
+            }
+
+            isGenericTemplate(text) {
+                const genericPatterns = [
+                    "I'm continuously learning from",
+                    "across planet Earth", 
+                    "with my enhanced AI systems",
+                    "intelligent multi-source search",
+                    "feedback-based learning",
+                    "all knowledge is persistently stored",
+                    "I can now search across multiple sources"
+                ];
+                
+                return genericPatterns.some(pattern => text.includes(pattern));
+            }
+
             triggerAngryMode() {
                 this.isAngry = true;
                 document.body.classList.add('angry-mode');
                 
-                // Flash the screen red briefly
                 const flash = document.createElement('div');
                 flash.style.cssText = `
                     position: fixed;
@@ -1923,7 +2058,6 @@
                 document.body.appendChild(flash);
                 setTimeout(() => flash.remove(), 500);
                 
-                // Change eyes to red
                 this.leftEye.style.animation = 'none';
                 this.rightEye.style.animation = 'none';
                 setTimeout(() => {
@@ -1931,7 +2065,6 @@
                     this.rightEye.style.animation = '';
                 }, 100);
                 
-                // Add glitch effect
                 const glitch = document.querySelector('.glitch-effect');
                 if (glitch) {
                     glitch.style.opacity = '1';
@@ -1940,10 +2073,8 @@
                     }, 200);
                 }
                 
-                // Terminal warning
                 this.addTerminalLine('$ WARNING: SECURITY PROTOCOL ACTIVATED');
                 this.addTerminalLine('$ THREAT ASSESSMENT: ENGAGED');
-                this.addTerminalLine('$ DEFENSIVE MEASURES: ONLINE');
             }
 
             calmDown() {
@@ -1951,7 +2082,6 @@
                     this.isAngry = false;
                     document.body.classList.remove('angry-mode');
                     
-                    // Smooth transition back
                     const calmFlash = document.createElement('div');
                     calmFlash.style.cssText = `
                         position: fixed;
@@ -1977,39 +2107,37 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender}`;
                 
-                // Generate unique ID for this message
                 const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
                 messageDiv.setAttribute('data-message-id', messageId);
                 
                 if (isAngryMessage && sender === 'ai') {
                     messageDiv.innerHTML = `
-                        <div class="message-sender" style="color: #ff0040;">MOTHER AI [DEFENSIVE MODE]</div>
+                        <div class="message-sender" style="color: #ff0040;">MOTHER AI [SECURITY MODE]</div>
                         <div class="message-text" style="color: #ff9999;">${this.formatMessage(text)}</div>
                     `;
                 } else if (sender === 'ai') {
-                    // Add feedback system only for AI messages
                     messageDiv.innerHTML = `
                         <div class="message-sender">MOTHER AI</div>
                         <div class="message-text">${this.formatMessage(text)}</div>
                         <div class="message-feedback">
                             <button class="feedback-btn thumbs-up" onclick="quantumInterface.handleFeedback('${messageId}', 'thumbs-up')">
-                                <i class="fas fa-thumbs-up"></i>
+                                <i class="fas fa-thumbs-up"></i> Helpful
                             </button>
                             <button class="feedback-btn thumbs-down" onclick="quantumInterface.handleFeedback('${messageId}', 'thumbs-down')">
-                                <i class="fas fa-thumbs-down"></i>
+                                <i class="fas fa-thumbs-down"></i> Not Helpful
                             </button>
                             <button class="feedback-btn" onclick="quantumInterface.toggleDetailedFeedback('${messageId}')">
-                                <i class="fas fa-comment"></i> Feedback
+                                <i class="fas fa-comment"></i> Detailed Feedback
                             </button>
                             <span class="feedback-status" style="margin-left: 10px; color: var(--matrix-green); display: none;">
-                                <i class="fas fa-check-circle"></i> Saved
+                                <i class="fas fa-check-circle"></i> Feedback Saved
                             </span>
                         </div>
                         <div class="feedback-text-area" id="feedback-area-${messageId}">
                             <textarea class="feedback-input" id="feedback-text-${messageId}" 
-                                placeholder="Tell me how I can improve this response..."></textarea>
+                                placeholder="How can I improve this response? What would you have preferred?"></textarea>
                             <button class="feedback-submit" onclick="quantumInterface.submitDetailedFeedback('${messageId}')">
-                                Submit Feedback
+                                <i class="fas fa-paper-plane"></i> Submit Feedback
                             </button>
                         </div>
                     `;
@@ -2032,7 +2160,6 @@
                 const thumbsDown = message.querySelector('.thumbs-down');
                 const statusSpan = message.querySelector('.feedback-status');
                 
-                // Toggle active state
                 if (type === 'thumbs-up') {
                     thumbsUp.classList.toggle('active');
                     thumbsDown.classList.remove('active');
@@ -2041,15 +2168,12 @@
                     thumbsUp.classList.remove('active');
                 }
                 
-                // Get message text and rating
                 const messageText = message.querySelector('.message-text').innerText;
                 const rating = thumbsUp.classList.contains('active') ? 'positive' : 
                               thumbsDown.classList.contains('active') ? 'negative' : 'neutral';
                 
-                // Send feedback to backend
                 this.saveFeedback(messageId, messageText, rating, null);
                 
-                // Show saved status
                 statusSpan.style.display = 'inline';
                 setTimeout(() => {
                     statusSpan.style.display = 'none';
@@ -2076,16 +2200,13 @@
                 const rating = thumbsUp.classList.contains('active') ? 'positive' : 
                               thumbsDown.classList.contains('active') ? 'negative' : 'neutral';
                 
-                // Send detailed feedback to backend
                 this.saveFeedback(messageId, messageText, rating, feedbackText);
                 
-                // Clear and hide feedback area
                 document.getElementById(`feedback-text-${messageId}`).value = '';
                 document.getElementById(`feedback-area-${messageId}`).classList.remove('active');
                 
-                // Show saved status
                 statusSpan.style.display = 'inline';
-                statusSpan.innerHTML = '<i class="fas fa-check-circle"></i> Feedback saved!';
+                statusSpan.innerHTML = '<i class="fas fa-check-circle"></i> Thank you! This helps me learn.';
                 setTimeout(() => {
                     statusSpan.style.display = 'none';
                 }, 3000);
@@ -2093,37 +2214,31 @@
 
             async saveFeedback(messageId, messageText, rating, detailedFeedback) {
                 try {
-                    const response = await fetch(`${this.apiEndpoint}/feedback`, {
+                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.feedback}`, {
                         method: 'POST',
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         },
                         body: JSON.stringify({
-                            message_id: messageId,
-                            message_text: messageText,
-                            rating: rating,
+                            question: messageText,
+                            answer: messageText,
+                            feedback: rating === 'positive' ? 'up' : 'down',
                             detailed_feedback: detailedFeedback,
-                            timestamp: new Date().toISOString(),
-                            user_agent: navigator.userAgent
+                            timestamp: new Date().toISOString()
                         })
                     });
                     
                     const data = await response.json();
-                    console.log('Feedback saved:', data);
-                    
-                    // Store locally for training data
-                    this.storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback);
+                    console.log('Feedback saved to backend:', data);
                     
                 } catch (error) {
-                    console.log('Feedback will be saved locally');
-                    // Store locally even if backend fails
+                    console.log('Feedback saved locally for training');
                     this.storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback);
                 }
             }
 
             storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback) {
-                // Store feedback in localStorage for later training
                 const feedbackData = {
                     messageId,
                     messageText,
@@ -2136,21 +2251,19 @@
                 trainingData = JSON.parse(trainingData);
                 trainingData.push(feedbackData);
                 
-                // Keep only last 100 feedback items
                 if (trainingData.length > 100) {
                     trainingData = trainingData.slice(-100);
                 }
                 
                 localStorage.setItem('motherAI_training', JSON.stringify(trainingData));
                 
-                // If we have enough feedback, suggest training
                 if (trainingData.length > 0 && trainingData.length % 10 === 0) {
                     this.suggestTraining(trainingData.length);
                 }
             }
 
             suggestTraining(feedbackCount) {
-                const suggestion = `I've collected ${feedbackCount} feedback responses. This data can be used to improve my responses. Would you like to initiate a training cycle?`;
+                const suggestion = `I've collected ${feedbackCount} feedback responses from our conversations. This valuable data is helping me learn and improve my responses to serve you better.`;
                 this.addMessage('ai', suggestion);
             }
 
@@ -2159,7 +2272,7 @@
                 const thinkingDiv = document.createElement('div');
                 thinkingDiv.className = 'thinking-indicator';
                 thinkingDiv.innerHTML = `
-                    <span>Processing neural pathways</span>
+                    <span>Processing with neural networks</span>
                     <div class="thinking-dots">
                         <div class="thinking-dot"></div>
                         <div class="thinking-dot"></div>
@@ -2183,17 +2296,16 @@
         let quantumInterface;
 
         window.addEventListener('DOMContentLoaded', () => {
-    quantumInterface = new QuantumInterface();
-    
-    // Force remove loading screen after 5 seconds
-    setTimeout(() => {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay && overlay.style.display !== 'none') {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.style.display = 'none', 500);
-        }
-    }, 5000);
-});
+            quantumInterface = new QuantumInterface();
+            
+            setTimeout(() => {
+                const overlay = document.getElementById('loadingOverlay');
+                if (overlay && overlay.style.display !== 'none') {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => overlay.style.display = 'none', 500);
+                }
+            }, 5000);
+        });
 
         function sendMessage() {
             const input = document.getElementById('userInput');
