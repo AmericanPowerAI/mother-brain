@@ -654,23 +654,224 @@ class ConversationalModel:
     def __init__(self):
         self.context_window = []
         self.max_context = 5
-        self.response_templates = {
-            'greeting': [
-                "Hello! I'm here to help you with any questions you have.",
-                "Hi there! What can I assist you with today?",
-                "Welcome! Feel free to ask me anything."
-            ],
-            'clarification': [
-                "Could you provide more details about {}?",
-                "I'd like to understand better - can you elaborate on {}?",
-                "To give you the best answer, could you tell me more about {}?"
-            ],
-            'acknowledgment': [
-                "I understand you're asking about {}.",
-                "Let me help you with {}.",
-                "That's an interesting question about {}."
-            ]
-        }
+        # Initialize enhanced neural processing
+        try:
+            from transformers import AutoModelForCausalLM, AutoTokenizer
+            import torch
+            self.tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+            self.model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+            self.neural_active = True
+        except:
+            self.neural_active = False
+            self.response_templates = {
+                'greeting': [
+                    "Neural interface initialized. How may I assist you?",
+                    "Systems online. What can I help you with?",
+                    "Ready to assist. What do you need?"
+                ],
+                'clarification': [
+                    "Could you provide more details about {}?",
+                    "I'd like to understand better - can you elaborate on {}?",
+                    "To give you the best answer, could you tell me more about {}?"
+                ],
+                'acknowledgment': [
+                    "I understand you're asking about {}.",
+                    "Let me help you with {}.",
+                    "That's an interesting question about {}."
+                ]
+            }
+        
+        # Initialize permanent memory
+        self.memory_db_path = "mother_memory.db"
+        self._init_permanent_memory()
+        self.conversation_history = []
+    
+    def _init_permanent_memory(self):
+        """Create permanent memory database"""
+        import sqlite3
+        conn = sqlite3.connect(self.memory_db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS conversations (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_input TEXT,
+                ai_response TEXT,
+                timestamp DATETIME,
+                importance_score REAL
+            )
+        """)
+        
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS learned_facts (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                fact TEXT UNIQUE,
+                source TEXT,
+                confidence REAL,
+                learned_at DATETIME,
+                times_recalled INTEGER DEFAULT 0
+            )
+        """)
+        
+        conn.commit()
+        conn.close()
+    
+    def generate_response(self, prompt: str, context: str = "") -> str:
+        """Generate conversational response"""
+        self.context_window.append(prompt)
+        if len(self.context_window) > self.max_context:
+            self.context_window.pop(0)
+        
+        # Try neural response first
+        if self.neural_active:
+            try:
+                # Recall memories
+                memories = self._recall_memories(prompt)
+                
+                # Build context
+                full_context = self._build_context(prompt, context, memories)
+                
+                # Generate with neural model
+                import torch
+                inputs = self.tokenizer.encode(full_context, return_tensors="pt", 
+                                              max_length=1000, truncation=True)
+                
+                with torch.no_grad():
+                    outputs = self.model.generate(
+                        inputs,
+                        max_length=1000,
+                        num_return_sequences=1,
+                        temperature=0.8,
+                        pad_token_id=self.tokenizer.eos_token_id,
+                        do_sample=True,
+                        top_k=50,
+                        top_p=0.95
+                    )
+                
+                response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+                response = response[len(full_context):].strip()
+                
+                # Store in memory
+                self._store_conversation(prompt, response)
+                
+                if response:
+                    return response
+            except:
+                pass
+        
+        # Fallback to template responses
+        intent = self._detect_intent(prompt)
+        
+        if intent == 'greeting':
+            return random.choice(self.response_templates['greeting'])
+        elif intent == 'question' and context:
+            return self._format_answer(context, prompt)
+        else:
+            return self._generate_contextual_response(prompt, context)
+    
+    def _recall_memories(self, query):
+        """Recall relevant memories"""
+        import sqlite3
+        conn = sqlite3.connect(self.memory_db_path)
+        cursor = conn.cursor()
+        
+        memories = []
+        cursor.execute("""
+            SELECT user_input, ai_response 
+            FROM conversations 
+            WHERE user_input LIKE ? OR ai_response LIKE ?
+            ORDER BY timestamp DESC
+            LIMIT 3
+        """, (f"%{query}%", f"%{query}%"))
+        memories = cursor.fetchall()
+        
+        conn.close()
+        return memories
+    
+    def _build_context(self, prompt, context, memories):
+        """Build full context"""
+        parts = []
+        if memories:
+            for mem in memories[:2]:
+                parts.append(f"Previous: {mem[1][:100]}")
+        if context:
+            parts.append(f"Context: {context[:200]}")
+        parts.append(f"User: {prompt}")
+        parts.append("Assistant:")
+        return " ".join(parts)
+    
+    def _store_conversation(self, user_input, ai_response):
+        """Store conversation permanently"""
+        import sqlite3
+        from datetime import datetime
+        conn = sqlite3.connect(self.memory_db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            INSERT INTO conversations 
+            (user_input, ai_response, timestamp, importance_score)
+            VALUES (?, ?, ?, ?)
+        """, (user_input, ai_response, datetime.now(), 0.5))
+        
+        conn.commit()
+        conn.close()
+    
+    def _detect_intent(self, text: str) -> str:
+        """Simple intent detection"""
+        text_lower = text.lower()
+        
+        greetings = ['hello', 'hi', 'hey', 'greetings']
+        if any(g in text_lower for g in greetings):
+            return 'greeting'
+        
+        question_words = ['what', 'how', 'why', 'when', 'where', 'who', 'which']
+        if any(text_lower.startswith(q) for q in question_words) or '?' in text:
+            return 'question'
+        
+        return 'statement'
+    
+    def _format_answer(self, context: str, question: str) -> str:
+        """Format context into conversational answer"""
+        topic = self._extract_topic(question)
+        
+        answer_parts = []
+        
+        if topic:
+            answer_parts.append(f"Regarding {topic}:")
+        
+        if len(context) > 500:
+            sentences = context.split('. ')
+            key_sentences = sentences[:3]
+            answer_parts.append(' '.join(key_sentences))
+            
+            if len(sentences) > 3:
+                answer_parts.append("\nKey points:")
+                for sent in sentences[3:6]:
+                    if sent:
+                        answer_parts.append(f"• {sent.strip()}")
+        else:
+            answer_parts.append(context)
+        
+        return '\n'.join(answer_parts)
+    
+    def _extract_topic(self, question: str) -> str:
+        """Extract main topic from question"""
+        question_words = ['what', 'how', 'why', 'when', 'where', 'who', 'which', 'is', 'are', 'can', 'will']
+        words = question.lower().split()
+        
+        topic_words = [w for w in words if w not in question_words and len(w) > 3]
+        
+        if topic_words:
+            return ' '.join(topic_words[:3])
+        return ""
+    
+    def _generate_contextual_response(self, prompt: str, context: str) -> str:
+        """Generate response based on context"""
+        if not context:
+            return "I'd be happy to help, but I need more information to provide a useful answer."
+        
+        return f"Based on the available information: {context[:500]}"
     
     def generate_response(self, prompt: str, context: str = "") -> str:
         """Generate conversational response"""
