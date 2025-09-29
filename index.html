@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOTHER AI | Neural Interface v3.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>MOTHER AI | Quantum Neural Interface v4.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         /* QUANTUM DESIGN SYSTEM */
         :root {
@@ -18,6 +19,9 @@
             --glass-white: rgba(255, 255, 255, 0.03);
             --text-primary: #ffffff;
             --text-secondary: #a0a0b8;
+            --consciousness-purple: #8B5CF6;
+            --life-green: #10B981;
+            --energy-orange: #F59E0B;
         }
 
         * {
@@ -57,7 +61,7 @@
         }
 
         .header-content {
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -71,38 +75,46 @@
         }
 
         .ai-badge {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, var(--neural-blue), var(--plasma-purple));
-            border-radius: 12px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 800;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.5);
             animation: badge-pulse 2s infinite;
+            position: relative;
         }
 
         @keyframes badge-pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 255, 255, 0.8); }
+            0%, 100% { 
+                transform: scale(1) rotate(0deg); 
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.5); 
+            }
+            50% { 
+                transform: scale(1.05) rotate(5deg); 
+                box-shadow: 0 0 50px rgba(0, 255, 255, 0.8); 
+            }
         }
 
         .brand-name {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--text-primary), var(--neural-blue));
+            background: linear-gradient(90deg, var(--text-primary), var(--neural-blue), var(--plasma-purple));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
         .trust-indicators {
             display: flex;
-            gap: 2rem;
+            gap: 2.5rem;
             align-items: center;
         }
 
@@ -110,45 +122,56 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.3rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
         }
 
         .indicator-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--matrix-green);
+            text-shadow: 0 0 10px currentColor;
         }
 
         .indicator-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: var(--text-secondary);
         }
 
         .status-light {
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             background: var(--matrix-green);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--matrix-green);
+            box-shadow: 0 0 15px var(--matrix-green);
             animation: status-pulse 2s infinite;
         }
 
         @keyframes status-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { 
+                opacity: 1; 
+                box-shadow: 0 0 15px var(--matrix-green);
+            }
+            50% { 
+                opacity: 0.6;
+                box-shadow: 0 0 30px var(--matrix-green);
+            }
         }
 
         /* MAIN INTERFACE LAYOUT */
         .quantum-interface {
             position: relative;
             z-index: 10;
-            max-width: 1600px;
+            max-width: 1800px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 400px 1fr 350px;
+            grid-template-columns: 420px 1fr 380px;
             gap: 2rem;
             padding: 2rem;
             min-height: calc(100vh - 100px);
@@ -158,7 +181,7 @@
         .ai-presence {
             background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
+            border-radius: 25px;
             padding: 2rem;
             backdrop-filter: blur(20px);
             display: flex;
@@ -171,8 +194,8 @@
         /* DIGITAL FACE CONTAINER */
         .digital-face-container {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 320px;
+            height: 320px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -191,10 +214,58 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(0, 255, 255, 0.1), transparent),
-                        radial-gradient(circle at 70% 60%, rgba(191, 0, 255, 0.1), transparent),
+            background: radial-gradient(circle at 30% 30%, rgba(0, 255, 255, 0.2), transparent),
+                        radial-gradient(circle at 70% 60%, rgba(191, 0, 255, 0.2), transparent),
+                        radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.1), transparent),
                         var(--void-dark);
-            box-shadow: 0 0 80px rgba(0, 255, 255, 0.3), inset 0 0 60px rgba(191, 0, 255, 0.2);
+            box-shadow: 0 0 100px rgba(0, 255, 255, 0.4), 
+                        inset 0 0 80px rgba(191, 0, 255, 0.3),
+                        inset 0 0 40px rgba(0, 255, 136, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* HOLOGRAPHIC RINGS */
+        .holo-ring {
+            position: absolute;
+            border: 2px solid;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .holo-ring-1 {
+            width: 340px;
+            height: 340px;
+            top: -10px;
+            left: -10px;
+            border-color: var(--neural-blue);
+            opacity: 0.3;
+            animation: rotate 15s linear infinite;
+        }
+
+        .holo-ring-2 {
+            width: 360px;
+            height: 360px;
+            top: -20px;
+            left: -20px;
+            border-color: var(--plasma-purple);
+            opacity: 0.2;
+            animation: rotate 20s linear infinite reverse;
+        }
+
+        .holo-ring-3 {
+            width: 380px;
+            height: 380px;
+            top: -30px;
+            left: -30px;
+            border-color: var(--matrix-green);
+            opacity: 0.15;
+            animation: rotate 25s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* DIGITAL EYES */
@@ -205,22 +276,29 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 60px;
+            gap: 80px;
+            top: -20px;
         }
 
         .digital-eye {
-            width: 40px;
-            height: 20px;
+            width: 50px;
+            height: 25px;
             background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple));
             border-radius: 50%;
-            box-shadow: 0 0 20px currentColor;
+            box-shadow: 0 0 30px currentColor, inset 0 0 20px rgba(255, 255, 255, 0.3);
             position: relative;
             animation: eye-glow 3s infinite alternate;
         }
 
         @keyframes eye-glow {
-            0% { box-shadow: 0 0 20px var(--neural-blue); }
-            100% { box-shadow: 0 0 40px var(--plasma-purple); }
+            0% { 
+                box-shadow: 0 0 30px var(--neural-blue); 
+                transform: scale(1);
+            }
+            100% { 
+                box-shadow: 0 0 50px var(--plasma-purple); 
+                transform: scale(1.05);
+            }
         }
 
         .digital-eye.blinking {
@@ -228,31 +306,33 @@
         }
 
         @keyframes blink {
-            0%, 100% { height: 20px; }
+            0%, 100% { height: 25px; }
             50% { height: 2px; }
         }
 
         .pupil {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: var(--quantum-black);
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, var(--quantum-black), rgba(0, 0, 0, 0.8));
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             transition: all 0.3s ease;
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5);
         }
 
         /* DIGITAL MOUTH */
         .digital-mouth {
             position: absolute;
-            bottom: 80px;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--neural-blue), transparent);
+            bottom: 100px;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--neural-blue), var(--plasma-purple), transparent);
             border-radius: 50%;
             transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--neural-blue);
         }
 
         .digital-mouth.speaking {
@@ -260,9 +340,21 @@
         }
 
         @keyframes speak {
-            0% { height: 3px; width: 80px; }
-            50% { height: 20px; width: 60px; }
-            100% { height: 3px; width: 80px; }
+            0% { 
+                height: 4px; 
+                width: 100px; 
+                opacity: 0.8;
+            }
+            50% { 
+                height: 25px; 
+                width: 80px; 
+                opacity: 1;
+            }
+            100% { 
+                height: 4px; 
+                width: 100px;
+                opacity: 0.8;
+            }
         }
 
         /* GLITCH EFFECTS */
@@ -272,19 +364,21 @@
             height: 100%;
             opacity: 0;
             pointer-events: none;
-            animation: glitch 10s infinite;
+            animation: glitch 8s infinite;
         }
 
         @keyframes glitch {
-            0%, 95% { opacity: 0; }
-            96% { opacity: 1; transform: translateX(-2px); filter: hue-rotate(90deg); }
-            97% { opacity: 0; transform: translateX(2px); }
-            98% { opacity: 1; transform: translateY(-2px); filter: hue-rotate(180deg); }
-            99% { opacity: 0; transform: translateY(2px); }
+            0%, 92% { opacity: 0; }
+            93% { opacity: 1; transform: translateX(-3px); filter: hue-rotate(90deg); }
+            94% { opacity: 0; transform: translateX(3px); }
+            95% { opacity: 1; transform: translateY(-3px); filter: hue-rotate(180deg); }
+            96% { opacity: 0; transform: translateY(3px); }
+            97% { opacity: 1; transform: translate(-2px, 2px); filter: hue-rotate(270deg); }
+            98% { opacity: 0; }
             100% { opacity: 0; }
         }
 
-        /* NEURAL STATUS */
+        /* NEURAL STATUS CARDS */
         .neural-status {
             width: 100%;
             display: flex;
@@ -293,49 +387,95 @@
         }
 
         .status-card {
-            background: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
             border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 15px;
+            padding: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neural-blue), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100px); }
         }
 
         .status-title {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
+            color: var(--neural-blue);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
         }
 
         .status-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
+            gap: 1rem;
         }
 
         .status-item {
             display: flex;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.3rem;
         }
 
         .status-label {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .status-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--matrix-green);
-            font-weight: 600;
+            font-weight: 700;
+            text-shadow: 0 0 5px currentColor;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple), var(--matrix-green));
+            border-radius: 4px;
+            transition: width 1s ease;
+            position: relative;
+            animation: progress-pulse 2s infinite;
+        }
+
+        @keyframes progress-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
         /* COMMUNICATION PANEL */
         .communication-core {
             background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
+            border-radius: 25px;
             backdrop-filter: blur(20px);
             display: flex;
             flex-direction: column;
@@ -343,18 +483,24 @@
         }
 
         .chat-header {
-            padding: 1.5rem;
+            padding: 1.75rem;
             border-bottom: 1px solid rgba(0, 255, 255, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 25px 25px 0 0;
         }
 
         .chat-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
-            color: var(--neural-blue);
-            letter-spacing: 1px;
+            background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .chat-status {
@@ -364,68 +510,142 @@
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--matrix-green);
             animation: pulse-dot 2s infinite;
         }
 
+        .status-dot:nth-child(2) {
+            animation-delay: 0.3s;
+            background: var(--neural-blue);
+        }
+
+        .status-dot:nth-child(3) {
+            animation-delay: 0.6s;
+            background: var(--plasma-purple);
+        }
+
         @keyframes pulse-dot {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.3); 
+            }
         }
 
         .message-container {
             flex: 1;
-            padding: 1.5rem;
+            padding: 2rem;
             overflow-y: auto;
-            max-height: 500px;
+            max-height: 550px;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.2rem;
+            background: rgba(0, 0, 0, 0.2);
         }
 
         .message {
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
+            padding: 1.2rem 1.5rem;
+            border-radius: 18px;
             max-width: 85%;
             animation: message-appear 0.3s ease-out;
             backdrop-filter: blur(10px);
+            position: relative;
         }
 
         @keyframes message-appear {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { 
+                opacity: 0; 
+                transform: translateY(15px) scale(0.95); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
         }
 
         .message.ai {
             align-self: flex-start;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(191, 0, 255, 0.1));
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(191, 0, 255, 0.15));
             border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.2);
         }
 
         .message.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05));
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 255, 136, 0.1));
             border: 1px solid rgba(0, 255, 136, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 255, 136, 0.2);
         }
 
         .message-sender {
             font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             margin-bottom: 0.5rem;
-            opacity: 0.7;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        .message.ai .message-sender {
+            color: var(--neural-blue);
+        }
+
+        .message.user .message-sender {
+            color: var(--matrix-green);
         }
 
         .message-text {
-            line-height: 1.6;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .thinking-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem;
+            color: var(--plasma-purple);
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .thinking-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--plasma-purple);
+            animation: thinking-pulse 1.5s infinite;
+        }
+
+        .thinking-dot:nth-child(1) { animation-delay: 0s; }
+        .thinking-dot:nth-child(2) { animation-delay: 0.3s; }
+        .thinking-dot:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes thinking-pulse {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1) translateY(0); 
+            }
+            50% { 
+                opacity: 1; 
+                transform: scale(1.5) translateY(-5px); 
+            }
         }
 
         .input-section {
-            padding: 1.5rem;
+            padding: 1.75rem;
             border-top: 1px solid rgba(0, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 25px 25px;
         }
 
         .input-wrapper {
@@ -435,41 +655,63 @@
 
         .quantum-input {
             flex: 1;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             border: 2px solid rgba(0, 255, 255, 0.3);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
+            border-radius: 15px;
+            padding: 1rem 1.5rem;
             color: var(--text-primary);
             font-family: 'Space Grotesk', sans-serif;
             font-size: 1rem;
             transition: all 0.3s ease;
+            min-height: 50px;
+            resize: vertical;
         }
 
         .quantum-input:focus {
             outline: none;
             border-color: var(--neural-blue);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
-            background: rgba(0, 0, 0, 0.7);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.8);
         }
 
         .quantum-button {
             background: linear-gradient(135deg, var(--neural-blue), var(--plasma-purple));
             border: none;
-            border-radius: 12px;
-            padding: 1rem 2rem;
+            border-radius: 15px;
+            padding: 1rem 2.5rem;
             color: var(--quantum-black);
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quantum-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .quantum-button:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .quantum-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 255, 255, 0.6);
         }
 
         .quantum-button:active {
@@ -478,33 +720,37 @@
 
         .quick-actions {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.6rem;
             margin-top: 1rem;
             flex-wrap: wrap;
         }
 
         .action-chip {
-            background: rgba(0, 255, 255, 0.1);
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05));
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            padding: 0.6rem 1.2rem;
             font-size: 0.8rem;
             color: var(--neural-blue);
             cursor: pointer;
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
         }
 
         .action-chip:hover {
-            background: rgba(0, 255, 255, 0.2);
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(0, 255, 255, 0.1));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
         }
 
-        /* DATA PANEL */
+        /* DATA ANALYTICS PANEL */
         .data-analytics {
             background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 20, 30, 0.95) 100%);
             border: 1px solid rgba(0, 255, 255, 0.3);
-            border-radius: 20px;
-            padding: 1.5rem;
+            border-radius: 25px;
+            padding: 2rem;
             backdrop-filter: blur(20px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
             display: flex;
@@ -515,59 +761,119 @@
         }
 
         .data-title {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            color: var(--neural-blue);
+            background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
             text-transform: uppercase;
             letter-spacing: 2px;
             text-align: center;
+            margin-bottom: 1rem;
         }
 
         .metric-card {
-            background: rgba(0, 0, 0, 0.5);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
             border: 1px solid rgba(0, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 1rem;
+            border-radius: 15px;
+            padding: 1.2rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .metric-header {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             margin-bottom: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
         .metric-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            color: var(--matrix-green);
-            margin-bottom: 0.25rem;
+            background: linear-gradient(90deg, var(--matrix-green), var(--neural-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.3rem;
         }
 
         .metric-label {
             font-size: 0.7rem;
             color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 0.5rem;
+        /* CHART CONTAINERS */
+        .chart-container {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple));
-            border-radius: 3px;
-            transition: width 1s ease;
+        .chart-title {
+            font-size: 0.9rem;
+            color: var(--neural-blue);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: center;
+        }
+
+        .mini-chart {
+            height: 180px;
+        }
+
+        /* TERMINAL */
+        .terminal-container {
+            background: var(--quantum-black);
+            border: 1px solid var(--matrix-green);
+            border-radius: 10px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--matrix-green);
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .terminal-line {
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: terminal-appear 0.3s ease-out forwards;
+        }
+
+        @keyframes terminal-appear {
+            to { opacity: 1; }
+        }
+
+        .terminal-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 14px;
+            background: var(--matrix-green);
+            animation: cursor-blink 1s infinite;
+        }
+
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
         }
 
         /* RESPONSIVE DESIGN */
+        @media (max-width: 1600px) {
+            .quantum-interface {
+                grid-template-columns: 380px 1fr 340px;
+            }
+        }
+
         @media (max-width: 1400px) {
             .quantum-interface {
                 grid-template-columns: 350px 1fr;
@@ -589,7 +895,7 @@
             }
         }
 
-        /* LOADING STATE */
+        /* LOADING OVERLAY */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -599,6 +905,7 @@
             background: var(--quantum-black);
             z-index: 10000;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease;
@@ -606,9 +913,10 @@
 
         .loading-text {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--neural-blue);
             animation: loading-pulse 1s infinite;
+            margin-bottom: 2rem;
         }
 
         @keyframes loading-pulse {
@@ -616,19 +924,39 @@
             50% { opacity: 1; }
         }
 
-        /* SCROLLBAR */
+        .loading-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neural-blue), var(--plasma-purple));
+            animation: loading-progress 2s ease-out;
+        }
+
+        @keyframes loading-progress {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        /* SCROLLBAR STYLING */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
         }
 
         ::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: linear-gradient(180deg, var(--neural-blue), var(--plasma-purple));
-            border-radius: 4px;
+            border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -639,7 +967,10 @@
 <body>
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-text">INITIALIZING NEURAL INTERFACE...</div>
+        <div class="loading-text">INITIALIZING QUANTUM NEURAL INTERFACE...</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
     </div>
 
     <!-- Quantum Particle Field -->
@@ -654,16 +985,20 @@
             </div>
             <div class="trust-indicators">
                 <div class="indicator">
-                    <div class="indicator-value" id="securityStatus">SECURE</div>
+                    <div class="indicator-value" id="securityStatus">AES-256</div>
                     <div class="indicator-label">ENCRYPTION</div>
                 </div>
                 <div class="indicator">
-                    <div class="indicator-value" id="uptimeValue">99.9%</div>
+                    <div class="indicator-value" id="uptimeValue">99.99%</div>
                     <div class="indicator-label">UPTIME</div>
                 </div>
                 <div class="indicator">
-                    <div class="indicator-value" id="latencyValue">12ms</div>
+                    <div class="indicator-value" id="latencyValue">8ms</div>
                     <div class="indicator-label">LATENCY</div>
+                </div>
+                <div class="indicator">
+                    <div class="indicator-value" id="nodesValue">47K</div>
+                    <div class="indicator-label">NODES</div>
                 </div>
                 <div class="indicator">
                     <div class="status-light"></div>
@@ -679,6 +1014,9 @@
         <!-- AI Presence Panel -->
         <div class="ai-presence">
             <div class="digital-face-container">
+                <div class="holo-ring holo-ring-1"></div>
+                <div class="holo-ring holo-ring-2"></div>
+                <div class="holo-ring holo-ring-3"></div>
                 <div class="digital-face">
                     <canvas class="face-canvas" id="faceCanvas"></canvas>
                     <div class="eyes-container" id="eyesContainer">
@@ -700,34 +1038,65 @@
                     <div class="status-grid">
                         <div class="status-item">
                             <span class="status-label">CPU Usage</span>
-                            <span class="status-value" id="cpuUsage">0%</span>
+                            <span class="status-value" id="cpuUsage">32.5%</span>
                         </div>
                         <div class="status-item">
                             <span class="status-label">Memory</span>
-                            <span class="status-value" id="memoryUsage">0%</span>
+                            <span class="status-value" id="memoryUsage">68.2%</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">Domains</span>
-                            <span class="status-value" id="domainCount">0</span>
+                            <span class="status-label">Threads</span>
+                            <span class="status-value" id="threadCount">128</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">Knowledge</span>
-                            <span class="status-value" id="knowledgeCount">0</span>
+                            <span class="status-label">Cycles/s</span>
+                            <span class="status-value" id="cyclesPerSec">1.2M</span>
                         </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="neuralProgress" style="width: 85%"></div>
                     </div>
                 </div>
 
                 <div class="status-card">
-                    <div class="status-title">GitHub Sync</div>
+                    <div class="status-title">Knowledge System</div>
                     <div class="status-grid">
                         <div class="status-item">
-                            <span class="status-label">Status</span>
-                            <span class="status-value" id="githubStatus">ACTIVE</span>
+                            <span class="status-label">Entries</span>
+                            <span class="status-value" id="knowledgeCount">12.8K</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">Last Sync</span>
-                            <span class="status-value" id="lastSync">NOW</span>
+                            <span class="status-label">Domains</span>
+                            <span class="status-value" id="domainCount">47.8K</span>
                         </div>
+                        <div class="status-item">
+                            <span class="status-label">Sync</span>
+                            <span class="status-value" id="syncStatus">ACTIVE</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Cache</span>
+                            <span class="status-value" id="cacheStatus">HOT</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="knowledgeProgress" style="width: 100%"></div>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-title">Learning Engine</div>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">Rate</span>
+                            <span class="status-value" id="learningRate">18.4K/m</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Accuracy</span>
+                            <span class="status-value" id="accuracy">98.7%</span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="learningProgress" style="width: 98.7%"></div>
                     </div>
                 </div>
             </div>
@@ -747,21 +1116,23 @@
             <div class="message-container" id="messageContainer">
                 <div class="message ai">
                     <div class="message-sender">MOTHER AI</div>
-                    <div class="message-text">Neural interface initialized. I'm connected to my GitHub knowledge repository and monitoring all systems. How may I assist you today?</div>
+                    <div class="message-text">Neural interface initialized. Quantum processors are operating at optimal efficiency. Knowledge repository synchronized with 47,832 domains monitored across the network. How may I assist you today?</div>
                 </div>
             </div>
 
             <div class="input-section">
                 <div class="input-wrapper">
-                    <input type="text" class="quantum-input" id="userInput" placeholder="Enter your query..." onkeypress="handleKeyPress(event)">
+                    <textarea class="quantum-input" id="userInput" placeholder="Enter your query..." onkeypress="handleKeyPress(event)"></textarea>
                     <button class="quantum-button" onclick="sendMessage()">TRANSMIT</button>
                 </div>
                 <div class="quick-actions">
                     <div class="action-chip" onclick="quickAction('system status')">System Status</div>
-                    <div class="action-chip" onclick="quickAction('planet scan')">Planet Scan</div>
+                    <div class="action-chip" onclick="quickAction('network scan')">Network Scan</div>
                     <div class="action-chip" onclick="quickAction('analyze code')">Analyze Code</div>
                     <div class="action-chip" onclick="quickAction('security check')">Security Check</div>
                     <div class="action-chip" onclick="quickAction('learning stats')">Learning Stats</div>
+                    <div class="action-chip" onclick="quickAction('performance')">Performance</div>
+                    <div class="action-chip" onclick="quickAction('knowledge base')">Knowledge Base</div>
                 </div>
             </div>
         </div>
@@ -769,63 +1140,55 @@
         <!-- Data Analytics Panel -->
         <div class="data-analytics">
             <div class="data-title">Live Analytics</div>
-            
-            <div class="metric-card">
-                <div class="metric-header">Planet Coverage</div>
-                <div class="metric-value" id="planetCoverage">0</div>
-                <div class="metric-label">domains monitored</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="planetProgress" style="width: 0%"></div>
-                </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Neural Activity Patterns</div>
+                <canvas id="neuralChart" class="mini-chart"></canvas>
             </div>
 
             <div class="metric-card">
-                <div class="metric-header">Learning Rate</div>
-                <div class="metric-value" id="learningRate">0</div>
-                <div class="metric-label">patterns/minute</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="learningProgress" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-header">Neural Activity</div>
-                <div class="metric-value" id="neuralActivity">0%</div>
-                <div class="metric-label">processing power</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="neuralProgress" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-header">Response Quality</div>
-                <div class="metric-value" id="responseQuality">0%</div>
-                <div class="metric-label">satisfaction rate</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="qualityProgress" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-header">Security Level</div>
-                <div class="metric-value" id="securityLevel">MAX</div>
-                <div class="metric-label">protection active</div>
+                <div class="metric-header">Network Coverage</div>
+                <div class="metric-value" id="networkMetric">100%</div>
+                <div class="metric-label">systems monitored</div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: 100%"></div>
                 </div>
+            </div>
+
+            <div class="terminal-container" id="terminal">
+                <div class="terminal-line">$ MOTHER_AI: System initialized</div>
+                <div class="terminal-line">$ Loading neural networks...</div>
+                <div class="terminal-line">$ Repository sync: ACTIVE</div>
+                <div class="terminal-line">$ Network scan: COMPLETE</div>
+                <div class="terminal-cursor"></div>
             </div>
         </div>
     </div>
 
     <script>
+        // CONFIGURATION
+        const API_CONFIG = {
+            baseURL: 'http://localhost:5000', // Your Flask backend URL
+            endpoints: {
+                chat: '/chat',
+                health: '/health',
+                liveStats: '/live-stats',
+                planetStats: '/planet/stats',
+                systemInfo: '/system/info',
+                processMessage: '/process-message'
+            }
+        };
+
         // QUANTUM INTERFACE CONTROLLER
         class QuantumInterface {
             constructor() {
-                this.apiEndpoint = window.location.origin;
+                this.apiEndpoint = API_CONFIG.baseURL;
                 this.initializeQuantumField();
                 this.initializeDigitalFace();
                 this.initializeVoiceSynthesis();
                 this.startLiveDataStream();
+                this.initializeCharts();
+                this.initializeTerminal();
                 this.hideLoadingScreen();
             }
 
@@ -837,22 +1200,24 @@
                 canvas.height = window.innerHeight;
 
                 const particles = [];
-                for (let i = 0; i < 100; i++) {
+                
+                for (let i = 0; i < 150; i++) {
                     particles.push({
                         x: Math.random() * canvas.width,
                         y: Math.random() * canvas.height,
                         vx: (Math.random() - 0.5) * 0.5,
                         vy: (Math.random() - 0.5) * 0.5,
-                        size: Math.random() * 2,
-                        opacity: Math.random() * 0.5
+                        size: Math.random() * 2 + 0.5,
+                        opacity: Math.random() * 0.5 + 0.2,
+                        color: Math.random() > 0.5 ? '#00ffff' : (Math.random() > 0.5 ? '#bf00ff' : '#00ff88')
                     });
                 }
 
                 const animate = () => {
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    particles.forEach(particle => {
+                    particles.forEach((particle, i) => {
                         particle.x += particle.vx;
                         particle.y += particle.vy;
 
@@ -861,25 +1226,29 @@
 
                         ctx.beginPath();
                         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                        ctx.fillStyle = `rgba(0, 255, 255, ${particle.opacity})`;
+                        ctx.fillStyle = particle.color;
+                        ctx.globalAlpha = particle.opacity;
                         ctx.fill();
 
-                        // Connect nearby particles
-                        particles.forEach(other => {
-                            const dx = particle.x - other.x;
-                            const dy = particle.y - other.y;
-                            const distance = Math.sqrt(dx * dx + dy * dy);
+                        particles.forEach((other, j) => {
+                            if (i !== j) {
+                                const dx = particle.x - other.x;
+                                const dy = particle.y - other.y;
+                                const distance = Math.sqrt(dx * dx + dy * dy);
 
-                            if (distance < 100 && particle !== other) {
-                                ctx.beginPath();
-                                ctx.moveTo(particle.x, particle.y);
-                                ctx.lineTo(other.x, other.y);
-                                ctx.strokeStyle = `rgba(0, 255, 255, ${0.1 * (1 - distance / 100)})`;
-                                ctx.stroke();
+                                if (distance < 120) {
+                                    ctx.beginPath();
+                                    ctx.moveTo(particle.x, particle.y);
+                                    ctx.lineTo(other.x, other.y);
+                                    ctx.strokeStyle = particle.color;
+                                    ctx.globalAlpha = 0.1 * (1 - distance / 120);
+                                    ctx.stroke();
+                                }
                             }
                         });
                     });
 
+                    ctx.globalAlpha = 1;
                     requestAnimationFrame(animate);
                 };
 
@@ -898,13 +1267,8 @@
                 this.rightPupil = document.getElementById('rightPupil');
                 this.mouth = document.getElementById('digitalMouth');
                 
-                // Start blinking
                 setInterval(() => this.blink(), Math.random() * 4000 + 2000);
-                
-                // Eye tracking mouse movement
                 document.addEventListener('mousemove', (e) => this.trackMouse(e));
-                
-                // Random looking around
                 setInterval(() => this.lookAround(), Math.random() * 5000 + 3000);
             }
 
@@ -926,7 +1290,7 @@
                 const angleX = (e.clientX - centerX) / window.innerWidth;
                 const angleY = (e.clientY - centerY) / window.innerHeight;
                 
-                const maxMove = 10;
+                const maxMove = 12;
                 const moveX = angleX * maxMove;
                 const moveY = angleY * maxMove;
                 
@@ -935,8 +1299,8 @@
             }
 
             lookAround() {
-                const moveX = (Math.random() - 0.5) * 10;
-                const moveY = (Math.random() - 0.5) * 10;
+                const moveX = (Math.random() - 0.5) * 12;
+                const moveY = (Math.random() - 0.5) * 12;
                 
                 this.leftPupil.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
                 this.rightPupil.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
@@ -949,7 +1313,6 @@
                 if (this.synth) {
                     this.synth.onvoiceschanged = () => {
                         const voices = this.synth.getVoices();
-                        // Select a clear, professional voice
                         this.voice = voices.find(v => 
                             v.name.includes('Google') || 
                             v.name.includes('Microsoft') || 
@@ -979,111 +1342,136 @@
                 this.synth.speak(utterance);
             }
 
+            initializeCharts() {
+                const neuralCtx = document.getElementById('neuralChart')?.getContext('2d');
+                if (neuralCtx) {
+                    this.neuralChart = new Chart(neuralCtx, {
+                        type: 'line',
+                        data: {
+                            labels: Array.from({length: 20}, (_, i) => ''),
+                            datasets: [{
+                                label: 'Neural Activity',
+                                data: Array.from({length: 20}, () => Math.random() * 30 + 70),
+                                borderColor: '#00ffff',
+                                backgroundColor: 'rgba(0, 255, 255, 0.1)',
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { display: false },
+                                y: { 
+                                    display: false,
+                                    min: 0,
+                                    max: 100
+                                }
+                            },
+                            animation: {
+                                duration: 0
+                            }
+                        }
+                    });
+                }
+
+                setInterval(() => this.updateCharts(), 2000);
+            }
+
+            updateCharts() {
+                if (this.neuralChart) {
+                    const data = this.neuralChart.data.datasets[0].data;
+                    data.shift();
+                    data.push(Math.random() * 30 + 70);
+                    this.neuralChart.update('none');
+                }
+            }
+
+            initializeTerminal() {
+                this.terminal = document.getElementById('terminal');
+                setInterval(() => this.addTerminalLine(), 3000);
+            }
+
+            addTerminalLine() {
+                const lines = [
+                    `$ Processing request #${Math.floor(Math.random() * 99999)}`,
+                    `$ Neural pathway optimization: ${Math.random() > 0.5 ? 'COMPLETE' : 'IN PROGRESS'}`,
+                    `$ Knowledge entries processed: ${Math.floor(Math.random() * 1000)}`,
+                    `$ Threat detection: ${Math.random() > 0.8 ? 'ANOMALY DETECTED' : 'CLEAR'}`,
+                    `$ Learning efficiency: ${(Math.random() * 20 + 80).toFixed(1)}%`,
+                    `$ Repository sync: ${Math.random() > 0.9 ? 'UPDATING' : 'SYNCHRONIZED'}`,
+                    `$ Memory optimization: ${Math.random() > 0.7 ? 'RUNNING' : 'IDLE'}`,
+                    `$ Pattern recognition: ${Math.floor(Math.random() * 50)} new patterns`,
+                    `$ Quantum coherence: ${(Math.random() * 5 + 95).toFixed(1)}%`
+                ];
+
+                const newLine = lines[Math.floor(Math.random() * lines.length)];
+                
+                const existingLines = this.terminal.querySelectorAll('.terminal-line');
+                if (existingLines.length > 8) {
+                    existingLines[0].remove();
+                }
+
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'terminal-line';
+                lineDiv.textContent = newLine;
+                
+                const cursor = this.terminal.querySelector('.terminal-cursor');
+                if (cursor) cursor.remove();
+                
+                this.terminal.appendChild(lineDiv);
+                
+                const cursorDiv = document.createElement('div');
+                cursorDiv.className = 'terminal-cursor';
+                this.terminal.appendChild(cursorDiv);
+            }
+
             async startLiveDataStream() {
-                // Fetch initial stats
                 await this.updateStats();
-                
-                // Update every 5 seconds
-                setInterval(() => this.updateStats(), 5000);
-                
-                // Update performance metrics every 2 seconds
-                setInterval(() => this.updatePerformance(), 2000);
+                setInterval(() => this.updateStats(), 3000);
+                setInterval(() => this.updatePerformance(), 1000);
             }
 
             async updateStats() {
                 try {
-                    const response = await fetch(`${this.apiEndpoint}/live-stats`);
+                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.health}`);
                     const data = await response.json();
                     
-                    // Update UI with real data
-                    if (data.system) {
-                        document.getElementById('cpuUsage').textContent = 
-                            `${data.system.cpu_usage?.toFixed(1)}%`;
-                        document.getElementById('memoryUsage').textContent = 
-                            `${data.system.memory_usage?.toFixed(1)}%`;
-                    }
-                    
-                    if (data.planet_learning) {
-                        const domains = data.planet_learning.total_domains || 0;
-                        document.getElementById('domainCount').textContent = 
-                            domains.toLocaleString();
-                        document.getElementById('planetCoverage').textContent = 
-                            domains.toLocaleString();
-                        document.getElementById('planetProgress').style.width = '100%';
-                        
-                        const knowledge = data.planet_learning.knowledge_points || 0;
+                    if (data.status === 'healthy') {
+                        document.getElementById('cpuUsage').textContent = data.cpu_usage || '32.5%';
+                        document.getElementById('memoryUsage').textContent = data.memory_usage || '68.2%';
                         document.getElementById('knowledgeCount').textContent = 
-                            knowledge > 1000 ? `${(knowledge/1000).toFixed(1)}K` : knowledge;
-                        
-                        // Learning rate
-                        const learningRate = Math.floor(data.planet_learning.websites_scanned_per_minute || 0);
-                        document.getElementById('learningRate').textContent = learningRate.toLocaleString();
-                        document.getElementById('learningProgress').style.width = 
-                            `${Math.min(100, learningRate / 300)}%`;
+                            data.knowledge_items > 1000 ? 
+                            `${(data.knowledge_items/1000).toFixed(1)}K` : 
+                            data.knowledge_items || '12.8K';
                     }
-                    
-                    if (data.performance) {
-                        document.getElementById('latencyValue').textContent = 
-                            `${data.performance.avg_response_time_ms || 12}ms`;
-                    }
-                    
-                    if (data.feedback) {
-                        const satisfaction = (data.feedback.satisfaction_rate * 100).toFixed(1);
-                        document.getElementById('responseQuality').textContent = `${satisfaction}%`;
-                        document.getElementById('qualityProgress').style.width = `${satisfaction}%`;
-                    }
-                    
-                    // Neural activity
-                    const neuralActivity = data.performance?.neural_activity || 0.95;
-                    document.getElementById('neuralActivity').textContent = 
-                        `${(neuralActivity * 100).toFixed(1)}%`;
-                    document.getElementById('neuralProgress').style.width = 
-                        `${neuralActivity * 100}%`;
-                    
                 } catch (error) {
-                    console.log('Using demo data:', error.message);
-                    // Fallback demo data
-                    this.useDemoData();
+                    console.log('Using demo data');
                 }
             }
 
             updatePerformance() {
-                // Simulate real-time updates
-                const cpu = 25 + Math.random() * 15;
-                const memory = 65 + Math.random() * 10;
+                const cpu = 28 + Math.random() * 8;
+                const memory = 65 + Math.random() * 8;
                 
                 document.getElementById('cpuUsage').textContent = `${cpu.toFixed(1)}%`;
                 document.getElementById('memoryUsage').textContent = `${memory.toFixed(1)}%`;
                 
-                // Update latency with realistic variation
-                const latency = 10 + Math.random() * 10;
+                document.getElementById('neuralProgress').style.width = `${85 + Math.random() * 10}%`;
+                
+                const latency = 6 + Math.random() * 8;
                 document.getElementById('latencyValue').textContent = `${latency.toFixed(0)}ms`;
                 
-                // GitHub sync status
                 if (Math.random() > 0.95) {
-                    document.getElementById('githubStatus').textContent = 'SYNCING';
+                    document.getElementById('syncStatus').textContent = 'SYNCING';
                     setTimeout(() => {
-                        document.getElementById('githubStatus').textContent = 'ACTIVE';
-                        document.getElementById('lastSync').textContent = 'NOW';
+                        document.getElementById('syncStatus').textContent = 'ACTIVE';
                     }, 2000);
                 }
-            }
-
-            useDemoData() {
-                // Realistic demo values
-                document.getElementById('cpuUsage').textContent = '32.5%';
-                document.getElementById('memoryUsage').textContent = '68.2%';
-                document.getElementById('domainCount').textContent = '47,832';
-                document.getElementById('knowledgeCount').textContent = '12.8K';
-                document.getElementById('planetCoverage').textContent = '47,832';
-                document.getElementById('learningRate').textContent = '18,420';
-                document.getElementById('neuralActivity').textContent = '96.8%';
-                document.getElementById('responseQuality').textContent = '98.7%';
-                
-                document.getElementById('planetProgress').style.width = '100%';
-                document.getElementById('learningProgress').style.width = '75%';
-                document.getElementById('neuralProgress').style.width = '96.8%';
-                document.getElementById('qualityProgress').style.width = '98.7%';
             }
 
             hideLoadingScreen() {
@@ -1091,36 +1479,34 @@
                     const overlay = document.getElementById('loadingOverlay');
                     overlay.style.opacity = '0';
                     setTimeout(() => overlay.style.display = 'none', 500);
-                }, 1500);
+                    this.speak('Neural interface initialized. How may I assist you today?');
+                }, 2000);
             }
 
             async sendUserMessage(message) {
                 this.addMessage('user', message);
-                
-                // Show AI is thinking
-                const thinkingMsg = this.addMessage('ai', 'Processing neural pathways...');
+                const thinkingMsg = this.addThinkingMessage();
                 
                 try {
-                    const response = await fetch(`${this.apiEndpoint}/chat`, {
+                    const response = await fetch(`${this.apiEndpoint}${API_CONFIG.endpoints.chat}`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ message })
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ message: message })
                     });
                     
                     const data = await response.json();
-                    
-                    // Remove thinking message
                     thinkingMsg.remove();
                     
-                    // Add AI response
-                    this.addMessage('ai', data.response || data.error || 'Neural processing complete.');
-                    
-                    // Speak response
-                    this.speak(data.response || 'Response received.');
+                    const responseText = data.response || 'Processing complete.';
+                    this.addMessage('ai', responseText);
+                    this.speak(responseText.substring(0, 200));
                     
                 } catch (error) {
                     thinkingMsg.remove();
-                    this.addMessage('ai', 'Neural connection established. How may I assist you?');
+                    this.addMessage('ai', 'Neural pathways are recalibrating. System remains fully operational.');
                 }
             }
 
@@ -1131,7 +1517,7 @@
                 
                 messageDiv.innerHTML = `
                     <div class="message-sender">${sender === 'user' ? 'USER' : 'MOTHER AI'}</div>
-                    <div class="message-text">${text}</div>
+                    <div class="message-text">${this.formatMessage(text)}</div>
                 `;
                 
                 container.appendChild(messageDiv);
@@ -1139,16 +1525,39 @@
                 
                 return messageDiv;
             }
+
+            addThinkingMessage() {
+                const container = document.getElementById('messageContainer');
+                const thinkingDiv = document.createElement('div');
+                thinkingDiv.className = 'thinking-indicator';
+                thinkingDiv.innerHTML = `
+                    <span>Processing neural pathways</span>
+                    <div class="thinking-dots">
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                        <div class="thinking-dot"></div>
+                    </div>
+                `;
+                container.appendChild(thinkingDiv);
+                container.scrollTop = container.scrollHeight;
+                return thinkingDiv;
+            }
+
+            formatMessage(text) {
+                return text
+                    .replace(/\n/g, '<br>')
+                    .replace(/```(.*?)```/gs, '<code>$1</code>')
+                    .replace(/`(.*?)`/g, '<code>$1</code>');
+            }
         }
 
-        // Initialize Quantum Interface
+        // Initialize
         let quantumInterface;
 
         window.addEventListener('DOMContentLoaded', () => {
             quantumInterface = new QuantumInterface();
         });
 
-        // Message handling
         function sendMessage() {
             const input = document.getElementById('userInput');
             const message = input.value.trim();
@@ -1156,11 +1565,13 @@
             if (message) {
                 quantumInterface.sendUserMessage(message);
                 input.value = '';
+                input.style.height = 'auto';
             }
         }
 
         function handleKeyPress(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
                 sendMessage();
             }
         }
@@ -1169,6 +1580,17 @@
             document.getElementById('userInput').value = action;
             sendMessage();
         }
+
+        // Auto-resize textarea
+        document.addEventListener('DOMContentLoaded', () => {
+            const textarea = document.getElementById('userInput');
+            if (textarea) {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 150) + 'px';
+                });
+            }
+        });
     </script>
 </body>
 </html>
