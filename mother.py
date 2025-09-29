@@ -51,14 +51,14 @@ csp = {
     'img-src': "'self' data:",
     'connect-src': "'self'"
 }
-Talisman(
-    app,
-    content_security_policy=csp,
-    force_https=True,
-    strict_transport_security=True,
-    session_cookie_secure=True,
-    session_cookie_http_only=True
-)
+#Talisman(
+#    app,
+#    content_security_policy=csp,
+#    force_https=True,
+#    strict_transport_security=True,
+#    session_cookie_secure=True,
+#    session_cookie_http_only=True
+#)
 
 # Rate limiting with enhanced protection
 limiter = Limiter(
