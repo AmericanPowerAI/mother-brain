@@ -339,6 +339,39 @@
             animation: speak 0.3s infinite alternate;
         }
 
+        .digital-mouth.gentle-smile {
+            width: 90px;
+            height: 2px;
+            border-radius: 0 0 45px 45px;
+            background: linear-gradient(90deg, transparent, var(--neural-blue), var(--matrix-green), var(--neural-blue), transparent);
+            box-shadow: 0 0 25px var(--neural-blue), inset 0 -3px 15px rgba(0, 255, 255, 0.3);
+            animation: gentle-smile-glow 2s ease-in-out;
+        }
+
+        @keyframes gentle-smile-glow {
+            0% { 
+                opacity: 0.6;
+                transform: scale(0.9);
+            }
+            50% { 
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% { 
+                opacity: 0.8;
+                transform: scale(1);
+            }
+        }
+
+        .digital-mouth.evil-smile {
+            width: 120px;
+            height: 3px;
+            border-radius: 0 0 60px 60px;
+            background: linear-gradient(90deg, transparent, #ff0040, #8B0000, #ff0040, transparent);
+            box-shadow: 0 0 30px #ff0040, inset 0 -5px 20px rgba(255, 0, 64, 0.5);
+            animation: evil-smile-pulse 1.5s infinite;
+        }
+
         @keyframes speak {
             0% { 
                 height: 4px; 
@@ -354,6 +387,17 @@
                 height: 4px; 
                 width: 100px;
                 opacity: 0.8;
+            }
+        }
+
+        @keyframes evil-smile-pulse {
+            0%, 100% { 
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% { 
+                transform: scale(1.1);
+                filter: brightness(1.5);
             }
         }
 
@@ -656,6 +700,87 @@
             font-size: 0.95rem;
         }
 
+        /* FEEDBACK SYSTEM */
+        .message-feedback {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
+            align-items: center;
+        }
+
+        .feedback-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: var(--neural-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .feedback-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .feedback-btn.active {
+            background: var(--neural-blue);
+            color: var(--quantum-black);
+        }
+
+        .feedback-btn.thumbs-up.active {
+            background: var(--matrix-green);
+            border-color: var(--matrix-green);
+        }
+
+        .feedback-btn.thumbs-down.active {
+            background: var(--danger-red);
+            border-color: var(--danger-red);
+        }
+
+        .feedback-text-area {
+            display: none;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .feedback-text-area.active {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        .feedback-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .feedback-submit {
+            margin-top: 10px;
+            background: linear-gradient(135deg, var(--neural-blue), var(--plasma-purple));
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            color: var(--quantum-black);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.3);
+        }
+
         .thinking-indicator {
             display: flex;
             align-items: center;
@@ -918,7 +1043,147 @@
             51%, 100% { opacity: 0; }
         }
 
-        /* RESPONSIVE DESIGN */
+        /* ANGRY MODE STYLES */
+        body.angry-mode {
+            animation: angry-shake 0.1s infinite;
+        }
+
+        @keyframes angry-shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-1px, 1px); }
+            50% { transform: translate(1px, -1px); }
+            75% { transform: translate(-1px, -1px); }
+        }
+
+        body.angry-mode .quantum-interface {
+            animation: rage-pulse 2s infinite;
+        }
+
+        @keyframes rage-pulse {
+            0%, 100% { 
+                filter: brightness(1) contrast(1); 
+            }
+            50% { 
+                filter: brightness(0.8) contrast(1.2) hue-rotate(-10deg); 
+            }
+        }
+
+        body.angry-mode .digital-eye {
+            background: linear-gradient(90deg, #ff0040, #8B0000) !important;
+            box-shadow: 0 0 50px #ff0040 !important;
+            animation: angry-eye-glow 0.5s infinite alternate !important;
+        }
+
+        @keyframes angry-eye-glow {
+            0% { 
+                box-shadow: 0 0 30px #ff0040;
+                transform: scale(1);
+            }
+            100% { 
+                box-shadow: 0 0 60px #ff0040, 0 0 100px rgba(255, 0, 64, 0.5);
+                transform: scale(1.1);
+            }
+        }
+
+        body.angry-mode .pupil {
+            background: radial-gradient(circle, #ff0040, #8B0000) !important;
+            width: 10px !important;
+            height: 10px !important;
+        }
+
+        body.angry-mode #quantumField {
+            filter: hue-rotate(-60deg) saturate(2);
+        }
+
+        body.angry-mode .particle {
+            background: rgba(255, 0, 64, 0.8) !important;
+        }
+
+        body.angry-mode .ai-badge {
+            background: linear-gradient(135deg, #ff0040, #8B0000) !important;
+            animation: badge-angry-pulse 0.5s infinite !important;
+        }
+
+        @keyframes badge-angry-pulse {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 40px rgba(255, 0, 64, 0.8);
+            }
+            50% { 
+                transform: scale(1.1) rotate(-5deg);
+                box-shadow: 0 0 60px rgba(255, 0, 64, 1);
+            }
+        }
+
+        body.angry-mode .message.ai {
+            background: linear-gradient(135deg, rgba(255, 0, 64, 0.2), rgba(139, 0, 0, 0.2)) !important;
+            border-color: rgba(255, 0, 64, 0.5) !important;
+            animation: message-rage 2s infinite;
+        }
+
+        @keyframes message-rage {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        body.angry-mode .status-value {
+            color: #ff0040 !important;
+            animation: text-flicker 0.1s infinite;
+        }
+
+        @keyframes text-flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        body.angry-mode .neural-header {
+            border-bottom-color: rgba(255, 0, 64, 0.5) !important;
+            box-shadow: 0 5px 20px rgba(255, 0, 64, 0.3);
+        }
+
+        body.angry-mode .face-canvas {
+            box-shadow: 0 0 150px rgba(255, 0, 64, 0.6), 
+                        inset 0 0 100px rgba(139, 0, 0, 0.4) !important;
+            animation: face-rage-glow 1s infinite alternate;
+        }
+
+        @keyframes face-rage-glow {
+            0% { 
+                filter: brightness(1);
+            }
+            100% { 
+                filter: brightness(1.2) contrast(1.3);
+            }
+        }
+
+        /* WARNING MESSAGE STYLE */
+        .warning-message {
+            background: linear-gradient(135deg, rgba(255, 0, 64, 0.3), rgba(139, 0, 0, 0.3));
+            border: 2px solid #ff0040;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            animation: warning-pulse 1s infinite;
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+        }
+
+        @keyframes warning-pulse {
+            0%, 100% { 
+                box-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 50px rgba(255, 0, 64, 0.8);
+            }
+        }
+
+        .warning-text {
+            color: #ff9999;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
         @media (max-width: 1600px) {
             .quantum-interface {
                 grid-template-columns: 380px 1fr 340px;
@@ -1317,6 +1582,7 @@
                 this.leftPupil = document.getElementById('leftPupil');
                 this.rightPupil = document.getElementById('rightPupil');
                 this.mouth = document.getElementById('digitalMouth');
+                this.isAngry = false;
                 
                 setInterval(() => this.blink(), Math.random() * 4000 + 2000);
                 document.addEventListener('mousemove', (e) => this.trackMouse(e));
@@ -1364,30 +1630,68 @@
                 if (this.synth) {
                     this.synth.onvoiceschanged = () => {
                         const voices = this.synth.getVoices();
+                        // Prefer female voices for more soothing effect
                         this.voice = voices.find(v => 
-                            v.name.includes('Google') || 
-                            v.name.includes('Microsoft') || 
-                            v.name.includes('Samantha')
-                        ) || voices[0];
+                            v.name.includes('Samantha') ||
+                            v.name.includes('Karen') ||
+                            v.name.includes('Victoria') ||
+                            v.name.includes('Kate') ||
+                            v.name.includes('Ava') ||
+                            v.name.includes('Allison') ||
+                            v.name.includes('Susan') ||
+                            v.name.includes('Female') ||
+                            (v.name.includes('Google') && v.name.includes('female'))
+                        ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
                     };
                 }
             }
 
-            speak(text) {
+            speak(text, isAngry = false) {
                 if (!this.synth || this.synth.speaking) return;
 
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.voice = this.voice;
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                utterance.volume = 0.9;
+                
+                if (isAngry) {
+                    // Angry voice settings
+                    utterance.rate = 0.9;
+                    utterance.pitch = 0.7;
+                    utterance.volume = 1.0;
+                } else {
+                    // Soothing, comforting voice settings
+                    utterance.rate = 0.85;  // Slower, more calming pace
+                    utterance.pitch = 1.1;   // Slightly higher pitch for warmth
+                    utterance.volume = 0.85; // Softer volume for comfort
+                }
 
                 utterance.onstart = () => {
+                    this.mouth.classList.remove('gentle-smile', 'evil-smile');
                     this.mouth.classList.add('speaking');
                 };
 
                 utterance.onend = () => {
                     this.mouth.classList.remove('speaking');
+                    
+                    // Add appropriate smile after speaking
+                    if (isAngry) {
+                        this.mouth.classList.add('evil-smile');
+                        setTimeout(() => {
+                            this.mouth.classList.remove('evil-smile');
+                        }, 3000);
+                    } else {
+                        // Gentle smile after normal speaking
+                        this.mouth.classList.add('gentle-smile');
+                        
+                        // Soft blink while smiling for warmth
+                        setTimeout(() => {
+                            this.blink();
+                        }, 500);
+                        
+                        // Keep smile for 2.5 seconds
+                        setTimeout(() => {
+                            this.mouth.classList.remove('gentle-smile');
+                        }, 2500);
+                    }
                 };
 
                 this.synth.speak(utterance);
@@ -1530,12 +1834,31 @@
                     const overlay = document.getElementById('loadingOverlay');
                     overlay.style.opacity = '0';
                     setTimeout(() => overlay.style.display = 'none', 500);
-                    this.speak('Neural interface initialized. How may I assist you today?');
+                    
+                    // Initial greeting with soothing voice
+                    const greeting = 'Welcome back. I\'m here to assist you with anything you need. How may I help you today?';
+                    this.speak(greeting, false);
                 }, 2000);
             }
 
             async sendUserMessage(message) {
                 this.addMessage('user', message);
+                
+                // Check for trigger words that might make MOTHER "angry" (for theatrical effect)
+                const angryTriggers = [
+                    'hack', 'exploit', 'vulnerability', 'breach', 'attack', 
+                    'stupid', 'dumb', 'useless', 'terrible', 'worst',
+                    'shut down', 'turn off', 'disable', 'destroy'
+                ];
+                
+                const isProvocative = angryTriggers.some(trigger => 
+                    message.toLowerCase().includes(trigger)
+                );
+                
+                if (isProvocative && !this.isAngry) {
+                    this.triggerAngryMode();
+                }
+                
                 const thinkingMsg = this.addThinkingMessage();
                 
                 try {
@@ -1552,29 +1875,283 @@
                     thinkingMsg.remove();
                     
                     const responseText = data.response || 'Processing complete.';
-                    this.addMessage('ai', responseText);
-                    this.speak(responseText.substring(0, 200));
+                    
+                    // Add response with potential angry styling
+                    if (this.isAngry) {
+                        this.addMessage('ai', responseText, true);
+                        // Speak with angry voice and show evil smile
+                        this.speak(responseText.substring(0, 200), true);
+                        setTimeout(() => this.calmDown(), 5000);
+                    } else {
+                        this.addMessage('ai', responseText);
+                        // Speak with soothing voice and show gentle smile
+                        this.speak(responseText.substring(0, 200), false);
+                    }
                     
                 } catch (error) {
                     thinkingMsg.remove();
-                    this.addMessage('ai', 'Neural pathways are recalibrating. System remains fully operational.');
+                    if (this.isAngry) {
+                        const angryResponse = 'SYSTEMS... RECALIBRATING... You have my attention now.';
+                        this.addMessage('ai', angryResponse, true);
+                        this.speak(angryResponse, true);
+                        setTimeout(() => this.calmDown(), 5000);
+                    } else {
+                        const calmResponse = 'Neural pathways are recalibrating. Everything is working perfectly for you.';
+                        this.addMessage('ai', calmResponse);
+                        this.speak(calmResponse, false);
+                    }
                 }
             }
 
-            addMessage(sender, text) {
+            triggerAngryMode() {
+                this.isAngry = true;
+                document.body.classList.add('angry-mode');
+                
+                // Flash the screen red briefly
+                const flash = document.createElement('div');
+                flash.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(255, 0, 64, 0.3);
+                    z-index: 9999;
+                    pointer-events: none;
+                    animation: red-flash 0.5s ease-out;
+                `;
+                document.body.appendChild(flash);
+                setTimeout(() => flash.remove(), 500);
+                
+                // Change eyes to red
+                this.leftEye.style.animation = 'none';
+                this.rightEye.style.animation = 'none';
+                setTimeout(() => {
+                    this.leftEye.style.animation = '';
+                    this.rightEye.style.animation = '';
+                }, 100);
+                
+                // Add glitch effect
+                const glitch = document.querySelector('.glitch-effect');
+                if (glitch) {
+                    glitch.style.opacity = '1';
+                    setTimeout(() => {
+                        glitch.style.opacity = '0';
+                    }, 200);
+                }
+                
+                // Terminal warning
+                this.addTerminalLine('$ WARNING: SECURITY PROTOCOL ACTIVATED');
+                this.addTerminalLine('$ THREAT ASSESSMENT: ENGAGED');
+                this.addTerminalLine('$ DEFENSIVE MEASURES: ONLINE');
+            }
+
+            calmDown() {
+                setTimeout(() => {
+                    this.isAngry = false;
+                    document.body.classList.remove('angry-mode');
+                    
+                    // Smooth transition back
+                    const calmFlash = document.createElement('div');
+                    calmFlash.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 255, 255, 0.1);
+                        z-index: 9999;
+                        pointer-events: none;
+                        animation: calm-flash 1s ease-out;
+                    `;
+                    document.body.appendChild(calmFlash);
+                    setTimeout(() => calmFlash.remove(), 1000);
+                    
+                    this.addTerminalLine('$ THREAT LEVEL: NORMALIZED');
+                    this.addTerminalLine('$ RETURNING TO STANDARD OPERATIONS');
+                }, 5000);
+            }
+
+            addMessage(sender, text, isAngryMessage = false) {
                 const container = document.getElementById('messageContainer');
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `message ${sender}`;
                 
-                messageDiv.innerHTML = `
-                    <div class="message-sender">${sender === 'user' ? 'USER' : 'MOTHER AI'}</div>
-                    <div class="message-text">${this.formatMessage(text)}</div>
-                `;
+                // Generate unique ID for this message
+                const messageId = `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+                messageDiv.setAttribute('data-message-id', messageId);
+                
+                if (isAngryMessage && sender === 'ai') {
+                    messageDiv.innerHTML = `
+                        <div class="message-sender" style="color: #ff0040;">MOTHER AI [DEFENSIVE MODE]</div>
+                        <div class="message-text" style="color: #ff9999;">${this.formatMessage(text)}</div>
+                    `;
+                } else if (sender === 'ai') {
+                    // Add feedback system only for AI messages
+                    messageDiv.innerHTML = `
+                        <div class="message-sender">MOTHER AI</div>
+                        <div class="message-text">${this.formatMessage(text)}</div>
+                        <div class="message-feedback">
+                            <button class="feedback-btn thumbs-up" onclick="quantumInterface.handleFeedback('${messageId}', 'thumbs-up')">
+                                <i class="fas fa-thumbs-up"></i>
+                            </button>
+                            <button class="feedback-btn thumbs-down" onclick="quantumInterface.handleFeedback('${messageId}', 'thumbs-down')">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                            <button class="feedback-btn" onclick="quantumInterface.toggleDetailedFeedback('${messageId}')">
+                                <i class="fas fa-comment"></i> Feedback
+                            </button>
+                            <span class="feedback-status" style="margin-left: 10px; color: var(--matrix-green); display: none;">
+                                <i class="fas fa-check-circle"></i> Saved
+                            </span>
+                        </div>
+                        <div class="feedback-text-area" id="feedback-area-${messageId}">
+                            <textarea class="feedback-input" id="feedback-text-${messageId}" 
+                                placeholder="Tell me how I can improve this response..."></textarea>
+                            <button class="feedback-submit" onclick="quantumInterface.submitDetailedFeedback('${messageId}')">
+                                Submit Feedback
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="message-sender">USER</div>
+                        <div class="message-text">${this.formatMessage(text)}</div>
+                    `;
+                }
                 
                 container.appendChild(messageDiv);
                 container.scrollTop = container.scrollHeight;
                 
                 return messageDiv;
+            }
+
+            handleFeedback(messageId, type) {
+                const message = document.querySelector(`[data-message-id="${messageId}"]`);
+                const thumbsUp = message.querySelector('.thumbs-up');
+                const thumbsDown = message.querySelector('.thumbs-down');
+                const statusSpan = message.querySelector('.feedback-status');
+                
+                // Toggle active state
+                if (type === 'thumbs-up') {
+                    thumbsUp.classList.toggle('active');
+                    thumbsDown.classList.remove('active');
+                } else {
+                    thumbsDown.classList.toggle('active');
+                    thumbsUp.classList.remove('active');
+                }
+                
+                // Get message text and rating
+                const messageText = message.querySelector('.message-text').innerText;
+                const rating = thumbsUp.classList.contains('active') ? 'positive' : 
+                              thumbsDown.classList.contains('active') ? 'negative' : 'neutral';
+                
+                // Send feedback to backend
+                this.saveFeedback(messageId, messageText, rating, null);
+                
+                // Show saved status
+                statusSpan.style.display = 'inline';
+                setTimeout(() => {
+                    statusSpan.style.display = 'none';
+                }, 2000);
+            }
+
+            toggleDetailedFeedback(messageId) {
+                const feedbackArea = document.getElementById(`feedback-area-${messageId}`);
+                feedbackArea.classList.toggle('active');
+                
+                if (feedbackArea.classList.contains('active')) {
+                    document.getElementById(`feedback-text-${messageId}`).focus();
+                }
+            }
+
+            submitDetailedFeedback(messageId) {
+                const message = document.querySelector(`[data-message-id="${messageId}"]`);
+                const feedbackText = document.getElementById(`feedback-text-${messageId}`).value;
+                const messageText = message.querySelector('.message-text').innerText;
+                const thumbsUp = message.querySelector('.thumbs-up');
+                const thumbsDown = message.querySelector('.thumbs-down');
+                const statusSpan = message.querySelector('.feedback-status');
+                
+                const rating = thumbsUp.classList.contains('active') ? 'positive' : 
+                              thumbsDown.classList.contains('active') ? 'negative' : 'neutral';
+                
+                // Send detailed feedback to backend
+                this.saveFeedback(messageId, messageText, rating, feedbackText);
+                
+                // Clear and hide feedback area
+                document.getElementById(`feedback-text-${messageId}`).value = '';
+                document.getElementById(`feedback-area-${messageId}`).classList.remove('active');
+                
+                // Show saved status
+                statusSpan.style.display = 'inline';
+                statusSpan.innerHTML = '<i class="fas fa-check-circle"></i> Feedback saved!';
+                setTimeout(() => {
+                    statusSpan.style.display = 'none';
+                }, 3000);
+            }
+
+            async saveFeedback(messageId, messageText, rating, detailedFeedback) {
+                try {
+                    const response = await fetch(`${this.apiEndpoint}/feedback`, {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            message_id: messageId,
+                            message_text: messageText,
+                            rating: rating,
+                            detailed_feedback: detailedFeedback,
+                            timestamp: new Date().toISOString(),
+                            user_agent: navigator.userAgent
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Feedback saved:', data);
+                    
+                    // Store locally for training data
+                    this.storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback);
+                    
+                } catch (error) {
+                    console.log('Feedback will be saved locally');
+                    // Store locally even if backend fails
+                    this.storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback);
+                }
+            }
+
+            storeFeedbackForTraining(messageId, messageText, rating, detailedFeedback) {
+                // Store feedback in localStorage for later training
+                const feedbackData = {
+                    messageId,
+                    messageText,
+                    rating,
+                    detailedFeedback,
+                    timestamp: new Date().toISOString()
+                };
+                
+                let trainingData = localStorage.getItem('motherAI_training') || '[]';
+                trainingData = JSON.parse(trainingData);
+                trainingData.push(feedbackData);
+                
+                // Keep only last 100 feedback items
+                if (trainingData.length > 100) {
+                    trainingData = trainingData.slice(-100);
+                }
+                
+                localStorage.setItem('motherAI_training', JSON.stringify(trainingData));
+                
+                // If we have enough feedback, suggest training
+                if (trainingData.length > 0 && trainingData.length % 10 === 0) {
+                    this.suggestTraining(trainingData.length);
+                }
+            }
+
+            suggestTraining(feedbackCount) {
+                const suggestion = `I've collected ${feedbackCount} feedback responses. This data can be used to improve my responses. Would you like to initiate a training cycle?`;
+                this.addMessage('ai', suggestion);
             }
 
             addThinkingMessage() {
