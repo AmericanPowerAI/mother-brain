@@ -6,6 +6,7 @@ This fixes the initialization order issue without modifying any existing files
 
 import sys
 import types
+import os
 
 # Create a placeholder 'mother' object to prevent NameError
 placeholder_mother = types.SimpleNamespace()
@@ -24,7 +25,7 @@ try:
     builtins.mother = placeholder_mother
     
     # Import mother.py - this will create the real 'mother' object
-    import mother
+    from mother import app
     
     # Clean up - remove our placeholder
     if _original_mother is None:
@@ -46,3 +47,9 @@ except Exception as e:
     
     # Execute the modified code
     exec(compile(code, 'mother.py', 'exec'), globals())
+    from mother import app
+
+# CRITICAL: Actually run the Flask app for Render
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
