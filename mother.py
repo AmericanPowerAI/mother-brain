@@ -2778,50 +2778,28 @@ mother = EnhancedMotherBrain()
 @app.route('/')
 def home():
     """Serve the enhanced living HTML interface"""
+    import os
     try:
-        return send_file('index.html')
-    except Exception as e:
-        print(f"Error loading index.html: {e}")
-        total_domains = sum(len(sources) if isinstance(sources, list) else 
-                          sum(len(subsources) if isinstance(subsources, list) else 1 
-                              for subsources in sources.values()) if isinstance(sources, dict) else 1 
-                          for sources in mother.DOMAINS.values())
+        # List all files in current directory
+        files = os.listdir('.')
+        print("Available files:", files)
         
+        # Check if index.html exists
+        if 'index.html' in files:
+            print("index.html found!")
+            return send_file('index.html')
+        else:
+            print("index.html NOT found!")
+            return jsonify({
+                "error": "index.html not found", 
+                "available_files": files,
+                "current_dir": os.getcwd()
+            })
+    except Exception as e:
         return jsonify({
-            "status": "Mother Brain Planet Earth Enhanced operational",
-            "message": "Universal AI learning from every website on planet Earth with advanced search and learning",
-            "planet_stats": {
-                "total_domains": total_domains,
-                "categories": len(mother.DOMAINS),
-                "coverage": "Complete planet Earth",
-                "scan_status": "active",
-                "github_knowledge": "Connected to knowledge.zst",
-                "ai_systems": ["intelligent_search", "feedback_learning", "conversational_ai"]
-            },
-            "endpoints": {
-                "/chat": "POST - Interactive chat with planet Earth knowledge",
-                "/enhanced-chat": "POST - Enhanced chat with search integration",
-                "/ask?q=<query>": "GET - Query planet-wide knowledge",
-                "/feedback": "POST - Provide learning feedback",
-                "/search": "POST - Search and verify information",
-                "/exploit/<cve>": "GET - Generate exploit for CVE",
-                "/hacking": "POST - Process hacking commands",
-                "/learn": "POST - Trigger planet-wide learning",
-                "/teach-ai": "POST - Teach the AI new information",
-                "/live-stats": "GET - Real-time planet statistics",
-                "/learning-activity": "GET - Planet-wide learning feed",
-                "/planet/discover": "GET - Discover new Earth domains",
-                "/planet/stats": "GET - Complete planet statistics",
-                "/system/analyze": "GET - Self-analysis report",
-                "/system/report": "GET - Full system report",
-                "/system/improve": "POST - Self-improvement",
-                "/health": "GET - System health check",
-                "/dump": "GET - Knowledge dump (truncated)",
-                "/dump_full": "GET - Complete knowledge dump"
-            },
-            "version": mother.knowledge.get("_meta", {}).get("version", "planet-earth-v3.0-enhanced"),
-            "learning_status": "continuously_scanning_planet_earth_with_enhanced_ai",
-            "github_integration": "active"
+            "error": str(e),
+            "available_files": str(os.listdir('.')),
+            "current_dir": os.getcwd()
         })
 
 @app.route('/health')
