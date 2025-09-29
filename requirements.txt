@@ -1,5 +1,5 @@
 # ===== WEB FRAMEWORK & SERVER =====
-flask>=2.3.0          # Core web server for API endpoints
+Flask[async]>=3.1.2          # Core web server for API endpoints WITH ASYNC SUPPORT
 flask-limiter==3.5.0  # Rate limiting for API security
 flask-talisman==1.1.0 # HTTPS enforcement & security headers
 gunicorn==21.2.0      # Production WSGI server
