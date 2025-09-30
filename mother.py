@@ -3149,29 +3149,31 @@ def chat_endpoint():
         if not user_message:
             return jsonify({'error': 'Message cannot be empty'}), 400
         
-        # Use async enhanced chat if possible
-        try:
-            import asyncio
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            response = loop.run_until_complete(mother.enhanced_chat_response(user_message))
-        except:
+        # Use the conversational model with transformers
+        if mother.conversational_model and mother.conversational_model.neural_active:
+            # This uses DialoGPT from transformers library
+            response = mother.conversational_model.generate_response(user_message)
+        else:
+            # Fallback to intelligent response
             response = generate_intelligent_response(user_message)
+        
+        # Ensure response is a string, not dict
+        if isinstance(response, dict):
+            response = str(response.get('response', response.get('answer', 'I need more information to help you properly.')))
         
         return jsonify({
             'response': response,
             'timestamp': datetime.utcnow().isoformat(),
-            'learning_impact': 'Response patterns updated and applied to planet-wide knowledge',
-            'planet_enhancement': True,
-            'github_sync': 'feedback_stored',
-            'planet_enhanced': True,
-            'github_knowledge': 'integrated',
-            'ai_systems': 'enhanced',
             'confidence': calculate_response_confidence(user_message, response)
         })
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # Fallback to basic intelligent response
+        response = generate_intelligent_response(user_message)
+        return jsonify({
+            'response': response,
+            'timestamp': datetime.utcnow().isoformat()
+        })
 
 @app.route('/teach-ai', methods=['POST'])
 @limiter.limit("10 per minute")
