@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-setup_training.py - Run this once to download training data for MOTHER AI
-This downloads Wikipedia-style knowledge and conversation data to train your AI
+setup_training.py - Download WEB-SCALE training data for MOTHER AI
+This gives your AI true internet knowledge, not just Wikipedia!
 """
 
 import os
@@ -18,56 +18,74 @@ except ImportError:
     sys.exit(1)
 
 def main():
-    print("🚀 MOTHER AI Training Data Setup")
-    print("=" * 50)
-    print("This will download datasets to train MOTHER AI with Wikipedia-level knowledge")
-    print("Datasets will be saved to: training_data/")
-    print("This may take a few minutes depending on your internet connection...")
+    print("🚀 MOTHER AI WEB-SCALE Training Data Setup")
+    print("=" * 60)
+    print("This will download REAL INTERNET DATA to train MOTHER AI")
+    print("Your AI will learn from actual web pages, news, code, and conversations!")
+    print()
+    print("📁 Datasets will be saved to: training_data/")
+    print("⏱️  This may take 5-10 minutes depending on your internet...")
     print()
     
     # Create dataset manager
     dm = DatasetManager()
     
-    print("📋 Available datasets:")
-    for i, dataset in enumerate(dm.get_available_datasets(), 1):
-        print(f"   {i}. {dataset}")
+    print("🌐 AVAILABLE WEB DATASETS:")
+    print("-" * 40)
+    
+    categories = dm.get_available_datasets()
+    for category, datasets in categories.items():
+        print(f"\n{category}:")
+        for dataset in datasets:
+            print(f"   📦 {dataset}")
     print()
     
-    # Download essential datasets
-    datasets_to_download = ["tinystories", "wikitext_tiny"]
+    # Download ALL web-scale datasets
+    all_datasets = []
+    for category_datasets in categories.values():
+        all_datasets.extend(category_datasets)
+    
+    print("📥 DOWNLOADING WEB-SCALE KNOWLEDGE...")
+    print("-" * 40)
     
     success_count = 0
-    for dataset in datasets_to_download:
+    for dataset in all_datasets:
         try:
-            print(f"📥 Downloading {dataset}...")
+            print(f"\n🌐 Downloading {dataset}...")
             result = dm.download_dataset(dataset)
-            print(f"✅ Successfully downloaded {dataset}")
+            print(f"✅ Success: {dataset}")
             success_count += 1
         except Exception as e:
-            print(f"❌ Failed to download {dataset}: {e}")
-            print("   This dataset will be skipped, but MOTHER AI will still work.")
+            print(f"⚠️  Skipped {dataset}: {e}")
+            print("   MOTHER AI will still work with other datasets.")
     
     print()
-    print("=" * 50)
+    print("=" * 60)
     
     if success_count > 0:
-        print(f"🎉 Successfully downloaded {success_count}/{len(datasets_to_download)} datasets!")
+        print(f"🎉 WEB-SCALE TRAINING COMPLETE!")
+        print(f"   Successfully downloaded {success_count}/{len(all_datasets)} datasets!")
         print()
-        print("📚 What was downloaded:")
-        print("   • TinyStories: 28K AI-generated stories for conversation training")
-        print("   • WikiText: Wikipedia articles for general knowledge")
+        print("📊 KNOWLEDGE NOW INCLUDES:")
+        print("   🌐 Common Crawl - Real web pages from across the internet")
+        print("   📰 Real News - Current events and journalism")  
+        print("   💬 Reddit - Social conversations and trends")
+        print("   💻 GitHub - Programming code and technical knowledge")
+        print("   📚 Wikipedia - General encyclopedia knowledge")
+        print("   🗣️ Conversation Data - AI dialogue training")
         print()
-        print("🔧 Next steps:")
-        print("   1. Run your MOTHER AI as normal: python mother-20.py")
-        print("   2. The AI will automatically load this new knowledge")
-        print("   3. Use '/train/start' endpoint to trigger learning")
+        print("🔧 NEXT STEPS:")
+        print("   1. Run MOTHER AI: python mother-20.py")
+        print("   2. AI will automatically load this WEB knowledge")
+        print("   3. Use '/train/start' endpoint to begin learning")
+        print("   4. Your AI now has TRUE internet-scale knowledge!")
     else:
         print("⚠️ No datasets were downloaded successfully.")
-        print("   MOTHER AI will still work with its existing knowledge base.")
+        print("   MOTHER AI will use its existing knowledge base.")
     
     print()
-    print("💡 Note: Training data is saved in 'training_data/' folder")
-    print("   This folder is ignored by git (see .gitignore)")
+    print("💡 TIP: Run this script again anytime to update knowledge")
+    print("📁 Data location: 'training_data/' (ignored by git)")
 
 if __name__ == "__main__":
     main()
