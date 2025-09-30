@@ -683,15 +683,18 @@ class ConversationalModel:
         self.context_window = []
         self.max_context = 5
         # Initialize enhanced neural processing
-        try:
-            from transformers import AutoModelForCausalLM, AutoTokenizer
-            import torch
-            self.tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
-            self.model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
-            self.tokenizer.pad_token = self.tokenizer.eos_token
-            self.neural_active = True
-        except:
-            self.neural_active = False
+        ttry:
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
+    print("🤖 Loading DialoGPT model...")
+    self.tokenizer = AutoTokenizer.from_pretrained("microsoft/DialoGPT-medium")
+    self.model = AutoModelForCausalLM.from_pretrained("microsoft/DialoGPT-medium")
+    self.tokenizer.pad_token = self.tokenizer.eos_token
+    self.neural_active = True
+    print("✅ DialoGPT model loaded successfully!")
+except Exception as e:
+    print(f"❌ DialoGPT failed to load: {e}")
+    self.neural_active = False
             self.response_templates = {
                 'greeting': [
                     "Neural interface initialized. How may I assist you?",
