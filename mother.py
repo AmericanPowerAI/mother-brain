@@ -900,21 +900,7 @@ class ConversationalModel:
             return "I'd be happy to help, but I need more information to provide a useful answer."
         
         return f"Based on the available information: {context[:500]}"
-    
-    def generate_response(self, prompt: str, context: str = "") -> str:
-        """Generate conversational response"""
-        self.context_window.append(prompt)
-        if len(self.context_window) > self.max_context:
-            self.context_window.pop(0)
         
-        intent = self._detect_intent(prompt)
-        
-        if intent == 'greeting':
-            return random.choice(self.response_templates['greeting'])
-        elif intent == 'question' and context:
-            return self._format_answer(context, prompt)
-        else:
-            return self._generate_contextual_response(prompt, context)
     
     def _detect_intent(self, text: str) -> str:
         """Simple intent detection"""
