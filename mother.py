@@ -196,10 +196,10 @@ def internal_error(error):
 
 # Cleanup on shutdown
 @app.teardown_appcontext
-async def cleanup(error=None):
+def cleanup(error=None):
     """Clean up resources"""
-    if hasattr(mother, 'search_engine') and mother.search_engine.session:
-        await mother.search_engine.close()
+    # Removed async cleanup to prevent loop errors
+    pass
 
 # Optional bridge for gradual migration to homegrown components
 class FlaskToHomegrownBridge:
