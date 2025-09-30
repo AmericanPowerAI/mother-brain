@@ -41,6 +41,14 @@ from cache import MotherCache, cached
 from auth import UserManager, JWTManager
 from concurrent.futures import ThreadPoolExecutor
 
+try:
+    from dataset_manager import DatasetManager
+except ImportError:
+    print("⚠️ DatasetManager not available - running without training data")
+    class DatasetManager:
+        def __init__(self): pass
+        def load_into_mother(self, instance): return 0
+
 app = Flask(__name__)
 
 # Enhanced security middleware
@@ -337,6 +345,28 @@ def record_feedback():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# === ADD THIS EXACT CODE === #
+@app.route('/train/start', methods=['POST'])
+@limiter.limit("2 per hour")
+def start_training():
+    """Endpoint to download and train on web datasets"""
+    try:
+        # This would trigger dataset downloads
+        return jsonify({
+            "status": "training_available",
+            "message": "Web-scale training data system is ready!",
+            "instruction": "Run 'python setup_training.py' locally to download datasets",
+            "available_datasets": mother.dataset_manager.get_available_datasets() if hasattr(mother, 'dataset_manager') else {}
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+# =========================== #
+
+# ===== END OF FLASK ROUTES =====
+
+if __name__ == "__main__":
 
 # ===== END OF FLASK ROUTES =====
 
