@@ -2182,6 +2182,7 @@ class MotherBrain:
         self.search_engine = IntelligentSearchEngine()
         self.feedback_learner = UnifiedFeedbackLearner()
         self.conversational_model = ConversationalModel()
+        self.dataset_manager = DatasetManager()
         
         # GitHub configuration
         self.gh_token = os.getenv("GITHUB_FINE_GRAINED_PAT")
