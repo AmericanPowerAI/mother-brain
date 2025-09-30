@@ -703,7 +703,7 @@ class ConversationalModel:
         self.context_window = []
         self.max_context = 5
         # Initialize enhanced neural processing
-        ttry:
+        try:
     from transformers import AutoModelForCausalLM, AutoTokenizer
     import torch
     print("🤖 Loading DialoGPT model...")
