@@ -1,0 +1,12 @@
+# Training data (WEB-SCALE datasets - DO NOT commit to repo)
+training_data/
+*.json.gz
+*.parquet
+*.zip
+*.tar.gz
+large_datasets/
+downloaded_data/
+model_checkpoints/
+*.pth
+*.bin
+*.safetensors
