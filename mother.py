@@ -3200,21 +3200,21 @@ def teach_ai():
                 'taught_at': datetime.now().isoformat()
             }
             
+            # Return a HUMAN response, not raw data
+            response = f"Thank you for teaching me about {topic}! I've verified this information across multiple sources with {verification['consensus_score']*100:.0f}% confidence and stored it in my knowledge base. I'll use this to help answer future questions."
+            
             return jsonify({
-                'status': 'success',
-                'message': f'Thank you for teaching me about {topic}! I verified this information and stored it.',
-                'verification_score': verification['consensus_score']
+                'response': response  # Changed from 'message' to 'response' for consistency
             })
         else:
+            response = f"I appreciate you trying to teach me about {topic}, but I couldn't verify this information reliably (confidence: {verification['consensus_score']*100:.0f}%). Could you provide additional sources or clarify the information?"
+            
             return jsonify({
-                'status': 'verification_failed',
-                'message': f'I couldn\'t verify this information about {topic}. Could you provide additional sources?',
-                'verification_score': verification['consensus_score']
+                'response': response
             })
             
     except Exception as e:
-        return jsonify({'error': f'Teaching failed: {str(e)}'}), 500
-
+        return jsonify({'response': f'I encountered an issue while learning: {str(e)}. Please try again.'}), 500
 @app.route('/live-stats', methods=['GET'])
 def get_live_stats():
     """Get real-time planet-wide system statistics"""
