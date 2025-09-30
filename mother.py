@@ -364,14 +364,12 @@ def start_training():
         return jsonify({"error": str(e)}), 500
 # =========================== #
 
-# ===== END OF FLASK ROUTES =====
-
-if __name__ == "__main__":
 
 # ===== END OF FLASK ROUTES =====
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port, debug=False)
     
     total_domains = sum(len(sources) if isinstance(sources, list) else 
                       sum(len(subsources) if isinstance(subsources, list) else 1 
