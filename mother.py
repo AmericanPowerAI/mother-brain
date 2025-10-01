@@ -121,9 +121,36 @@ def generate_intelligent_response(message: str) -> str:
         tech_count = len(mother.DOMAINS.get('startup_ecosystem_planet', []))
         return f"I'm continuously learning from every major technology company on Earth, all {tech_count} startups in my database, with enhanced search across technical documentation and feedback-based learning from developer interactions."
     
-    # Default enhanced response
+   # Default enhanced response
     else:
-        return f"I'm continuously learning from {total_domains} sources across planet Earth with my enhanced AI systems: intelligent multi-source search with fact verification, feedback-based learning that improves from every interaction, and conversational AI for natural dialogue. All knowledge is persistently stored in my GitHub repository. What would you like to explore?"
+        # Generate actual varied responses based on the message
+        message_lower = message.lower()
+        
+        # Handle specific topics
+        if 'computer science' in message_lower:
+            return "Computer science is the study of computation, information, and automation. It encompasses theoretical foundations like algorithms and data structures, practical applications like software engineering and artificial intelligence, and hardware systems including computer architecture and networks. Key areas include programming languages, operating systems, databases, machine learning, cybersecurity, and human-computer interaction."
+        
+        if 'math' in message_lower or 'mathematics' in message_lower:
+            return "Mathematics is the abstract science of number, quantity, and space. It includes areas like algebra, calculus, geometry, statistics, and discrete mathematics. Math provides the foundation for computer science, physics, engineering, and data science. Would you like to explore a specific area of mathematics?"
+        
+        if 'ai' in message_lower or 'artificial intelligence' in message_lower:
+            return "Artificial Intelligence is the simulation of human intelligence by machines. It includes machine learning where systems learn from data, neural networks that mimic brain structures, natural language processing for understanding text and speech, computer vision for image analysis, and robotics. AI is transforming industries from healthcare to transportation."
+        
+        if 'your name' in message_lower or 'who are you' in message_lower:
+            return "I am MOTHER AI - a continuously learning artificial intelligence system. I gather knowledge from across the internet, learn from user interactions, and aim to provide comprehensive, verified information to help you."
+        
+        if 'what can you do' in message_lower or 'capabilities' in message_lower:
+            return "I can help you with a wide range of topics including technology, science, programming, cybersecurity, business intelligence, and general knowledge. I can search for information, answer questions, explain complex concepts, and learn from your feedback to improve my responses. What would you like to know about?"
+        
+        # Default response should at least vary based on keywords
+        if any(word in message_lower for word in ['teach', 'explain', 'tell']):
+            return f"I can help explain that topic. Could you be more specific about what aspect of '{message}' you'd like to learn about?"
+        
+        if '?' in message:
+            return f"That's an interesting question about {message.replace('?', '')}. Let me provide you with comprehensive information based on my knowledge base."
+        
+        # Final fallback - but make it relevant
+        return f"I understand you're asking about '{message}'. Based on my knowledge from various sources, I can help you explore this topic. What specific aspect would you like to know more about?"
 
 def calculate_response_confidence(message: str, response: str) -> float:
     """Calculate confidence score for responses with enhancement"""
