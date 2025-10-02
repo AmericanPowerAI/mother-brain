@@ -395,6 +395,17 @@ def record_feedback():
 
 
 # === ADD THIS EXACT CODE === #
+@app.route('/train/status')
+def training_status():
+    """Check training progress"""
+    if hasattr(mother, 'trainer'):
+        return jsonify({
+            'progress': mother.trainer.training_progress,
+            'vocabulary_size': len(mother.trainer.vocabulary),
+            'model_active': mother.trainer.model is not None
+        })
+    return jsonify({'error': 'Trainer not initialized'})
+
 @app.route('/train/start', methods=['POST'])
 @limiter.limit("2 per hour")
 def start_training():
