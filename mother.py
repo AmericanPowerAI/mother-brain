@@ -1048,24 +1048,51 @@ class MotherTrainer:
         self.training_progress = 0
         
     def process_datasets(self):
-        """Convert raw datasets into training format"""
-        from pathlib import Path
-        import json
+    """Convert raw datasets into training format"""
+    from datasets import load_dataset
+    
+    # Load Reddit data directly from Hugging Face
+    try:
+        print("Loading Reddit dataset from Hugging Face...")
+        reddit = load_dataset("reddit", split="train[:1000]")  # First 1000 examples
+        for item in reddit:
+            if 'body' in item and item['body'] and '?' in str(item['body']):
+                text = str(item['body'])
+                parts = text.split('?')
+                if len(parts) >= 2:
+                    question = parts[0] + '?'
+                    answer = parts[1].strip()
+                    if len(answer) > 10:
+                        self.training_data.append({
+                            'input': question,
+                            'output': answer,
+                            'source': 'reddit'
+                        })
+        print(f"Extracted {len([d for d in self.training_data if d['source'] == 'reddit'])} Q&A pairs from Reddit")
+    except Exception as e:
+        print(f"Could not load Reddit dataset: {e}")
+    
+    # Load TinyStories data directly from Hugging Face
+    try:
+        print("Loading TinyStories dataset from Hugging Face...")
+        stories = load_dataset("roneneldan/TinyStories", split="train[:100]")  # First 100 stories
+        for item in stories:
+            if 'text' in item:
+                story = item['text']
+                sentences = story.split('.')
+                for i in range(len(sentences)-1):
+                    if len(sentences[i]) > 10 and len(sentences[i+1]) > 10:
+                        self.training_data.append({
+                            'input': sentences[i].strip() + '.',
+                            'output': sentences[i+1].strip() + '.',
+                            'source': 'tinystories'
+                        })
+        print(f"Processed {len([d for d in self.training_data if d['source'] == 'tinystories'])} conversation pairs")
+    except Exception as e:
+        print(f"Could not load TinyStories dataset: {e}")
         
-        # Process each dataset type
-        data_dir = Path("training_data")
-        
-        # Extract Q&A pairs from Reddit data
-        if (data_dir / "reddit_mini.parquet").exists():
-            # Reddit comments often have question->answer structure
-            self.extract_qa_from_reddit()
-            
-        # Process conversation data
-        if (data_dir / "tinystories").exists():
-            self.process_conversation_data()
-            
-        # Build vocabulary from all text
-        self.build_vocabulary()
+    # Build vocabulary from all text
+    self.build_vocabulary()
         
     def start_incremental_training(self):
         """Train gradually while still using DialoGPT"""
