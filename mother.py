@@ -1048,8 +1048,8 @@ class MotherTrainer:
         self.training_progress = 0
         
     def process_datasets(self):
-    """Convert raw datasets into training format"""
-    from datasets import load_dataset
+        """Convert raw datasets into training format"""
+        from datasets import load_dataset
     
     # Load Reddit data directly from Hugging Face
     try:
