@@ -1008,6 +1008,54 @@ class ConversationalModel:
         
         return f"Based on the available information: {context[:500]}"
 
+class MotherTrainer:
+    def __init__(self):
+        self.training_data = []
+        self.model = None
+        self.vocabulary = {}
+        self.training_progress = 0
+        
+    def process_datasets(self):
+        """Convert raw datasets into training format"""
+        from pathlib import Path
+        import json
+        
+        # Process each dataset type
+        data_dir = Path("training_data")
+        
+        # Extract Q&A pairs from Reddit data
+        if (data_dir / "reddit_mini.parquet").exists():
+            # Reddit comments often have question->answer structure
+            self.extract_qa_from_reddit()
+            
+        # Process conversation data
+        if (data_dir / "tinystories").exists():
+            self.process_conversation_data()
+            
+        # Build vocabulary from all text
+        self.build_vocabulary()
+        
+    def start_incremental_training(self):
+        """Train gradually while still using DialoGPT"""
+        import torch
+        import torch.nn as nn
+        
+        class SimpleLM(nn.Module):
+            def __init__(self, vocab_size, hidden_size=256):
+                super().__init__()
+                self.embedding = nn.Embedding(vocab_size, hidden_size)
+                self.lstm = nn.LSTM(hidden_size, hidden_size, batch_first=True)
+                self.output = nn.Linear(hidden_size, vocab_size)
+                
+            def forward(self, x):
+                x = self.embedding(x)
+                x, _ = self.lstm(x)
+                return self.output(x)
+        
+        # Start with a small model
+        self.model = SimpleLM(len(self.vocabulary))
+        return self.model
+
 # ============= ORIGINAL MOTHER BRAIN CODE WITH ALL FEATURES =============
 
 # Add this class before your existing MotherBrain class
