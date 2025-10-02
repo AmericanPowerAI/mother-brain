@@ -411,6 +411,18 @@ def training_status():
 def start_training():
     """Actually start training"""
     try:
+        from pathlib import Path
+        
+        # Step 1: Ensure datasets are downloaded
+        if hasattr(mother, 'dataset_manager'):
+            if not Path("training_data/reddit_mini.parquet").exists():
+                print("Downloading Reddit dataset...")
+                mother.dataset_manager.download_dataset('reddit_mini')
+            
+            if not Path("training_data/tinystories").exists():
+                print("Downloading TinyStories dataset...")
+                mother.dataset_manager.download_dataset('tinystories')
+        
         if hasattr(mother, 'trainer'):
             # Process the datasets
             mother.trainer.process_datasets()
@@ -430,7 +442,6 @@ def start_training():
         return jsonify({"error": "Trainer not initialized"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-# =========================== #
 
 
 # ===== END OF FLASK ROUTES =====
