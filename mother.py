@@ -409,15 +409,25 @@ def training_status():
 @app.route('/train/start', methods=['POST'])
 @limiter.limit("2 per hour")
 def start_training():
-    """Endpoint to download and train on web datasets"""
+    """Actually start training"""
     try:
-        # This would trigger dataset downloads
-        return jsonify({
-            "status": "training_available",
-            "message": "Web-scale training data system is ready!",
-            "instruction": "Run 'python setup_training.py' locally to download datasets",
-            "available_datasets": mother.dataset_manager.get_available_datasets() if hasattr(mother, 'dataset_manager') else {}
-        })
+        if hasattr(mother, 'trainer'):
+            # Process the datasets
+            mother.trainer.process_datasets()
+            
+            # Initialize the model
+            mother.trainer.start_incremental_training()
+            
+            # Train for several epochs
+            mother.trainer.train_epoch(epochs=5)
+            
+            return jsonify({
+                "status": "training_started",
+                "vocabulary_size": len(mother.trainer.vocabulary),
+                "training_data_size": len(mother.trainer.training_data),
+                "progress": mother.trainer.training_progress
+            })
+        return jsonify({"error": "Trainer not initialized"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 # =========================== #
