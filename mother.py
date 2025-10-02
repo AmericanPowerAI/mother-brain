@@ -2264,6 +2264,7 @@ class MotherBrain:
         self.search_engine = IntelligentSearchEngine()
         self.feedback_learner = UnifiedFeedbackLearner()
         self.conversational_model = ConversationalModel()
+        self.trainer = MotherTrainer()
         self.dataset_manager = DatasetManager()
         
         # GitHub configuration
