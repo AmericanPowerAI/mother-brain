@@ -1069,19 +1069,228 @@ class MotherTrainer:
 
     def extract_qa_from_reddit(self):
         """Extract Q&A pairs from Reddit data"""
-        # Placeholder - will process Reddit parquet files
-        pass
-    
+        import pandas as pd
+        from pathlib import Path
+        
+        try:
+            df = pd.read_parquet("training_data/reddit_mini.parquet")
+            print(f"Loaded Reddit data with {len(df)} rows")
+            
+            # Simple Q&A extraction - look for question marks and responses
+            for i, row in df.iterrows():
+                if i >= 1000:  # Limit for initial training
+                    break
+                    
+                text = str(row.get('body', ''))
+                if '?' in text and len(text) > 20:
+                    # Split into potential Q&A pairs
+                    parts = text.split('?')
+                    if len(parts) >= 2:
+                        question = parts[0] + '?'
+                        answer = parts[1].strip()
+                        if len(answer) > 10:
+                            self.training_data.append({
+                                'input': question,
+                                'output': answer,
+                                'source': 'reddit'
+                            })
+            
+            print(f"Extracted {len(self.training_data)} Q&A pairs from Reddit")
+            
+        except Exception as e:
+            print(f"Error processing Reddit data: {e}")
+
     def process_conversation_data(self):
         """Process conversation training data"""
-        # Placeholder - will process TinyStories
-        pass
-    
+        import json
+        from pathlib import Path
+        
+        try:
+            stories_dir = Path("training_data/tinystories")
+            for file_path in stories_dir.glob("*.json"):
+                with open(file_path, 'r') as f:
+                    data = json.load(f)
+                    
+                if isinstance(data, list):
+                    for story in data[:100]:  # Limit processing
+                        if 'story' in story:
+                            # Split story into conversational turns
+                            sentences = story['story'].split('.')
+                            for i in range(len(sentences)-1):
+                                if len(sentences[i]) > 10 and len(sentences[i+1]) > 10:
+                                    self.training_data.append({
+                                        'input': sentences[i].strip() + '.',
+                                        'output': sentences[i+1].strip() + '.',
+                                        'source': 'tinystories'
+                                    })
+            
+            print(f"Processed {len([d for d in self.training_data if d['source'] == 'tinystories'])} conversation pairs")
+            
+        except Exception as e:
+            print(f"Error processing conversation data: {e}")
+
     def build_vocabulary(self):
         """Build vocabulary from all text"""
+        from collections import Counter
+        import string
+        
         # Start with basic vocabulary
         self.vocabulary = {'<PAD>': 0, '<START>': 1, '<END>': 2, '<UNK>': 3}
-        # Will add more words as we process data
+        
+        # Collect all text from training data
+        all_text = []
+        for item in self.training_data:
+            all_text.append(item['input'])
+            all_text.append(item['output'])
+        
+        # Tokenize and build vocabulary
+        word_counter = Counter()
+        for text in all_text:
+            # Simple tokenization
+            words = text.lower().translate(str.maketrans('', '', string.punctuation)).split()
+            word_counter.update(words)
+        
+        # Add most common words to vocabulary
+        for word, count in word_counter.most_common(5000):  # Limit vocabulary size
+            if word not in self.vocabulary and count >= 2:  # Only words appearing at least twice
+                self.vocabulary[word] = len(self.vocabulary)
+        
+        print(f"Built vocabulary with {len(self.vocabulary)} words")
+
+    def train_epoch(self, epochs=1):
+        """Train the model for one or more epochs"""
+        import torch
+        import torch.nn as nn
+        from torch.utils.data import DataLoader, TensorDataset
+        import numpy as np
+        
+        if not self.training_data or not self.model:
+            print("No training data or model initialized")
+            return
+        
+        # Convert training data to tensors
+        inputs, targets = self.prepare_training_batch()
+        
+        if len(inputs) == 0:
+            print("No valid training sequences")
+            return
+        
+        # Create dataset and dataloader
+        dataset = TensorDataset(inputs, targets)
+        dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+        
+        # Training setup
+        criterion = nn.CrossEntropyLoss()
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+        
+        self.model.train()
+        
+        for epoch in range(epochs):
+            total_loss = 0
+            for batch_inputs, batch_targets in dataloader:
+                optimizer.zero_grad()
+                
+                # Forward pass
+                outputs = self.model(batch_inputs)
+                loss = criterion(outputs.view(-1, len(self.vocabulary)), batch_targets.view(-1))
+                
+                # Backward pass
+                loss.backward()
+                optimizer.step()
+                
+                total_loss += loss.item()
+            
+            avg_loss = total_loss / len(dataloader)
+            self.training_progress = (epoch + 1) / epochs * 100
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {avg_loss:.4f}, Progress: {self.training_progress:.1f}%")
+
+    def prepare_training_batch(self):
+        """Prepare training batch from training data"""
+        import torch
+        import numpy as np
+        
+        inputs = []
+        targets = []
+        
+        for item in self.training_data:
+            # Convert text to token sequences
+            input_seq = self.text_to_sequence(item['input'])
+            target_seq = self.text_to_sequence(item['output'])
+            
+            if len(input_seq) > 0 and len(target_seq) > 0:
+                # For simplicity, use input as context and output as target
+                seq = input_seq + [self.vocabulary['<END>']] + target_seq
+                
+                if len(seq) < 2:
+                    continue
+                    
+                inputs.append(torch.tensor(seq[:-1], dtype=torch.long))
+                targets.append(torch.tensor(seq[1:], dtype=torch.long))
+        
+        # Pad sequences to same length
+        if inputs:
+            max_len = max(len(seq) for seq in inputs)
+            inputs_padded = torch.nn.utils.rnn.pad_sequence(
+                inputs, batch_first=True, padding_value=self.vocabulary['<PAD>']
+            )
+            targets_padded = torch.nn.utils.rnn.pad_sequence(
+                targets, batch_first=True, padding_value=self.vocabulary['<PAD>']
+            )
+            return inputs_padded, targets_padded
+        
+        return torch.tensor([]), torch.tensor([])
+
+    def text_to_sequence(self, text):
+        """Convert text to sequence of token IDs"""
+        import string
+        
+        words = text.lower().translate(str.maketrans('', '', string.punctuation)).split()
+        sequence = [self.vocabulary.get(word, self.vocabulary['<UNK>']) for word in words]
+        return sequence
+
+    def generate(self, prompt, max_length=50):
+        """Generate text from prompt using the trained model"""
+        import torch
+        
+        if not self.model:
+            return "Model not trained yet"
+        
+        self.model.eval()
+        
+        # Convert prompt to sequence
+        input_seq = self.text_to_sequence(prompt)
+        if not input_seq:
+            input_seq = [self.vocabulary['<START>']]
+        
+        input_tensor = torch.tensor([input_seq], dtype=torch.long)
+        
+        generated = input_seq.copy()
+        
+        with torch.no_grad():
+            for _ in range(max_length):
+                output = self.model(input_tensor)
+                next_token = output[0, -1].argmax().item()
+                
+                if next_token == self.vocabulary['<END>']:
+                    break
+                    
+                generated.append(next_token)
+                input_tensor = torch.tensor([generated], dtype=torch.long)
+        
+        # Convert back to text
+        return self.sequence_to_text(generated)
+
+    def sequence_to_text(self, sequence):
+        """Convert sequence of token IDs back to text"""
+        id_to_word = {v: k for k, v in self.vocabulary.items()}
+        
+        words = []
+        for token_id in sequence:
+            if token_id in [self.vocabulary['<START>'], self.vocabulary['<END>'], self.vocabulary['<PAD>']]:
+                continue
+            words.append(id_to_word.get(token_id, 'UNK'))
+        
+        return ' '.join(words)
 
 # ============= ORIGINAL MOTHER BRAIN CODE WITH ALL FEATURES =============
 
