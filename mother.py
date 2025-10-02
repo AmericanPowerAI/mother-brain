@@ -1056,6 +1056,22 @@ class MotherTrainer:
         self.model = SimpleLM(len(self.vocabulary))
         return self.model
 
+    def extract_qa_from_reddit(self):
+        """Extract Q&A pairs from Reddit data"""
+        # Placeholder - will process Reddit parquet files
+        pass
+    
+    def process_conversation_data(self):
+        """Process conversation training data"""
+        # Placeholder - will process TinyStories
+        pass
+    
+    def build_vocabulary(self):
+        """Build vocabulary from all text"""
+        # Start with basic vocabulary
+        self.vocabulary = {'<PAD>': 0, '<START>': 1, '<END>': 2, '<UNK>': 3}
+        # Will add more words as we process data
+
 # ============= ORIGINAL MOTHER BRAIN CODE WITH ALL FEATURES =============
 
 # Add this class before your existing MotherBrain class
